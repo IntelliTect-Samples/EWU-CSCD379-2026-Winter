@@ -8,7 +8,7 @@ export const WORD_LIST = [
   { word: 'grape', hint: 'A small, round purple or green fruit that grows on vines.' },
   { word: 'house', hint: 'A building that serves as a living space.' },
   { word: 'juice', hint: 'The liquid squeezed from fruit or vegetables.' },
-  { word: 'light', hint: 'Caves are devoid of this.' },
+  { word: 'light', hint: 'The sun is a source of this.' },
   { word: 'ocean', hint: 'A very large expanse of sea.' },
   { word: 'piano', hint: 'An instrument with black and white keys.' },
   { word: 'goose', hint: 'Is loud, sometimes aggressive, and flies. Loves bread.' },

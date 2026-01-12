@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useTheme } from 'vuetify'
-import { getRandomWord } from './utils/wordlist'
+import { getRandomWord, WORD_LIST, VALID_GUESSES } from './utils/wordlist'
 
 // <><><><> Toggle Theme <><><><>
 const theme = useTheme()
@@ -48,6 +48,7 @@ const resetGame = () => {
   hintSnackbar.value = false
 }
 
+// <><><><> Word Checking Logic <><><><>
 const checkWord = () => {
   const currentGuess = board.value[currentRow.value]
   const guessString = currentGuess.map(cell => cell.letter).join('')
@@ -121,7 +122,7 @@ const handleInput = (e) => {
      return
   }
 
-  if (e instanceof KeyboardEvent && e.key == 'Enter') {
+  if (e instanceof KeyboardEvent && e.key === 'Enter') {
     e.preventDefault()
   }
 
@@ -152,13 +153,13 @@ const handleInput = (e) => {
 }
 
 const showTemporaryMessage = (message) => {
+  if (gameOver.value) return
   snackbarMsg.value = message
   snackbar.value = true
-  if (!gameOver.value) {
-    setTimeout(() => {
-      if (!gameOver.value) snackbar.value = false
-    }, 2000)
-  }
+  
+  setTimeout(() => {
+    if (!gameOver.value) snackbar.value = false
+  }, 2000)
 }
 
 const shakeActive = ref(false)
@@ -177,6 +178,16 @@ onMounted(() => {
   if (savedTheme) {
     theme.global.name.value = savedTheme
   }
+})
+
+const revealHint = () => {
+  hintSnackbar.value = true
+}
+
+defineExpose({
+  revealHint,
+  hintSnackbar,
+  currentWordData
 })
 
 onUnmounted(() => window.removeEventListener('keydown', handleInput))
@@ -217,7 +228,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
         class="game-over-snackbar mini-box" 
       >
         <div class="d-flex align-center">
-          <v-icon start color="white" size="24">mdi-information-outline</v-icon>
+          <v-icon start color="white" size="24"class="me-4">mdi-information-outline</v-icon>
           <span class="text-body-2">{{ currentHint }}</span>
         </div>
         
@@ -251,7 +262,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
 
       <v-spacer></v-spacer>
 
-      <v-container class="keyboard-container pb-8 px-1">
+      <v-container class="keyboard-container px-1">
         <div v-for="(row, i) in rows" :key="i" class="keyboard-row">
           <div 
             v-for="key in row" 
@@ -398,7 +409,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
   -webkit-backdrop-filter: blur(12px) brightness(0.8);
 }
 
-/* <><><><> Snackbar & Button Styles <><><><> */
+/* <><><><> Button Styles <><><><> */
 .play-again-btn {
   background-color: rgb(76, 175, 80) !important; 
   color: white !important;
@@ -422,18 +433,9 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
   box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
 }
 
-.game-over-snackbar :deep(.v-snackbar__content) {
-  padding: 40px 24px !important;
-  border-radius: 24px !important;
-  border: 1px solid rgba(76, 175, 80, 0.4) !important;
-  background: #121212 !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7) !important;
-}
-
 .mini-box :deep(.v-snackbar__content) {
   padding: 12px 20px !important;
   width: auto !important;
-  max-width: fit-content !important;
 }
 
 .game-over-snackbar:not(.mini-box) :deep(.v-snackbar__content) {
@@ -478,6 +480,11 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
     padding: 0 2px;
   }
 
+  .keyboard-container {
+    margin-bottom: 20px !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+
   .key-wrapper {
     flex: 1 1 calc(10% - 2px) !important;
     margin: 0 1px !important;
@@ -503,12 +510,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
   }
 }
 
-/* <><><><> iOS Home Bar spacing <><><><> */
-.pb-8 {
-    padding-bottom: calc(32px + env(safe-area-inset-bottom)) !important;
-}
-
-/* <><><><> Snackbar Enhanced Styles <><><><> */
+/* <><><><> Snackbar Styles <><><><> */
 .game-over-snackbar :deep(.v-snackbar__content) {
   padding: 40px 24px !important;
   border-radius: 24px !important;
