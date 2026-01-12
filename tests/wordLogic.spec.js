@@ -1,5 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { expect, test, vi, beforeEach, afterEach } from 'vitest'
+import { expect, test, vi, afterEach } from 'vitest'
+import { createRouter, createMemoryHistory } from 'vue-router'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import App from '~/app.vue'
 import { nextTick } from 'vue'
 
@@ -8,6 +10,22 @@ global.localStorage = {
   getItem: vi.fn(() => null),
   setItem: vi.fn(),
 }
+
+// Create a simple router mock
+const router = createRouter({
+  history: createMemoryHistory(),
+  routes: [
+    { path: '/', component: { template: '<div />' } },
+  ],
+})
+
+// Mock Nuxt composables
+mockNuxtImport('useRouter', () => () => router)
+mockNuxtImport('useRoute', () => () => ({
+  path: '/',
+  params: {},
+  query: {},
+}))
 
 // Minimal mocks for Vuetify internals
 if (typeof window !== 'undefined') {
@@ -56,13 +74,12 @@ test('deletes the last letter when Backspace is pressed', async () => {
 test('mark letters correctly for a guess', async () => {
   const wrapper = await mountSuspended(App)
   wrapper.vm.currentWordData = { word: 'STEEL', hint: 'Metal' }
-  // Manually fill board to be 100% sure of state
+  // Manually fill board for the guess 'STARE'
   const guess = 'STARE'
   guess.split('').forEach((l, i) => wrapper.vm.board[0][i].letter = l)
   
   await wrapper.vm.checkWord()
   await nextTick()
-  // 'E' at index 4 is in STEEL but at a different position in STARE
   expect(wrapper.vm.board[0][4].status).toBe('present')
 })
 
@@ -156,7 +173,7 @@ test('resets game state correctly', async () => {
   expect(wrapper.vm.currentRow).toBe(0)
 })
 
-// Check that keyboord colors update correctly after guesses
+// Check that keyboard colors update correctly after guesses
 test('updates keyboard colors correctly after guesses', async () => {
     const wrapper = await mountSuspended(App)
     wrapper.vm.currentWordData = { word: 'bread', hint: 'A baked good that can be made at home or bought.' }
