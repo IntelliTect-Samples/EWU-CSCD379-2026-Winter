@@ -1,5 +1,7 @@
 export const words: string[] = [
     'aback',
+    'lungs',
+    'longs',
     'abase',
     'abate',
     'abbey',

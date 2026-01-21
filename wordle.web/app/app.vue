@@ -1,86 +1,47 @@
 <template>
-    <v-container>
-        <div v-for="word of guesses">
-            <v-btn variant="flat" :color="getColor(letter.state)" v-for="letter of word">{{ letter.character }}</v-btn>
-        </div>
-        <v-text-field label="Label" variant="outlined" v-model="guess"></v-text-field>
-        <v-btn variant="flat" color="primary" @click="submit">Submit</v-btn>
-        {{ guess }}
+    <v-container class="mx-auto">
+        <v-row width="auto" v-for="word of guesses">
+            <v-spacer />
+            <v-col class="py-1" cols="12" sm="8" md="6" lg="4">
+                <v-btn tile min-width="20px" variant="flat" class="mr-1 letter"
+                    :color="game.getColorForState(letter.state)" v-for="letter of word">{{
+                        letter.character }}</v-btn>
+            </v-col>
+            <v-spacer />
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field append-inner-icon="mdi-arrow-right" @click:append-inner="submit" @keyup.enter="submit"
+                    label="Guess" variant="outlined" v-model="guess"></v-text-field>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
 <script setup lang="ts">
-import { words } from "../classes/words";
+import { WordleGame } from "../classes/wordle-game";
 
-const guesses: Ref<Array<Array<Letter>>> = ref([]);
-const targetWord = ref("");
+const game = new WordleGame();
 const guess = ref("");
-
-pickRandomTargetWord();
-
-function pickRandomTargetWord() {
-    targetWord.value = words[Math.floor(Math.random() * words.length)]!;
-}
+const guesses = ref(game.getGuesses());
 
 function submit() {
-    const letters: Array<Letter> = [];
-
-    // TODO: check wordlist
-    if (words.indexOf(guess.value.toLowerCase()) < 0) {
-        return; // bad!
-    }
-
-    const targetLetters = targetWord.value.toUpperCase().split("");
-    const guessLetters = guess.value.toUpperCase().split("");
-
-    for (const [index, value] of guessLetters.entries()) {
-        let isCorrect = false;
-        if (targetLetters[index] === value) {
-            isCorrect = true;
-            guessLetters[index] = " ";
-            targetLetters[index] = " ";
-        }
-        const letter = new Letter(value, isCorrect ? LetterState.Correct : LetterState.Wrong);
-        letters.push(letter);
-    }
-
-    for (const [letterIndex, letter] of letters.entries()) {
-        if (letter.state !== LetterState.Correct) {
-            for (const [targetIndex, targetValue] of targetLetters.entries()) {
-                if (letter.character === targetValue) {
-                    letter.state = LetterState.Misplaced;
-                    targetLetters[targetIndex] = " ";
-                    break;
-                }
-            }
-        }
-    }
-
-    guesses.value.push(letters);
+    game.submitGuess(guess.value);
+    guesses.value = [...game.getGuesses()];
     guess.value = "";
 }
-
-function getColor(state: LetterState) {
-    switch (state) {
-        case LetterState.Correct:
-            return "green";
-        case LetterState.Misplaced:
-            return "yellow";
-        default:
-            return "white";
-    }
-}
-
-class Letter {
-    constructor(
-        public character: string,
-        public state: LetterState
-    ) { }
-}
-
-enum LetterState {
-    Correct,
-    Misplaced,
-    Wrong,
-}
 </script>
+
+<style lang="css" scoped>
+div .guess-word {
+    margin: 5px;
+    border: black solid 5px;
+    padding: 5px;
+    width: 60%;
+    left: 20%;
+}
+
+.letter {
+    width: calc(20% - 4px);
+}
+</style>
