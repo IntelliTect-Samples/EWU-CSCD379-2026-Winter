@@ -40,7 +40,7 @@ export const WORD_LIST = [
   'legal','lemon','level','light','limit','local','logic','loose','lunch',
 
   'magic','major','maker','march','match','maybe','metal','might','minor','model',
-  'money','month','moral','motor','mouse','mouth','movie','music',
+  'money','month','moral','motor','mouse','mouth','movie','mummy','music',
 
   'naked','nerve','never','night','noise','north','novel','nurse',
 

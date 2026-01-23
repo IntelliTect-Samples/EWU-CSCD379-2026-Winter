@@ -5945,6 +5945,7 @@ mulls
 mulse
 mulsh
 mumms
+mummy
 mumps
 mumsy
 mumus

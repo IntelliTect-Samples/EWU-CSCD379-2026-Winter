@@ -15,9 +15,9 @@ function toggleTheme() {
 }
 
 // <><><><> Game State <><><><>
-const currentWordData = ref(getRandomWord())
-const solution = computed(() => currentWordData.value.word.toUpperCase())
-const currentHint = computed(() => currentWordData.value.hint)
+const currentWordData = ref({ word: '', hint: '' })
+const solution = computed(() => (currentWordData.value?.word || '').toUpperCase())
+const currentHint = computed(() => currentWordData.value?.hint || '')
 
 const board = ref(Array.from({ length: 6 }, () => Array.from({ length: 5 }, () => ({ letter: '', status: 'default' }))))
 const currentRow = ref(0)
@@ -150,6 +150,15 @@ const checkWord = () => {
     currentRow.value++;
     currentCol.value = 0;
   }
+
+  localStorage.setItem('daily-board-state', JSON.stringify({
+    board: board.value,
+    currentRow: currentRow.value,
+    letterStates: letterStates.value,
+    solution: solution.value,
+    gameOver: gameOver.value,
+    snackbarMsg: snackbarMsg.value
+  }))
 }
 
 const handleInput = (e) => {
@@ -190,16 +199,26 @@ const handleInput = (e) => {
 // <><><><> Shows Hint <><><><>
 
 const revealHint = async () => {
+  if (!currentWordData.value || typeof currentWordData.value !== 'object') {
+    currentWordData.value = { word: currentWordData.value || '', hint: '' }
+  }
+
   if (currentWordData.value.hint) {
     hintSnackbar.value = true
     return
   }
 
   loadingHint.value = true
-  const fetchedHint = await generateHint(solution.value)
-  currentWordData.value.hint = fetchedHint
-  loadingHint.value = false
-  hintSnackbar.value = true
+  try {
+    const fetchedHint = await generateHint(solution.value)
+    currentWordData.value.hint = fetchedHint || "Definition not found in dictionary."
+  } catch (error) {
+    console.error("Hint Error:", error)
+    currentWordData.value.hint = "Service temporarily unavailable."
+  } finally {
+    loadingHint.value = false
+    hintSnackbar.value = true
+  }
 }
 
 // <><><><> Show Temp Message <><><><>
@@ -237,34 +256,58 @@ defineExpose({
   currentWordData
 })
 
-// <><><><> Event Listeners <><><><>
+// <><><><> Initialize Game Session & Restore State <><><><>
 onMounted(async() => { 
-  window.addEventListener('keydown', handleInput)
   await loadDictionary()
-
+  window.addEventListener('keydown', handleInput)
+  
   const savedTheme = localStorage.getItem('user-theme')
-  if (savedTheme) {
-    theme.global.name.value = savedTheme
-  }
+  if (savedTheme) theme.global.name.value = savedTheme
 
   const savedStats = localStorage.getItem('wordle-stats')
-  if (savedStats) {
-    stats.value = JSON.parse(savedStats)
-  }
+  if (savedStats) stats.value = JSON.parse(savedStats)
 
   const today = new Date().toDateString()
-  const lastPlayedDaily = localStorage.getItem('last-played-daily')
   const playedDailyToday = localStorage.getItem('daily-finished-' + today)
+  const savedStateStr = localStorage.getItem('daily-board-state')
+  const savedState = savedStateStr ? JSON.parse(savedStateStr) : null
 
-  if (lastPlayedDaily !== today && !playedDailyToday) {
-    const dateSeed = new Date().setHours(0,0,0,0)
-    const index = dateSeed % WORD_LIST.length
-    currentWordData.value = WORD_LIST[index]
-    localStorage.setItem('last-played-daily', today)
+  const dateSeed = new Date().setHours(0,0,0,0)
+  const dailyIndex = dateSeed % (WORD_LIST.length || 1)
+  const dailyWordObj = WORD_LIST[dailyIndex]
+
+  if (dailyWordObj && (!playedDailyToday || (savedState && savedState.solution === (dailyWordObj.word || dailyWordObj).toUpperCase()))) {
+    currentWordData.value = typeof dailyWordObj === 'string' ? { word: dailyWordObj, hint: '' } : { ...dailyWordObj }
     isDaily.value = true
+    localStorage.setItem('last-played-daily', today)
   } else {
-    currentWordData.value = getRandomWord()
-    isDaily.value = false
+    const randomWord = getRandomWord()
+    currentWordData.value = typeof randomWord === 'string' ? { word: randomWord, hint: '' } : { ...randomWord }
+  }
+
+  if (!currentWordData.value || !currentWordData.value.word) {
+    currentWordData.value = WORD_LIST[0] || { word: 'APPLE', hint: 'A fruit' }
+  }
+
+  if (savedState && currentWordData.value.word) {
+    const currentWordUpper = currentWordData.value.word.toUpperCase()
+    
+    if (savedState.solution === currentWordUpper) {
+      board.value = savedState.board
+      currentRow.value = savedState.currentRow
+      letterStates.value = savedState.letterStates
+      gameOver.value = savedState.gameOver
+      
+      if (gameOver.value) {
+        showStats.value = true
+        snackbar.value = true
+        snackbarMsg.value = savedState.snackbarMsg || 'Game Over!'
+      }
+      console.log("Restoration successful for:", currentWordUpper)
+    } else {
+      console.log("Solution mismatch. Saved:", savedState.solution, "Current:", currentWordUpper)
+      localStorage.removeItem('daily-board-state')
+    }
   }
 })
 
@@ -430,7 +473,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
         <div v-if="gameOver" class="text-center w-100 mt-2">
           <div class="text-overline text-grey-lighten-1">The word was</div>
           <div class="text-h4 font-weight-black text-green mb-2" style="letter-spacing: 2px;">
-            {{ solution }}
+            {{ solution || ''}}
           </div>
           
           <v-divider class="mx-10 mb-3" color="white"></v-divider>
