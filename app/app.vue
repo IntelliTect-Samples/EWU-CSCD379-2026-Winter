@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useTheme } from 'vuetify'
-import { getRandomWord, WORD_LIST, VALID_GUESSES } from './utils/wordlist'
+import { getRandomWord, WORD_LIST, VALID_GUESSES, generateHint } from './utils/wordlist'
 
 // <><><><> Toggle Theme <><><><>
 const theme = useTheme()
@@ -25,10 +25,22 @@ const currentCol = ref(0)
 const gameOver = ref(false)
 const letterStates = ref({})
 
+const stats = ref({
+  wins: 0,
+  losses: 0,
+  totalAttempts: 0,
+  gamesPlayed: 0,
+  averageAttempts: 0
+})
+
+const loadingHint = ref(false)
+
 // <><><><> UI State <><><><>
 const snackbar = ref(false)
 const snackbarMsg = ref('')
 const hintSnackbar = ref(false)
+const showStats = ref(false)
+const isDaily = ref(false)
 
 const rows = [
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -38,14 +50,39 @@ const rows = [
 
 // <><><><> Game Logic <><><><>
 const resetGame = () => {
-  currentWordData.value = getRandomWord()
+  isDaily.value = false
+  if (gameOver.value) {
+    currentWordData.value = getRandomWord()
+  }
+  
   board.value = Array.from({ length: 6 }, () => Array.from({ length: 5 }, () => ({ letter: '', status: 'default' })))
   letterStates.value = {}
   currentRow.value = 0
   currentCol.value = 0
   gameOver.value = false
+  showStats.value = false
   snackbar.value = false
   hintSnackbar.value = false
+}
+
+// <><><><> Stats Tracker <><><><>
+const updateStats = (isWin) => {
+  stats.value.gamesPlayed++
+  if (isWin) {
+    stats.value.wins++
+    stats.value.totalAttempts += (currentRow.value + 1)
+  } else {
+    stats.value.losses++
+  }
+  
+  // Calculate Average
+  if (stats.value.wins > 0) {
+    stats.value.averageAttempts = (stats.value.totalAttempts / stats.value.wins).toFixed(1)
+  }
+  localStorage.setItem('wordle-stats', JSON.stringify(stats.value))
+
+  const today = new Date().toDateString()
+  localStorage.setItem('daily-finished-' + today, 'true')
 }
 
 // <><><><> Word Checking Logic <><><><>
@@ -53,13 +90,14 @@ const checkWord = () => {
   const currentGuess = board.value[currentRow.value]
   const guessString = currentGuess.map(cell => cell.letter).join('')
   
-  // 1. Solution Letter Counts
+  // Solution Letter Counts
   const solutionArray = solution.value.split('')
   const solutionCounts = {}
   solutionArray.forEach(l => solutionCounts[l] = (solutionCounts[l] || 0) + 1)
 
-  // 2. Pass 1: Mark Correct (Green) on Board
+  // Pass 1: Mark Correct (Green) on Board
   let tempCounts = { ...solutionCounts }
+
   currentGuess.forEach((cell, i) => {
     if (cell.letter === solution.value[i]) {
       cell.status = 'correct'
@@ -67,7 +105,7 @@ const checkWord = () => {
     }
   })
 
-  // 3. Pass 2: Mark Present (Yellow) or Absent (Grey) on Board
+  // Pass 2: Mark Present (Yellow) or Absent (Grey) on Board
   currentGuess.forEach((cell, i) => {
     if (cell.status === 'correct') return
     if (solution.value.includes(cell.letter) && tempCounts[cell.letter] > 0) {
@@ -78,42 +116,39 @@ const checkWord = () => {
     }
   })
 
-  // 4. Keyboard Update with Exact Counts
+  // Keyboard Update with Exact Counts
   currentGuess.forEach((cell) => {
     const letter = cell.letter
-    const totalNeeded = solutionCounts[letter] || 0
+    const oldStatus = letterStates.value[letter]
     
-    const uniqueGreenPositions = new Set()
-    board.value.forEach(row => {
-      row.forEach((tile, index) => {
-        if (tile.letter === letter && tile.status === 'correct') {
-          uniqueGreenPositions.add(index)
-        }
-      })
-    })
-
-    if (uniqueGreenPositions.size === totalNeeded && totalNeeded > 0) {
+    if (cell.status === 'correct') {
       letterStates.value[letter] = 'correct'
-    } else if (solution.value.includes(letter)) {
-      if (letterStates.value[letter] !== 'correct') {
-        letterStates.value[letter] = 'present'
-      }
-    } else {
-      if (!letterStates.value[letter]) letterStates.value[letter] = 'absent'
+    } else if (cell.status === 'present' && oldStatus !== 'correct') {
+      letterStates.value[letter] = 'present'
+    } else if (!oldStatus) {
+      letterStates.value[letter] = 'absent'
     }
   })
 
-  if (guessString === solution.value) {
-    gameOver.value = true
-    snackbarMsg.value = '🎉 You guessed the word! 🎉'
-    snackbar.value = true
-  } else if (currentRow.value === 5) {
-    gameOver.value = true
-    snackbarMsg.value = `💔 The word was ${solution.value}. 💔`
-    snackbar.value = true
+  const isWin = guessString === solution.value;
+  const isLoss = !isWin && currentRow.value === 5;
+
+  if (isWin || isLoss) {
+    gameOver.value = true;
+    showStats.value = true;
+    updateStats(isWin);
+
+    if (!currentWordData.value.hint) {
+      generateHint(solution.value).then(hint => {
+        currentWordData.value.hint = hint;
+      });
+    }
+
+    snackbarMsg.value = isWin ? '🎉 You guessed the word! 🎉' : `💔 Better luck next time! 💔`;
+    snackbar.value = true;
   } else {
-    currentRow.value++
-    currentCol.value = 0
+    currentRow.value++;
+    currentCol.value = 0;
   }
 }
 
@@ -131,8 +166,8 @@ const handleInput = (e) => {
   if (key === 'ENTER') {
     if (currentCol.value === 5) {
       const guessString = board.value[currentRow.value].map(cell => cell.letter).join('').toLowerCase()
-      const isAnswer = WORD_LIST.some(item => item.word.toLowerCase() === guessString);
-      const isDictionaryWord = VALID_GUESSES.includes(guessString);
+      const isAnswer = WORD_LIST.map(w => w.toLowerCase()).includes(guessString)
+      const isDictionaryWord = VALID_GUESSES.value.includes(guessString);
 
       if (isAnswer || isDictionaryWord) {
         checkWord()
@@ -152,9 +187,26 @@ const handleInput = (e) => {
   }
 }
 
+// <><><><> Shows Hint <><><><>
+
+const revealHint = async () => {
+  if (currentWordData.value.hint) {
+    hintSnackbar.value = true
+    return
+  }
+
+  loadingHint.value = true
+  const fetchedHint = await generateHint(solution.value)
+  currentWordData.value.hint = fetchedHint
+  loadingHint.value = false
+  hintSnackbar.value = true
+}
+
+// <><><><> Show Temp Message <><><><>
 const showTemporaryMessage = (message) => {
   if (gameOver.value) return
   snackbarMsg.value = message
+  showStats.value = false
   snackbar.value = true
   
   setTimeout(() => {
@@ -162,6 +214,14 @@ const showTemporaryMessage = (message) => {
   }, 2000)
 }
 
+// <><><><> Show Stats <><><><>
+const showStatsOnly = () => {
+  snackbarMsg.value = "Your Stats"
+  showStats.value = true
+  snackbar.value = true
+}
+
+// <><><><> Shakes Tiles <><><><>
 const shakeActive = ref(false)
 const shakeRow = () => {
   shakeActive.value = true
@@ -170,24 +230,42 @@ const shakeRow = () => {
   }, 500)
 }
 
+// <><><><> Expose For Testing <><><><> 
+defineExpose({
+  revealHint,
+  hintSnackbar,
+  currentWordData
+})
+
 // <><><><> Event Listeners <><><><>
-onMounted(() => { 
+onMounted(async() => { 
   window.addEventListener('keydown', handleInput)
+  await loadDictionary()
 
   const savedTheme = localStorage.getItem('user-theme')
   if (savedTheme) {
     theme.global.name.value = savedTheme
   }
-})
 
-const revealHint = () => {
-  hintSnackbar.value = true
-}
+  const savedStats = localStorage.getItem('wordle-stats')
+  if (savedStats) {
+    stats.value = JSON.parse(savedStats)
+  }
 
-defineExpose({
-  revealHint,
-  hintSnackbar,
-  currentWordData
+  const today = new Date().toDateString()
+  const lastPlayedDaily = localStorage.getItem('last-played-daily')
+  const playedDailyToday = localStorage.getItem('daily-finished-' + today)
+
+  if (lastPlayedDaily !== today && !playedDailyToday) {
+    const dateSeed = new Date().setHours(0,0,0,0)
+    const index = dateSeed % WORD_LIST.length
+    currentWordData.value = WORD_LIST[index]
+    localStorage.setItem('last-played-daily', today)
+    isDaily.value = true
+  } else {
+    currentWordData.value = getRandomWord()
+    isDaily.value = false
+  }
 })
 
 onUnmounted(() => window.removeEventListener('keydown', handleInput))
@@ -196,23 +274,50 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
 <template>
   <v-app>
     <v-app-bar flat border px-2>
-      <v-app-bar-title class="wordle-title ml-2 ml-sm-4">Wordle</v-app-bar-title>
+      <div class="d-flex align-center ml-2 ml-sm-4" style="min-width: 0;">
+        <span class="wordle-title">Wordle</span>
+        <v-chip 
+          v-if="isDaily" 
+          size="x-small" 
+          color="green" 
+          class="ml-2 font-weight-black" 
+          variant="flat"
+          style="height: 18px;"
+        >
+          DAILY
+        </v-chip>
+      </div>
       
       <v-spacer></v-spacer>
 
-      <div class="d-flex align-center flex-nowrap">
+      <div class="d-flex align-center">
+        <v-btn 
+          icon="mdi-chart-line" 
+          @click="showStatsOnly" 
+          @mousedown.prevent
+        ></v-btn>
+        
         <v-btn 
           icon="mdi-lightbulb-on-outline"
-          @click="hintSnackbar = true" 
+          @click="revealHint" 
           :disabled="gameOver"
+          :loading="loadingHint"
           @mousedown.prevent
         ></v-btn>
 
         <client-only>
-          <v-btn :icon="themeIcon" @click="toggleTheme" @mousedown.prevent></v-btn>
+          <v-btn 
+            :icon="themeIcon" 
+            @click="toggleTheme" 
+            @mousedown.prevent
+          ></v-btn>
         </client-only>
 
-        <v-btn icon="mdi-restart" @click="resetGame" @mousedown.prevent></v-btn>
+        <v-btn 
+          icon="mdi-restart" 
+          @click="resetGame" 
+          @mousedown.prevent
+        ></v-btn>
       </div>
     </v-app-bar>
 
@@ -224,12 +329,12 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
         location="top"
         elevation="24"
         color="#212121"
-        :timeout="5000"
+        :timeout="6000"
         class="game-over-snackbar mini-box" 
       >
         <div class="d-flex align-center">
           <v-icon start color="white" size="24"class="me-4">mdi-information-outline</v-icon>
-          <span class="text-body-2">{{ currentHint }}</span>
+          <span class="text-body-2">{{ currentWordData.hint || 'Generating Hint...' }}</span>
         </div>
         
         <template v-slot:actions>
@@ -293,27 +398,71 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
     <v-snackbar 
       v-model="snackbar" 
       :location="gameOver ? 'center' : 'top'" 
-      :timeout="gameOver ? -1 : 1500" 
-      :color="gameOver ? '#212121' : 'grey-darken-3'"
+      :timeout="gameOver ? -1 : 5000" 
+      :color="gameOver ? '#121212' : 'grey-darken-3'"
       elevation="24"
       :class="['game-over-snackbar', { 'mini-box': !gameOver }]"
     >
       <div class="d-flex flex-column align-center pa-1">
-        <div :class="[gameOver ? 'text-h6 font-weight-bold' : 'text-body-2 font-weight-medium']" class="text-center">
+        <div :class="[gameOver ? 'text-h6 font-weight-bold' : 'text-body-2 font-weight-medium']" class="text-center mb-2">
           {{ snackbarMsg }}
+        </div>
+
+        <div v-if="showStats && (gameOver || stats.gamesPlayed > 0)" class="stats-container d-flex justify-space-around w-100 my-4">
+          <div class="stat-box">
+            <div class="text-h5 font-weight-bold">{{ stats.gamesPlayed }}</div>
+            <div class="text-caption">PLAYED</div>
+          </div>
+          <div class="stat-box">
+            <div class="text-h5 font-weight-bold text-green">{{ stats.wins }}</div>
+            <div class="text-caption">WINS</div>
+          </div>
+            <div class="stat-box text-center">
+            <div class="text-h5 font-weight-bold text-red">{{ stats.losses }}</div>
+            <div class="text-caption">LOSSES</div>
+          </div>
+          <div class="stat-box text-center">
+            <div class="text-h5 font-weight-bold">{{ stats.averageAttempts }}</div>
+            <div class="text-caption">AVG</div>
+          </div>
+        </div>
+
+        <div v-if="gameOver" class="text-center w-100 mt-2">
+          <div class="text-overline text-grey-lighten-1">The word was</div>
+          <div class="text-h4 font-weight-black text-green mb-2" style="letter-spacing: 2px;">
+            {{ solution }}
+          </div>
+          
+          <v-divider class="mx-10 mb-3" color="white"></v-divider>
+
+          <div class="text-body-2 px-6 mb-4 text-grey-lighten-1 italic">
+            {{ currentWordData.hint ? currentWordData.hint.replace(new RegExp(solution, 'gi'), solution) : 'Loading definition...' }}
+          </div>
         </div>
 
         <v-btn 
           v-if="gameOver" 
-          class="play-again-btn px-10 mt-4"
+          class="play-again-btn px-10 mt-2"
           variant="flat"
           rounded="xl"
           size="large"
           @click="resetGame"
         >
-          Play Again
+          Next Word
         </v-btn>
       </div>
+      <template v-slot:actions>
+        <v-btn
+          v-if="!gameOver"
+          class="play-again-btn mr-2" 
+          variant="flat"
+          rounded="xl"
+          size="small"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn> 
+      </template>
     </v-snackbar>
   </v-app>
 </template>
@@ -360,6 +509,8 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
 
 .tile-front, .tile-back {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
@@ -444,6 +595,15 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
   border-radius: 24px !important;
 }
 
+.text-green {
+  color: #4caf50 !important
+}
+
+.italic {
+  font-style: italic;
+  line-height: 1.4;
+}
+
 /* <><><><> Desktop Settings <><><><> */
 .keyboard-row {
   display: flex;
@@ -472,6 +632,10 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
   text-transform: uppercase;
 }
 
+.keyboard-container {
+  margin-bottom: 60px !important;
+}
+
 /* <><><><> Mobile Settings <><><><> */
 @media (max-width: 600px) {
   .keyboard-row {
@@ -481,7 +645,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
   }
 
   .keyboard-container {
-    margin-bottom: 20px !important;
+    margin-bottom: 45px !important;
     padding-bottom: env(safe-area-inset-bottom) !important;
   }
 
