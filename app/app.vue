@@ -175,7 +175,7 @@ const handleInput = (e) => {
   if (key === 'ENTER') {
     if (currentCol.value === 5) {
       const guessString = board.value[currentRow.value].map(cell => cell.letter).join('').toLowerCase()
-      const isAnswer = WORD_LIST.map(w => w.toLowerCase()).includes(guessString)
+      const isAnswer = WORD_LIST.map(w => (typeof w === 'string' ? w : w.word).toLowerCase()).includes(guessString)
       const isDictionaryWord = VALID_GUESSES.value.includes(guessString);
 
       if (isAnswer || isDictionaryWord) {

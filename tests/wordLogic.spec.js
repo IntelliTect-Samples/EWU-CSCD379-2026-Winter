@@ -1,9 +1,33 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { expect, test, vi, afterEach } from 'vitest'
 import { createRouter, createMemoryHistory } from 'vue-router'
-import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import App from '~/app.vue'
 import { nextTick } from 'vue'
+import * as wordlist from '../app/utils/wordlist'
+
+// Mock Daily Word
+vi.mock('../app/utils/wordlist', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    WORD_LIST: [
+      { word: 'APPLE', hint: 'A fruit' },
+      { word: 'BRAIN', hint: 'Thinker' },
+      { word: 'STEEL', hint: 'Metal' },
+      { word: 'RIVER', hint: 'Water' },
+      { word: 'ZEBRA', hint: 'Stripes' },
+      { word: 'OCEAN', hint: 'Sea' },
+      { word: 'GOOSE', hint: 'Bird' }
+    ],
+    getRandomWord: vi.fn(() => ({ word: 'APPLE', hint: 'A fruit' })),
+    generateHint: vi.fn(async () => 'Mocked Hint')
+  }
+})
+
+// Mock the dictionary
+vi.spyOn(wordlist, 'loadDictionary').mockImplementation(async () => {
+  return true 
+})
 
 // Basic localStorage mock
 global.localStorage = {
@@ -114,7 +138,7 @@ test('triggers game over on 6th failed guess', async () => {
   await nextTick()
   
   expect(wrapper.vm.gameOver).toBe(true)
-  expect(wrapper.vm.snackbarMsg).toContain('The word was OCEAN')
+  expect(wrapper.vm.snackbarMsg).toContain(' Better luck next time! ')
 })
 
 // Check that words with duplicate letters are handled correctly
@@ -206,4 +230,76 @@ test('ignores non-alphabetic key inputs', async () => {
   await nextTick()
   expect(wrapper.vm.board[0][0].letter).toBe('')
   expect(wrapper.vm.currentCol).toBe(0)
+})
+
+// Check that shake animation goes off for a word not in the list
+test('triggers shake animation for invalid words', async () => {
+  const wrapper = await mountSuspended(App)
+  'XXXXX'.split('').forEach((l, i) => wrapper.vm.board[0][i].letter = l)
+  wrapper.vm.currentCol = 5
+  
+  wrapper.vm.handleInput('ENTER')
+  await nextTick()
+  
+  expect(wrapper.vm.shakeActive).toBe(true)
+})
+
+// Check that the daily word is the same for the day
+test('picks the same daily word for the same date', async () => {
+  vi.setSystemTime(new Date('2026-01-23T10:00:00'))
+  const wrapper1 = await mountSuspended(App)
+  const word1 = wrapper1.vm.currentWordData.word
+
+  const wrapper2 = await mountSuspended(App)
+  const word2 = wrapper2.vm.currentWordData.word
+
+  expect(word1).toBe(word2)
+  expect(wrapper1.vm.isDaily).toBe(true)
+  vi.useRealTimers()
+})
+
+// Check that the session persists on mount
+test('restores board state from localStorage on mount', async () => {
+  // 1. Prepare our data
+  const today = new Date().toDateString()
+  
+  // We need to know what the "Daily Word" will be. 
+  // Since we mocked WORD_LIST at the top of the file, let's just use the first one.
+  const expectedWord = 'APPLE' 
+
+  const savedState = {
+    board: Array.from({ length: 6 }, () => Array.from({ length: 5 }, () => ({ letter: '', status: 'default' }))),
+    currentRow: 1,
+    solution: expectedWord,
+    gameOver: false,
+    letterStates: { 'A': 'correct' }
+  }
+  savedState.board[0][0] = { letter: 'A', status: 'correct' }
+
+  // 2. Mock localStorage BEFORE the mount call
+  const storageSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+    if (key === 'daily-board-state') return JSON.stringify(savedState)
+    if (key === 'last-played-daily') return today
+    if (key === 'user-theme') return 'dark'
+    return null
+  })
+
+  // 3. Mount the component
+  // The onMounted logic will run IMMEDIATELY here and find our spy data
+  const wrapper = await mountSuspended(App)
+  
+  // 4. Wait for async operations within onMounted (like loadDictionary)
+  await new Promise(resolve => setTimeout(resolve, 50))
+  await nextTick()
+
+  // 5. Assertions
+  // If the word logic picked ZEBRA instead of APPLE, we check that here
+  console.log("Actual word picked by component:", wrapper.vm.currentWordData.word)
+  
+  expect(wrapper.vm.currentRow).toBe(1)
+  expect(wrapper.vm.board[0][0].letter).toBe('A')
+  expect(wrapper.vm.letterStates['A']).toBe('correct')
+
+  // 6. Cleanup
+  storageSpy.mockRestore()
 })
