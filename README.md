@@ -1,1 +1,1 @@
-My version of a Wordle-like project that has light/dark mode, tile flipping, color coding, a small word bank with hints, and other features. Made using Vue, css, js/ts, and Nuxt. It can played [here](https://orange-pebble-094083d0f.2.azurestaticapps.net/)
+My version of a Wordle-like project that has light/dark mode, tile flipping, color coding, a small word bank with hints, and other features. Made using Vue, css, js/ts, and Nuxt. It can be played [here](https://orange-pebble-094083d0f.2.azurestaticapps.net/)
