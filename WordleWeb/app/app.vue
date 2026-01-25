@@ -1,7 +1,17 @@
 <template>
   <div class="wordle-container">
     <div class="top-right-buttons">
-      <button class="hint-btn" @click="handleHint">Hint</button>
+      <label class="hardmode-toggle">
+        <input type="checkbox" v-model="hardMode" /> Hard Mode
+      </label>
+      <button
+        class="hint-btn"
+        @click="handleHint"
+        :disabled="hardMode"
+        :class="{ disabled: hardMode }"
+      >
+        Hint
+      </button>
       <button class="rules-btn" @click="showRules = true">Rules</button>
     </div>
     <h1>Wordle</h1>
@@ -65,6 +75,7 @@ const guesses = ref<string[]>([]);
 const currentGuess = ref("");
 const errorMessage = ref("");
 const isPlayingDailyWord = ref(true);
+const hardMode = ref(false);
 const guessInputRef = ref<{ blur: () => void; shake: () => void } | null>(null);
 
 // Composables
@@ -122,6 +133,84 @@ const submitGuess = () => {
     guessInputRef.value?.shake();
     guessInputRef.value?.blur();
     return;
+  }
+
+  // Hardmode validation
+  if (hardMode.value && guesses.value.length > 0) {
+    const target = secretWord.value;
+    const targetArr = target.split("");
+
+    // Build constraints from all previous guesses
+    const mustBeAt: (string | null)[] = [null, null, null, null, null];
+    const mustInclude = new Set<string>();
+    const mustNotUse = new Set<string>();
+
+    for (const prevGuess of guesses.value) {
+      const prevArr = prevGuess.split("");
+      const used = Array(5).fill(false);
+
+      // Pass 1: find greens
+      for (let i = 0; i < 5; i++) {
+        if (prevArr[i] === targetArr[i]) {
+          mustBeAt[i] = prevArr[i] ?? null;
+          used[i] = true;
+        }
+      }
+
+      // Pass 2: find yellows and greys
+      for (let i = 0; i < 5; i++) {
+        if (prevArr[i] === targetArr[i]) continue;
+        let foundElsewhere = false;
+        for (let j = 0; j < 5; j++) {
+          if (!used[j] && prevArr[i] === targetArr[j]) {
+            foundElsewhere = true;
+            used[j] = true;
+            break;
+          }
+        }
+        const letter = prevArr[i];
+        if (letter) {
+          if (foundElsewhere) {
+            mustInclude.add(letter);
+          } else {
+            mustNotUse.add(letter);
+          }
+        }
+      }
+    }
+
+    // Check grey letters: guess must not contain any mustNotUse letters
+    for (const letter of mustNotUse) {
+      if (guess.includes(letter)) {
+        errorMessage.value = `Hard Mode: Cannot use letter "${letter.toUpperCase()}"`;
+        currentGuess.value = "";
+        guessInputRef.value?.shake();
+        guessInputRef.value?.blur();
+        return;
+      }
+    }
+
+    // Check yellow letters: guess must include all mustInclude letters
+    for (const letter of mustInclude) {
+      if (!guess.includes(letter)) {
+        errorMessage.value = `Hard Mode: Must use letter "${letter.toUpperCase()}"`;
+        currentGuess.value = "";
+        guessInputRef.value?.shake();
+        guessInputRef.value?.blur();
+        return;
+      }
+    }
+
+    // Check green letters: guess must have mustBeAt letters at exact positions
+    for (let i = 0; i < 5; i++) {
+      if (mustBeAt[i] && guess[i] !== mustBeAt[i]) {
+        errorMessage.value = `Hard Mode: Letter "${mustBeAt[i]!.toUpperCase()}" must be at position ${i + 1}`;
+        currentGuess.value = "";
+        guessInputRef.value?.shake();
+        guessInputRef.value?.blur();
+        return;
+      }
+    }
   }
 
   guesses.value.push(guess);
@@ -228,5 +317,24 @@ h1 {
 .hint-btn:hover,
 .rules-btn:hover {
   background-color: #d3d3d3;
+}
+
+.hardmode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+.hardmode-toggle input {
+  cursor: pointer;
+}
+
+.hint-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>

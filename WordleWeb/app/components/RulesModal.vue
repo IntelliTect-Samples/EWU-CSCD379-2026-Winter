@@ -21,6 +21,25 @@
           not in the word
         </li>
       </ul>
+
+      <h3>Hard Mode</h3>
+      <p class="hardmode-desc">
+        When Hard Mode is enabled, your guesses must follow these rules:
+      </p>
+      <ul class="hardmode-rules">
+        <li>
+          🚫 You <strong>cannot</strong> use any grey letters (letters not in
+          the word)
+        </li>
+        <li>
+          🟨 You <strong>must</strong> use all yellow letters in your guess
+        </li>
+        <li>
+          🟩 Green letters <strong>must</strong> stay in the same position
+        </li>
+        <li>💡 Hints are <strong>disabled</strong> in Hard Mode</li>
+      </ul>
+
       <button @click="$emit('close')">Close</button>
     </div>
   </div>
@@ -104,5 +123,29 @@ defineEmits<{
   line-height: 28px;
   color: #fff;
   font-weight: bold;
+}
+
+.modal h3 {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.hardmode-desc {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.hardmode-rules {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  text-align: left;
+}
+
+.hardmode-rules li {
+  margin-bottom: 6px;
+  font-size: 14px;
 }
 </style>
