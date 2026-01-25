@@ -33,7 +33,8 @@ jobs:
           action: upload
           skip_app_build: true
           app_location: wordle-app
-          output_location: "wordle-app/ .output/public"
+          output_location: "wordle-app/.output/public"
+
 
 
 
