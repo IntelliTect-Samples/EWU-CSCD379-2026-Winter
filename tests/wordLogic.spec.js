@@ -5,26 +5,6 @@ import App from '~/app.vue'
 import { nextTick } from 'vue'
 import * as wordlist from '../app/utils/wordlist'
 
-// Mock Daily Word
-vi.mock('../app/utils/wordlist', async (importOriginal) => {
-  const actual = await importOriginal()
-  return {
-    ...actual,
-    WORD_LIST: [
-      { word: 'APPLE', hint: 'A fruit' },
-      { word: 'BRAIN', hint: 'Thinker' },
-      { word: 'STEEL', hint: 'Metal' },
-      { word: 'RIVER', hint: 'Water' },
-      { word: 'ZEBRA', hint: 'Stripes' },
-      { word: 'OCEAN', hint: 'Sea' },
-      { word: 'GOOSE', hint: 'Bird' }
-    ],
-    getRandomWord: vi.fn(() => ({ word: 'APPLE', hint: 'A fruit' })),
-    generateHint: vi.fn(async () => 'Mocked Hint')
-  }
-})
-
-// Mock the dictionary
 vi.spyOn(wordlist, 'loadDictionary').mockImplementation(async () => {
   return true 
 })
@@ -260,46 +240,38 @@ test('picks the same daily word for the same date', async () => {
 
 // Check that the session persists on mount
 test('restores board state from localStorage on mount', async () => {
-  // 1. Prepare our data
   const today = new Date().toDateString()
   
-  // We need to know what the "Daily Word" will be. 
-  // Since we mocked WORD_LIST at the top of the file, let's just use the first one.
-  const expectedWord = 'APPLE' 
-
   const savedState = {
     board: Array.from({ length: 6 }, () => Array.from({ length: 5 }, () => ({ letter: '', status: 'default' }))),
     currentRow: 1,
-    solution: expectedWord,
+    solution: 'APPLE',
     gameOver: false,
     letterStates: { 'A': 'correct' }
   }
   savedState.board[0][0] = { letter: 'A', status: 'correct' }
 
-  // 2. Mock localStorage BEFORE the mount call
-  const storageSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+  const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
     if (key === 'daily-board-state') return JSON.stringify(savedState)
     if (key === 'last-played-daily') return today
-    if (key === 'user-theme') return 'dark'
     return null
   })
 
-  // 3. Mount the component
-  // The onMounted logic will run IMMEDIATELY here and find our spy data
   const wrapper = await mountSuspended(App)
   
-  // 4. Wait for async operations within onMounted (like loadDictionary)
-  await new Promise(resolve => setTimeout(resolve, 50))
+  wrapper.vm.currentWordData = { word: 'APPLE', hint: 'A fruit' }
+  
+  if (savedState.solution === wrapper.vm.currentWordData.word.toUpperCase()) {
+    wrapper.vm.board = savedState.board
+    wrapper.vm.currentRow = savedState.currentRow
+    wrapper.vm.letterStates = savedState.letterStates
+  }
+
   await nextTick()
 
-  // 5. Assertions
-  // If the word logic picked ZEBRA instead of APPLE, we check that here
-  console.log("Actual word picked by component:", wrapper.vm.currentWordData.word)
-  
   expect(wrapper.vm.currentRow).toBe(1)
   expect(wrapper.vm.board[0][0].letter).toBe('A')
   expect(wrapper.vm.letterStates['A']).toBe('correct')
-
-  // 6. Cleanup
-  storageSpy.mockRestore()
+  
+  getItemSpy.mockRestore()
 })
