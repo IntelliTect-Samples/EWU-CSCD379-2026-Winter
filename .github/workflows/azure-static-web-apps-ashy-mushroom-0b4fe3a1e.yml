@@ -10,13 +10,8 @@ jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
-
-    env:
-      SWA_RUNTIME_NODE_VERSION: "20"
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Use Node.js 20
         uses: actions/setup-node@v4
@@ -24,12 +19,12 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: wordle-app
         run: npm install
+        working-directory: wordle-app
 
       - name: Generate static site
-        working-directory: wordle-app
         run: npm run generate
+        working-directory: wordle-app
 
       - name: Upload to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
