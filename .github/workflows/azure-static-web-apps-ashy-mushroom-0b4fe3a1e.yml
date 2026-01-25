@@ -4,43 +4,38 @@ on:
   push:
     branches:
       - Assignment2
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - Assignment2
+  workflow_dispatch:
 
 jobs:
   build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-          lfs: false
-      - name: Build And Deploy
-        id: builddeploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_MUSHROOM_0B4FE3A1E }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
-          action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "wordle-app" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: ".output/public" # Built app content directory - optional
-          ###### End of Repository/Build Configurations ######
 
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
+    env:
+      SWA_RUNTIME_NODE_VERSION: "20"
+
     steps:
-      - name: Close Pull Request
-        id: closepullrequest
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: wordle-app
+        run: npm install
+
+      - name: Generate static site
+        working-directory: wordle-app
+        run: npm run generate
+
+      - name: Upload to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_MUSHROOM_0B4FE3A1E }}
-          action: "close"
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GREEN_MEADOW_06F41AE1E }}
+          action: upload
+          skip_app_build: true
+          app_location: wordle-app
+          output_location: .output/public
