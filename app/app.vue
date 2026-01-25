@@ -356,11 +356,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleInput))
           ></v-btn>
         </client-only>
 
-        <v-btn 
-          icon="mdi-restart" 
-          @click="resetGame" 
-          @mousedown.prevent
-        ></v-btn>
+        
       </div>
     </v-app-bar>
 
