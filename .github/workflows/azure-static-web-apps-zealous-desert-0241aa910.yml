@@ -19,6 +19,9 @@ jobs:
       - name: npm install
         run: npm i
         working-directory: ./WordleWeb
+      - name: run tests
+        run: npm test -- --run
+        working-directory: ./WordleWeb
       - name: generate
         run: npm run generate
         working-directory: ./WordleWeb
