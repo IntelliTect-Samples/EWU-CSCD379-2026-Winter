@@ -4,7 +4,7 @@ import type { TileState } from '~/utils/wordle'
 
 const props = defineProps<{
     guesses: string[]
-    stats: TileState[][]
+    states: TileState[][]
     shakeRow: number | null
 }>()
 
@@ -13,7 +13,7 @@ function guessAt(r : number) {
 }
 
 function statesAt(r: number): TileState[] {
-    return props.stats?.[r] ?? []
+    return props.states?.[r] ?? []
 }
 </script>
 
