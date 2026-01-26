@@ -84,9 +84,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeyDown))
     <div class="page">
     
     <header class="nyt-header">
-        <div class="hdr-left">☰</div>
 
-        <div class="hdr-title">WORDLE</div>
+        <div class="hdr-title">     WORDLE</div>
 
         <div class="hdr-right">
         <button class="hdr-icon" type="button" @click="game.giveHintNotInWord()">💡</button>
@@ -136,7 +135,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeyDown))
 .nyt-header {
     height: 52px;
     display: grid;
-    grid-template-columns: 56px 1fr 180px; /* ⬅️ a bit wider for 💡 */
+    grid-template-columns: 56px 1fr 180px;
     align-items: center;
     border-bottom: 1px solid var(--tile-border, #3a3a3c);
     padding: 0 12px;
