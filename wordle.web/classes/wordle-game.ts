@@ -77,17 +77,6 @@ export class WordleGame {
         return letters;
     }
 
-    public getColorForState(state: LetterState): string {
-        switch (state) {
-            case LetterState.Correct:
-                return "green";
-            case LetterState.Misplaced:
-                return "yellow";
-            default:
-                return "grey";
-        }
-    }
-
     public reset(): void {
         this.guesses = [];
         this.pickRandomTargetWord();
