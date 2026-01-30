@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Wordle.Api.Data;
 using Wordle.Api.Models;
 
 namespace Wordle.Api.Controllers
@@ -7,6 +9,40 @@ namespace Wordle.Api.Controllers
     [Route("[controller]")]
     public class WordleController : ControllerBase
     {
+        private readonly AppDbContext _context;
+        public WordleController(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        private static readonly Random Random = new Random();
+
+        [HttpGet("wordoftheday")]
+        public ActionResult<WordOfTheDayResponse> GetWordOfTheDay()
+        {
+            int wordIndex = Random.Next(FiveLetterWords.Length);
+            int insultIndex = Random.Next(Insults.Length);
+            
+            var response = new WordOfTheDayResponse
+            {
+                WordOfTheDay = FiveLetterWords[wordIndex],
+                Date = DateTime.UtcNow,
+                Insult = Insults[insultIndex]
+            };
+            
+            return Ok(response);
+        }
+
+        [HttpGet("randomword")]
+        public async Task<ActionResult<string>> GetRandomWord()
+        {
+            int count = await _context.Words.CountAsync();
+
+            int wordIndex = Random.Next(count);
+            Word word = await _context.Words.Skip(wordIndex).FirstAsync();
+            return Ok(word.Text);
+        }
+
         private static readonly string[] FiveLetterWords = 
         {
             "about", "above", "abuse", "actor", "acute", "admit", "adopt", "adult", "after", "again",
@@ -86,23 +122,5 @@ namespace Wordle.Api.Controllers
             "That's not even close to correct.",
             "You should probably give up now."
         };
-
-        private static readonly Random Random = new Random();
-
-        [HttpGet("wordoftheday")]
-        public ActionResult<WordOfTheDayResponse> GetWordOfTheDay()
-        {
-            int wordIndex = Random.Next(FiveLetterWords.Length);
-            int insultIndex = Random.Next(Insults.Length);
-            
-            var response = new WordOfTheDayResponse
-            {
-                WordOfTheDay = FiveLetterWords[wordIndex],
-                Date = DateTime.UtcNow,
-                Insult = Insults[insultIndex]
-            };
-            
-            return Ok(response);
-        }
     }
 }
