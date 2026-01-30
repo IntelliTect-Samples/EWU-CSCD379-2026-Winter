@@ -21,6 +21,8 @@ export const useGameState = () => {
       isDaily,
     };
     localStorage.setItem("wordleGameState", JSON.stringify(gameState));
+    // Also save the mode preference separately so it persists across days
+    localStorage.setItem("wordleGameMode", isDaily ? "daily" : "random");
   };
 
   const loadGameState = (): GameState | null => {
@@ -43,8 +45,16 @@ export const useGameState = () => {
     return null;
   };
 
+  const loadGameModePreference = (): boolean => {
+    if (typeof window === "undefined") return true;
+    const mode = localStorage.getItem("wordleGameMode");
+    // Returns true if daily mode, false if random mode
+    return mode !== "random";
+  };
+
   return {
     saveGameState,
     loadGameState,
+    loadGameModePreference,
   };
 };

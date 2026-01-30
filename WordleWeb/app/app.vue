@@ -81,7 +81,7 @@ const guessInputRef = ref<{ blur: () => void; shake: () => void } | null>(null);
 // Composables
 const { stats, winRatio, averageGuesses, loadStats, recordGameEnd } =
   useStats();
-const { saveGameState, loadGameState } = useGameState();
+const { saveGameState, loadGameState, loadGameModePreference } = useGameState();
 const { getKeyboardClass, getLetterClass } = useLetterClasses(
   guesses,
   secretWord,
@@ -106,13 +106,22 @@ const initGame = () => {
   const savedState = loadGameState();
 
   if (savedState) {
+    // Same day - restore full game state
     secretWord.value = savedState.secretWord;
     guesses.value = savedState.guesses;
     isPlayingDailyWord.value = savedState.isDaily ?? true;
   } else {
-    secretWord.value = getDailyWord();
+    // New day or no saved state - check the user's mode preference
+    const prefersDaily = loadGameModePreference();
+    isPlayingDailyWord.value = prefersDaily;
     guesses.value = [];
-    isPlayingDailyWord.value = true;
+
+    if (prefersDaily) {
+      secretWord.value = getDailyWord();
+    } else {
+      // User was playing random words, start a new random game
+      secretWord.value = getRandomWord();
+    }
   }
   currentGuess.value = "";
   errorMessage.value = "";
