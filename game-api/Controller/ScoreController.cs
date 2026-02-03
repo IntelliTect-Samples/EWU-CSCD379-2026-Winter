@@ -26,12 +26,9 @@ namespace game_api.Controller
         // POST: api/scores
         [HttpPost]
         public async Task<ActionResult<Score>> PostScore(Score score) {
-
             score.DateAchieved = DateTime.UtcNow;
-            
             _context.Scores.Add(score);
             await _context.SaveChangesAsync();
-
             return Ok(score);
         }
     }

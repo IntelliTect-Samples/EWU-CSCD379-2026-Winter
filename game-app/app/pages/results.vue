@@ -24,27 +24,25 @@
 </template>
 
 <script setup>
+const route = useRoute();
+const score = computed(() => route.query.score);
+const name = computed(() => route.query.name);
+const difficulty = computed(() => route.query.diff);
+
 const saveScore = async () => {
   const scoreData = {
-    playerName: route.query.name,
-    time: parseFloat(route.query.score),
-    difficulty: route.query.diff,
-    dateAchieved: new Date().toISOString()
+    PlayerName: String(name.value),
+    Time: parseFloat(score.value),
+    Difficulty: String(difficulty.value),
+    DateAchieved: new Date().toISOString()
   };
 
-  try {
-    // Call the api
-    const response = await $fetch('http://localhost:5143/api/score', {
-      method: 'POST',
-      body: scoreData
-    });
-
-    console.log('Score saved:', response);
-    alert("Score recorded on the C# Backend!");
-    navigateTo('/');
-  } catch (error) {
-    console.error('Submission failed:', error);
-    alert("Could not connect to API. Is it running on port 5143?");
-  }
+  await $fetch('http://localhost:5143/api/score', {
+    method: 'POST',
+    body: scoreData
+  });
+  
+  alert("Score Saved!");
+  navigateTo('/'); 
 };
 </script>

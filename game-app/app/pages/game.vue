@@ -25,6 +25,7 @@ const targetNumber = ref(1);
 const startTime = ref(null);
 
 const difficulty = route.query.diff || 'Medium';
+const playerName = route.query.name || 'Player';
 const gridClass = computed(() => `grid-${difficulty.toLowerCase()}`);
 
 // Config based on selection
@@ -36,24 +37,45 @@ const settings = {
 
 const setupGame = () => {
   const config = settings[difficulty];
+
+  if (!config) {
+    return;
+  }
+
   grid.value = Array.from({ length: config.size }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
   startTime.value = Date.now();
 
   // Reshuffle logic
   setInterval(() => {
-    grid.value = [...grid.value].sort(() => Math.random() - 0.5);
+
+    if (targetNumber.value <= config.size) {
+      grid.value = [...grid.value].sort(() => Math.random() - 0.5);
+    }
+
   }, config.shuffle);
 };
 
 const handleTileClick = (num) => {
-  if (num === targetNumber.value) {
-    targetNumber.value++;
-    if (targetNumber.value > settings[difficulty].size) {
+  const currentTarget = targetNumber.value;
+  const max = settings[difficulty].size;
+
+  console.log(`Clicked: ${num} | Target: ${currentTarget}`);
+
+  if (Number(num) === currentTarget) {
+    if (currentTarget === max) {
+      
       const finalTime = (Date.now() - startTime.value) / 1000;
+      
       navigateTo({
         path: '/results',
-        query: { ...route.query, score: finalTime.toFixed(2) }
+        query: { 
+          name: route.query.name, 
+          diff: route.query.diff, 
+          score: finalTime.toFixed(2) 
+        }
       });
+    } else {
+      targetNumber.value++;
     }
   }
 };
