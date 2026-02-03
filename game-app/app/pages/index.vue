@@ -1,5 +1,25 @@
 <template>
   <div class="lobby-wrapper">
+    <div class="topbar">
+      <div class="brand">Word Table</div>
+      <div class="menu-actions">
+        <button class="menu-btn" @click="toggleInstructions">How to play</button>
+        <div class="leaderboard-wrapper">
+          <button class="menu-btn" @click="showLeaderboard = !showLeaderboard">Leaderboard</button>
+          <div v-if="showLeaderboard" class="dropdown-leaderboard">
+            <h4>Top Scores</h4>
+            <ul>
+              <li v-for="(entry, i) in leaderboard" :key="i">
+                <strong>{{ entry.name }}</strong> — {{ entry.score }}s
+              </li>
+              <li v-if="leaderboard.length === 0" class="muted">(None here yet)</li>
+            </ul>
+          </div>
+        </div>
+        <button class="theme-toggle" @click="toggleTheme">Mode: {{ themeLabel }}</button>
+      </div>
+    </div>
+
     <div class="glass-card">
       <header>
         <h1 class="title">Word Table <span class="accent"></span></h1>
@@ -27,10 +47,13 @@
           </button>
         </div>
       </div>
+    </div>
 
-      <div class="leaderboard-card">
-        <h3>TOP SCORES</h3>
-        <p class="loading-text">(None here yet)</p>
+    <div v-if="showInstructions" class="instructions-modal" @click.self="showInstructions = false">
+      <div class="instructions-card">
+        <h3>How to play</h3>
+        <p>Click the numbers in ascending order as quickly as possible. Pick a difficulty to change grid size (3x3, 4x4, 5x5). The grid may reshuffle periodically — try to stay fast and accurate!</p>
+        <button class="close-btn" @click="showInstructions = false">Close</button>
       </div>
     </div>
   </div>
@@ -38,6 +61,23 @@
 
 <script setup>
 const playerName = ref('');
+
+// UI state
+const theme = ref('dark');
+const showInstructions = ref(false);
+const showLeaderboard = ref(false);
+const leaderboard = ref([]);
+
+const themeLabel = computed(() => theme.value === 'dark' ? 'Dark' : 'Light');
+
+const toggleTheme = () => {
+  theme.value = theme.value === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme.value);
+};
+
+const toggleInstructions = () => {
+  showInstructions.value = !showInstructions.value;
+};
 
 const startGame = (difficulty) => {
   if (!playerName.value.trim()) {
@@ -50,4 +90,8 @@ const startGame = (difficulty) => {
     query: { name: playerName.value, diff: difficulty }
   });
 };
+
+onMounted(() => {
+  document.documentElement.setAttribute('data-theme', theme.value);
+});
 </script>

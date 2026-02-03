@@ -1,1 +1,80 @@
-/* Placeholder for game page style */
+/* Game page styles: square responsive grid and tiles */
+
+.game-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 16px;
+}
+
+.game-header {
+	display: flex;
+	gap: 8px;
+	align-items: baseline;
+	margin-bottom: 12px;
+}
+
+.target-display {
+	font-weight: 600;
+	color: #444;
+}
+
+.target-number {
+	font-size: 1.25rem;
+	color: #1a73e8;
+}
+
+.schulte-grid {
+	display: grid;
+	gap: 10px;
+	width: min(640px, 92vw);
+	margin: 0 auto;
+}
+
+.grid-easy {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-medium {
+	grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-hard {
+	grid-template-columns: repeat(5, 1fr);
+}
+
+.number-tile {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	aspect-ratio: 1 / 1; /* keep each tile square */
+	display: grid;
+	place-items: center;
+	font-size: 1.25rem;
+	font-weight: 600;
+	background: linear-gradient(180deg,#ffffff,#f1f5f9);
+	border: 1px solid #d1d5db;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: transform .08s ease, box-shadow .08s ease, background .12s ease;
+}
+
+.number-tile:active {
+	transform: scale(.98);
+}
+
+.number-tile:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(26,115,232,0.18);
+}
+
+@media (max-width: 420px) {
+	.schulte-grid { gap: 8px; }
+	.number-tile { font-size: 1rem; border-radius: 6px; }
+}
+
+/* small visual tweak for completed/disabled numbers if needed */
+.number-tile[disabled], .number-tile.disabled {
+	opacity: .45;
+	cursor: default;
+}
