@@ -354,3 +354,6 @@ game-app/node_modules/
 game-app/.nuxt/
 game-app/.output/
 game-app/.env
+
+#DB
+*.db
