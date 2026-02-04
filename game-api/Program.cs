@@ -14,6 +14,7 @@ builder.Services.AddCors(options => {
 });
 
 builder.Services.AddDbContext<GameDBContext>(options => options.UseSqlite("Data Source=game.db"));
+builder.Services.AddScoped<IScoreService, ScoreService>();
 
 var app = builder.Build();
 
