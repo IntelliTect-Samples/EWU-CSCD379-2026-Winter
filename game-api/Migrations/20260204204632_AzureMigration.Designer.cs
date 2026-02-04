@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using game_api.Data;
 
@@ -11,9 +12,11 @@ using game_api.Data;
 namespace game_api.Migrations
 {
     [DbContext(typeof(GameDBContext))]
-    partial class GameDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260204204632_AzureMigration")]
+    partial class AzureMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

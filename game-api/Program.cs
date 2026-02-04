@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using game_api.Data;
+using game_api.Services;
+using System.Data.SqlTypes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +15,7 @@ builder.Services.AddCors(options => {
                         .AllowAnyHeader());
 });
 
-builder.Services.AddDbContext<GameDBContext>(options => options.UseSqlite("Data Source=game.db"));
+builder.Services.AddDbContext<GameDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions => sqlOptions.EnableRetryOnFailure()));
 builder.Services.AddScoped<IScoreService, ScoreService>();
 
 var app = builder.Build();
