@@ -1,7 +1,7 @@
 <template>
   <div class="lobby-wrapper">
     <div class="topbar">
-      <div class="brand">Word Table</div>
+      <div class="brand">GridSnap</div>
       <div class="menu-actions">
         <button class="menu-btn" @click="toggleInstructions">How to play</button>
         <div class="leaderboard-wrapper">
@@ -29,7 +29,7 @@
 
     <div class="glass-card">
       <header>
-        <h1 class="title">Word Table <span class="accent"></span></h1>
+        <h1 class="title">GridSnap </h1>
       </header>
 
       <div class="setup-section">
@@ -58,8 +58,16 @@
 
     <div v-if="showInstructions" class="instructions-modal" @click.self="showInstructions = false">
       <div class="instructions-card">
-        <h3>How to play</h3>
-        <p>Click the numbers in ascending order as quickly as possible. Pick a difficulty to change grid size (3x3, 4x4, 5x5). The grid may reshuffle periodically — try to stay fast and accurate!</p>
+        <h3>How to Play</h3>
+        <p>
+          <strong>Solo Mode:</strong> Click the numbers in ascending order (1 → 2 → 3 → ...). 
+          Choose a difficulty to change the grid size (3x3, 4x4, 5x5). 
+          The grid will reshuffle during the game, so stay fast and focused!
+        </p>
+        <p>
+          <strong>Duel Mode:</strong> Connect with another player and take turns finding the next number in the sequence. 
+          Each player has 5 seconds per turn. Click the wrong number or run out of time and you lose the match.
+        </p>
         <button class="close-btn" @click="showInstructions = false">Close</button>
       </div>
     </div>
@@ -80,7 +88,7 @@ const themeLabel = computed(() => theme.value === 'dark' ? 'Dark' : 'Light');
 // Fetch leaderboard from backend
 const fetchLeaderboard = async () => {
   try {
-    const data = await $fetch('http://localhost:5143/api/score');
+    const data = await $fetch('http://localhost:5143/api/Score');
     leaderboard.value = data.map(entry => ({
       name: entry.playerName,
       score: entry.time,

@@ -11,8 +11,8 @@ using game_api.Data;
 namespace game_api.Migrations
 {
     [DbContext(typeof(GameDBContext))]
-    [Migration("20260203212709_NewInitialCreate")]
-    partial class NewInitialCreate
+    [Migration("20260204060810_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

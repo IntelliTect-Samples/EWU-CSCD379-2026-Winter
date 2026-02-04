@@ -47,7 +47,7 @@
 	-webkit-appearance: none;
 	appearance: none;
 	width: 100%;
-	aspect-ratio: 1 / 1; /* keep each tile square */
+	aspect-ratio: 1 / 1; 
 	display: grid;
 	place-items: center;
 	font-size: 1.25rem;
@@ -73,7 +73,6 @@
 	.number-tile { font-size: 1rem; border-radius: 6px; }
 }
 
-/* small visual tweak for completed/disabled numbers if needed */
 .number-tile[disabled], .number-tile.disabled {
 	opacity: .45;
 	cursor: default;
