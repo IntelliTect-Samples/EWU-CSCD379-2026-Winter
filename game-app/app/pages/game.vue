@@ -6,14 +6,15 @@
       <button class="quit-btn" @click="showQuitConfirm = true">Quit Game</button>
     </div>
 
-    <div class="schulte-grid" :class="gridClass">
+    <div class="schulte-grid" :class="[gridClass, { reshuffle: reshuffling }]">
       <button 
-        v-for="num in grid" 
-        :key="num" 
+        v-for="tile in grid" 
+        :key="tile.id" 
         class="number-tile"
-        @click="handleTileClick(num)"
+        :class="tile.state"
+        @click="handleTileClick(tile)"
       >
-        {{ num }}
+        {{ tile.number }}
       </button>
     </div>
 
@@ -36,40 +37,62 @@ const targetNumber = ref(1);
 const startTime = ref(null);
 const showQuitConfirm = ref(false);
 const shuffleInterval = ref(null);
+const reshuffling = ref(false);
 
 const difficulty = route.query.diff || 'Medium';
 const playerName = route.query.name || 'Player';
 const gridClass = computed(() => `grid-${difficulty.toLowerCase()}`);
 
-// Config based on selection
+const correctSound = new Audio('/sounds/correct.mp3');
+const wrongSound = new Audio('/sounds/wrong.mp3');
+
+const playCorrect = () => {
+  correctSound.currentTime = 0;
+  correctSound.play();
+};
+
+const playWrong = () => {
+  wrongSound.currentTime = 0;
+  wrongSound.play();
+};
+
 const settings = {
   Easy: { size: 9, shuffle: 6000 },
   Medium: { size: 16, shuffle: 5000 },
   Hard: { size: 25, shuffle: 4000 }
 };
 
+const shuffleArray = (arr) => {
+  return [...arr].sort(() => Math.random() - 0.5);
+};
+
 const setupGame = () => {
   const config = settings[difficulty];
+  if (!config) return;
 
-  if (!config) {
-    return;
-  }
+  grid.value = shuffleArray(
+    Array.from({ length: config.size }, (_, i) => ({
+      id: i + 1,
+      number: i + 1,
+      state: ''
+    }))
+  );
 
-  grid.value = Array.from({ length: config.size }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
   startTime.value = Date.now();
 
-  // Reshuffle logic (store the interval so we can clear it later)
   shuffleInterval.value = setInterval(() => {
-
     if (targetNumber.value <= config.size) {
-      grid.value = [...grid.value].sort(() => Math.random() - 0.5);
-    }
+      reshuffling.value = true;
+      grid.value = shuffleArray(grid.value);
 
+      setTimeout(() => {
+        reshuffling.value = false;
+      }, 300); // fast visual only
+    }
   }, config.shuffle);
 };
 
 const confirmQuit = () => {
-  // Stop automatic reshuffles and return to lobby
   if (shuffleInterval.value) {
     clearInterval(shuffleInterval.value);
     shuffleInterval.value = null;
@@ -79,32 +102,47 @@ const confirmQuit = () => {
   navigateTo({ path: '/' });
 };
 
-const handleTileClick = (num) => {
+const handleTileClick = (tile) => {
   const currentTarget = targetNumber.value;
   const max = settings[difficulty].size;
 
-  console.log(`Clicked: ${num} | Target: ${currentTarget}`);
+  if (tile.number === currentTarget) {
+    playCorrect();
+    tile.state = 'correct';
 
-  if (Number(num) === currentTarget) {
+    setTimeout(() => {
+      tile.state = '';
+    }, 200);
+
     if (currentTarget === max) {
-      
       const finalTime = (Date.now() - startTime.value) / 1000;
-      
-      navigateTo({
-        path: '/results',
-        query: { 
-          name: route.query.name, 
-          diff: route.query.diff, 
-          score: finalTime.toFixed(2) 
-        }
-      });
+
+      setTimeout(() => {
+        navigateTo({
+          path: '/results',
+          query: {
+            name: route.query.name,
+            diff: route.query.diff,
+            score: finalTime.toFixed(2)
+          }
+        });
+      }, 200);
     } else {
       targetNumber.value++;
     }
+  } else {
+    playWrong();
+    tile.state = 'wrong';
+
+    setTimeout(() => {
+      tile.state = '';
+    }, 200);
   }
 };
 
+
 onMounted(setupGame);
+
 onUnmounted(() => {
   if (shuffleInterval.value) {
     clearInterval(shuffleInterval.value);
@@ -112,33 +150,3 @@ onUnmounted(() => {
   }
 });
 </script>
-
-<style scoped>
-.quit-btn {
-  margin-right: 12px;
-  background: #ff5252;
-  color: #fff;
-  border: none;
-  padding: 6px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.confirm-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(70, 65, 65, 0.45);
-}
-.confirm-box {
-  background: #65696d;
-  padding: 18px;
-  border-radius: 8px;
-  min-width: 260px;
-  text-align: center;
-}
-.confirm-actions { display:flex; justify-content:space-around; margin-top:12px; }
-.confirm-yes { background:#4caf50; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
-.confirm-no { background:#e0e0e0; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
-</style>
