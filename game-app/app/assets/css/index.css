@@ -1,1 +1,45 @@
-/* Placeholder for index page style */
+/* Leaderboard Entry Styling */
+.leaderboard-wrapper ul {
+  padding: 0;
+  margin: 10px 0 0 0;
+  list-style: none;
+}
+
+.leader-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 4px 0;
+}
+
+/* The Label/Chip Styling */
+.fake-chip {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-right: 12px;
+  color: white;
+  min-width: 65px;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Difficulty Colors */
+.fake-chip.easy { background-color: #43a047; }
+.fake-chip.medium { background-color: #fb8c00; }
+.fake-chip.hard { background-color: #e53935; }
+
+/* Text and Score Styling */
+.leader-text {
+  font-size: 0.95rem;
+  color: var(--text-color, #ffffff);
+}
+
+.leader-score {
+  opacity: 0.7;
+  font-size: 0.85rem;
+  margin-left: 6px;
+}

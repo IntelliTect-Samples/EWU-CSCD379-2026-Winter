@@ -8,4 +8,12 @@ export default defineNuxtConfig({
     '@/assets/css/index.css',
     '@/assets/css/results.css',
   ],
+  build: {
+    transpile: ['vuetify'],
+  },
+  vite: {
+    define: {
+      'process.env.DEBUG': 'false',
+    },
+  },
 })

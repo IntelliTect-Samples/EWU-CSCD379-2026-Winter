@@ -9,8 +9,15 @@
           <div v-if="showLeaderboard" class="dropdown-leaderboard">
             <h4>Top Scores</h4>
             <ul>
-              <li v-for="(entry, i) in leaderboard" :key="i">
-                <strong>{{ entry.name }}</strong> — {{ entry.score }}s
+              <li v-for="(entry, i) in leaderboard" :key="i" class="leader-row">
+                <span :class="['fake-chip', entry.diff.toLowerCase()]">
+                  {{ entry.diff }}
+                </span>
+                
+                <span class="leader-text">
+                  <strong>{{ entry.name }}</strong> 
+                  <span class="leader-score">— {{ entry.score }}s</span>
+                </span>
               </li>
               <li v-if="leaderboard.length === 0" class="muted">(None here yet)</li>
             </ul>
@@ -76,8 +83,15 @@ const fetchLeaderboard = async () => {
     const data = await $fetch('http://localhost:5143/api/score');
     leaderboard.value = data.map(entry => ({
       name: entry.playerName,
-      score: entry.time
-    })).sort((a, b) => a.score - b.score).slice(0, 10);
+      score: entry.time,
+      diff: entry.difficulty
+    })).sort((a, b) => {
+      const diffOrder = { 'Hard': 1, 'Medium': 2, 'Easy': 3 };
+      if (diffOrder[a.diff] !== diffOrder[b.diff]) {
+        return diffOrder[a.diff] - diffOrder[b.diff];
+      }
+      return a.score - b.score;
+    }).slice(0, 10);
       
   } catch (error) {
     console.error('Failed to fetch leaderboard:', error);
@@ -104,6 +118,15 @@ const startGame = (difficulty) => {
     path: '/game',
     query: { name: playerName.value, diff: difficulty }
   });
+};
+
+const getDiffColor = (diff) => {
+  switch (diff) {
+    case 'Hard': return 'red-darken-2';
+    case 'Medium': return 'orange-darken-1';
+    case 'Easy': return 'green-darken-1';
+    default: return 'grey';
+  }
 };
 
 onMounted(() => {
