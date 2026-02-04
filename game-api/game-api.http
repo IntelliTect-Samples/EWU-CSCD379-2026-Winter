@@ -1,0 +1,15 @@
+@game_api_HostAddress = http://localhost:5143
+
+### Get the Leaderboard (GET)
+GET {{game_api_HostAddress}}/api/score
+Accept: application/json
+
+### Submit a New Score (POST)
+POST {{game_api_HostAddress}}/api/score
+Content-Type: application/json
+
+{
+  "playerName": "Bob",
+  "time": 42.5,
+  "difficulty": "Hard"
+}

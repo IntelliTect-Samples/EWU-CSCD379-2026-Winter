@@ -70,6 +70,21 @@ const leaderboard = ref([]);
 
 const themeLabel = computed(() => theme.value === 'dark' ? 'Dark' : 'Light');
 
+// Fetch leaderboard from backend
+const fetchLeaderboard = async () => {
+  try {
+    const data = await $fetch('http://localhost:5143/api/score');
+    leaderboard.value = data.map(entry => ({
+      name: entry.playerName,
+      score: entry.time
+    })).sort((a, b) => a.score - b.score).slice(0, 10);
+      
+  } catch (error) {
+    console.error('Failed to fetch leaderboard:', error);
+  }
+};
+
+// UI Theme toggle
 const toggleTheme = () => {
   theme.value = theme.value === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', theme.value);
@@ -93,5 +108,6 @@ const startGame = (difficulty) => {
 
 onMounted(() => {
   document.documentElement.setAttribute('data-theme', theme.value);
+  fetchLeaderboard();
 });
 </script>
