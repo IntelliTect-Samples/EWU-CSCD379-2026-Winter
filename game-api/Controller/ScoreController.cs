@@ -1,35 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using game_api.Model;
-using game_api.Data;
+using game_api.Services;
 
-namespace game_api.Controller
-{
+namespace game_api.Controller {
     [ApiController]
     [Route("api/[controller]")]
     public class ScoreController : ControllerBase {
-        
-        private readonly GameDBContext _context;
-        public ScoreController(GameDBContext context)
-        {
-            _context = context;
+        private readonly IScoreService _scoreService;
+
+        public ScoreController(IScoreService scoreService) {
+            _scoreService = scoreService;
         }
 
-        // GET: api/scores
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Score>>> GetScores() {
-            return await _context.Scores
-                .OrderByDescending(s => s.DateAchieved)
-                .ToListAsync();
+            var scores = await _scoreService.GetAllScoresAsync();
+            return Ok(scores);
         }
 
-        // POST: api/scores
         [HttpPost]
         public async Task<ActionResult<Score>> PostScore(Score score) {
-            score.DateAchieved = DateTime.UtcNow;
-            _context.Scores.Add(score);
-            await _context.SaveChangesAsync();
-            return Ok(score);
+            var createdScore = await _scoreService.AddScoreAsync(score);
+            return Ok(createdScore);
         }
     }
 }
