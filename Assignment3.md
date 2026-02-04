@@ -31,10 +31,10 @@ Develop a game that doesn't already exist using your abilities augmented with AI
 
 **1. Create a client-side Nuxt game** ❌✅
 
-- Is unique and not searchable on the internet ❌✅
-- Has at least 3 pages that require navigation go get between ❌✅
+- Is unique and not searchable on the internet ✅
+- Has at least 3 pages that require navigation go get between ✅
 - Clear start, middle, and end (win/loss) ❌✅
-- Some sort of strategy or skill is involved and is not just random ❌✅
+- Some sort of strategy or skill is involved and is not just random ✅
 - Works on desktop and mobile ❌✅
 - Has some need for a server side service ❌✅
 - Needs a custom favicon ❌✅
@@ -42,12 +42,12 @@ Develop a game that doesn't already exist using your abilities augmented with AI
 
 **2. Create a server-side API for the game** ❌✅
 
-- Set up CORS (Cross Origin Resource Sharing) ❌✅
-- At least one GET endpoint that returns an object ❌✅
-- At least one POST endpoint that accepts an object and returns as object ❌✅
-- Data from the POST should be stored to the database using Entity Framework ❌✅
-- Data for the GET should be pulled from the database ❌✅
-- All API should be async ❌✅
+- Set up CORS (Cross Origin Resource Sharing) ✅
+- At least one GET endpoint that returns an object ✅
+- At least one POST endpoint that accepts an object and returns as object ✅
+- Data from the POST should be stored to the database using Entity Framework ✅
+- Data for the GET should be pulled from the database ✅
+- All API should be async ✅
 
 **3. Deployment** ❌✅
 
