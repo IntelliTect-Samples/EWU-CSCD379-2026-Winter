@@ -65,22 +65,24 @@ body{
 }
 
 .modern-input{
-	width:100%;
+	width:50%;
 	padding:12px 14px;
 	border-radius:10px;
 	border:1px solid rgba(255,255,255,0.06);
 	background: rgba(255,255,255,0.02);
 	color: #e6eef8;
 	font-size:1rem;
-	margin-bottom:14px;
+	display: block;
+	margin: 0 auto 17px auto;
 }
 
 .modern-input::placeholder{ color: var(--muted); }
 
 .difficulty-grid{
 	display:flex;
-	gap:12px;
+	gap:15px;
 	align-items:center;
+	justify-content: center;
 }
 
 .diff-btn{

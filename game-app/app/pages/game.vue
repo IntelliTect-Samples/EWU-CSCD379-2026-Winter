@@ -1,8 +1,14 @@
 <template>
   <div class="game-container">
     <div class="game-header">
-      <span class="target-display">Next Number: </span>
-      <span class="target-number">{{ targetNumber }}</span>
+      <span v-if="!isDuel">
+        Next Number: <strong>{{ targetNumber }}</strong>
+      </span>
+
+      <span v-else>
+        Player {{ currentPlayer }} • Next: {{ targetNumber }} • Time: {{ turnTime }}s
+      </span>
+
       <button class="quit-btn" @click="showQuitConfirm = true">Quit Game</button>
     </div>
 
@@ -12,9 +18,9 @@
         :key="tile.id" 
         class="number-tile"
         :class="tile.state"
-        @click="handleTileClick(tile)"
+        @click="isDuel ? handleDuelClick(tile) : handleTileClick(tile)"
       >
-        {{ tile.number }}
+        {{ tile.display }}
       </button>
     </div>
 
@@ -39,12 +45,28 @@ const showQuitConfirm = ref(false);
 const shuffleInterval = ref(null);
 const reshuffling = ref(false);
 
-const difficulty = route.query.diff || 'Medium';
+const difficulty = computed(() =>
+  isDuel.value ? null : route.query.diff || 'Medium'
+);
+
 const playerName = route.query.name || 'Player';
-const gridClass = computed(() => `grid-${difficulty.toLowerCase()}`);
+const gridClass = computed(() =>
+  isDuel.value ? 'grid-duel' : `grid-${difficulty.value.toLowerCase()}`
+);
+
 
 const correctSound = new Audio('/sounds/correct.mp3');
 const wrongSound = new Audio('/sounds/wrong.mp3');
+
+const currentPlayer = ref(1) // 1 or 2
+const turnTime = ref(5)
+const turnTimer = ref(null)
+const gameOver = ref(false)
+
+const mode = route.query.mode || 'solo';
+const isDuel = computed(() => mode === 'duel');
+
+
 
 const playCorrect = () => {
   correctSound.currentTime = 0;
@@ -59,37 +81,74 @@ const playWrong = () => {
 const settings = {
   Easy: { size: 9, shuffle: 6000 },
   Medium: { size: 16, shuffle: 5000 },
-  Hard: { size: 25, shuffle: 4000 }
+  Hard: { size: 25, shuffle: 10000 }
 };
 
 const shuffleArray = (arr) => {
   return [...arr].sort(() => Math.random() - 0.5);
 };
 
+const toRoman = (num) => {
+  const romanMap = {
+    1: 'I',
+    2: 'II',
+    3: 'III',
+    4: 'IV',
+    5: 'V',
+    6: 'VI',
+    7: 'VII',
+    8: 'VIII',
+    9: 'IX',
+    10: 'X',
+    11: 'XI',
+    12: 'XII',
+    13: 'XIII',
+    14: 'XIV',
+    15: 'XV',
+    16: 'XVI'
+  }
+  return romanMap[num]
+}
+
+
+const toBinary = (num) => num.toString(2).padStart(6, '0');
+
 const setupGame = () => {
-  const config = settings[difficulty];
+  if (isDuel.value) return;
+  const config = settings[difficulty.value];
   if (!config) return;
 
   grid.value = shuffleArray(
-    Array.from({ length: config.size }, (_, i) => ({
-      id: i + 1,
-      number: i + 1,
+  Array.from({ length: config.size }, (_, i) => {
+    const value = i + 1
+    let display = value
+
+    if (difficulty.value === 'Medium') display = toRoman(value)
+    if (difficulty.value === 'Hard') display = toBinary(value)
+
+    return {
+      id: value,
+      number: value,
+      display,
       state: ''
-    }))
-  );
+    }
+  })
+);
 
   startTime.value = Date.now();
+  targetNumber.value = 1;
+  if (!isDuel.value) {
+    shuffleInterval.value = setInterval(() => {
+      if (targetNumber.value <= config.size) {
+        reshuffling.value = true;
+        grid.value = shuffleArray(grid.value);
 
-  shuffleInterval.value = setInterval(() => {
-    if (targetNumber.value <= config.size) {
-      reshuffling.value = true;
-      grid.value = shuffleArray(grid.value);
-
-      setTimeout(() => {
-        reshuffling.value = false;
-      }, 300); // fast visual only
-    }
-  }, config.shuffle);
+        setTimeout(() => {
+          reshuffling.value = false;
+        }, 300);
+      }
+    }, config.shuffle);
+  }
 };
 
 const confirmQuit = () => {
@@ -97,14 +156,17 @@ const confirmQuit = () => {
     clearInterval(shuffleInterval.value);
     shuffleInterval.value = null;
   }
-
+  if (turnTimer.value) {
+    clearInterval(turnTimer.value);
+    turnTimer.value = null;
+  }
   showQuitConfirm.value = false;
   navigateTo({ path: '/' });
 };
 
 const handleTileClick = (tile) => {
   const currentTarget = targetNumber.value;
-  const max = settings[difficulty].size;
+  const max = settings[difficulty.value].size;
 
   if (tile.number === currentTarget) {
     playCorrect();
@@ -140,13 +202,82 @@ const handleTileClick = (tile) => {
   }
 };
 
+const setupDuelGame = () => {
+  grid.value = shuffleArray(
+    Array.from({ length: 100 }, (_, i) => ({
+      id: i + 1,
+      number: i + 1,
+      display: i + 1,
+      state: ''
+    }))
+  )
 
-onMounted(setupGame);
+  targetNumber.value = 1
+  currentPlayer.value = 1
+  gameOver.value = false;
+  startTurnTimer()
+}
+const startTurnTimer = () => {
+  turnTime.value = 10
 
-onUnmounted(() => {
-  if (shuffleInterval.value) {
-    clearInterval(shuffleInterval.value);
-    shuffleInterval.value = null;
+  clearInterval(turnTimer.value)
+  turnTimer.value = setInterval(() => {
+    turnTime.value--
+
+    if (turnTime.value <= 0) {
+      endGame(`Player ${currentPlayer.value} ran out of time`)
+    }
+  }, 1000)
+}
+
+const handleDuelClick = (tile) => {
+  if (gameOver.value) return
+
+  if (tile.number === targetNumber.value) {
+    tile.state = 'correct'
+    targetNumber.value++
+
+    switchPlayer()
+  } else {
+    tile.state = 'wrong'
+    endGame(`Player ${currentPlayer.value} clicked wrong`)
+  }
+}
+const switchPlayer = () => {
+  currentPlayer.value = currentPlayer.value === 1 ? 2 : 1
+  startTurnTimer()
+}
+
+const endGame = (reason) => {
+  gameOver.value = true
+  clearInterval(turnTimer.value)
+
+  const winner = currentPlayer.value === 1 ? 2 : 1
+  
+  setTimeout(() => {
+    navigateTo({
+      path: '/results',
+      query: {
+        name: `Player ${winner}`,
+        diff: 'Duel',
+        score: `Player ${winner} won - ${reason}`
+      }
+    });
+  }, 500);
+}
+
+onMounted(() => {
+  if (isDuel.value) {
+    setupDuelGame();
+  } else {
+    setupGame();
   }
 });
+
+onUnmounted(() => {
+  clearInterval(shuffleInterval.value)
+  clearInterval(turnTimer.value)
+})
+
+
 </script>

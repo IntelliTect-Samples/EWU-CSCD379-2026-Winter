@@ -43,3 +43,34 @@
   font-size: 0.85rem;
   margin-left: 6px;
 }
+
+.duel-section {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.duel-btn {
+  width: 50%;
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0713f0, #2691e3);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.duel-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(106, 90, 205, 0.35);
+}
+
+.duel-desc {
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-top: 4px;
+}

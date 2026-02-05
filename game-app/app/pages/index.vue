@@ -53,6 +53,12 @@
             <span class="desc">5x5 Grid</span>
           </button>
         </div>
+        <div class="duel-section">
+          <button @click="startDuel" class="duel-btn">
+            ⚔️ Duel Mode
+            <span class="duel-desc">Local 2-Player · 10×10 Grid</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -60,13 +66,35 @@
       <div class="instructions-card">
         <h3>How to Play</h3>
         <p>
-          <strong>Solo Mode:</strong> Click the numbers in ascending order (1 → 2 → 3 → ...). 
-          Choose a difficulty to change the grid size (3x3, 4x4, 5x5). 
-          The grid will reshuffle during the game, so stay fast and focused!
+          Click the tiles in ascending order as quickly as possible. 
+          The grid may reshuffle during the game, so stay alert and adapt fast.
         </p>
         <p>
-          <strong>Duel Mode:</strong> Connect with another player and take turns finding the next number in the sequence. 
-          Each player has 5 seconds per turn. Click the wrong number or run out of time and you lose the match.
+          <strong>Solo Mode:</strong> Race against the clock to complete the grid.
+        </p>
+        <p>
+          <strong>Easy:</strong> Numbers displayed normally in a 3×3 grid. 
+          Focus on speed and accuracy.
+        </p>
+        <p>
+          <strong>Medium:</strong> Numbers displayed as <em>Roman numerals</em> in a 4×4 grid. 
+          Convert symbols to numeric order while the grid reshuffles.
+        </p>
+        <p>
+          <strong>Hard:</strong> Numbers displayed in <em>binary</em> in a 5×5 grid. 
+          Test your number-system knowledge, pattern recognition, and reaction time.
+        </p>
+        <hr />
+        <p>
+          <strong>Duel Mode:</strong> Two players compete head-to-head using the same grid.
+        </p>
+        <p>
+          Players take turns clicking the next correct number in the sequence.
+          Each player has <strong>10 seconds per turn</strong>.
+        </p>
+        <p>
+          Clicking the wrong tile or running out of time immediately ends the match.
+          The remaining player wins.
         </p>
         <button class="close-btn" @click="showInstructions = false">Close</button>
       </div>
@@ -138,6 +166,21 @@ const getDiffColor = (diff) => {
 };
 
 const isLoaded = ref(false);
+
+const startDuel = () => {
+  if (!playerName.value.trim()) {
+    alert("Please enter a name to begin.");
+    return;
+  }
+
+  navigateTo({
+    path: '/game',
+    query: {
+      name: playerName.value,
+      mode: 'duel'
+    }
+  });
+};
 
 onMounted(async() => {
   if (isLoaded.value) return;
