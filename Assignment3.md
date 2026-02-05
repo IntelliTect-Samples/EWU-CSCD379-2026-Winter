@@ -33,12 +33,12 @@ Develop a game that doesn't already exist using your abilities augmented with AI
 
 - Is unique and not searchable on the internet ✅
 - Has at least 3 pages that require navigation go get between ✅
-- Clear start, middle, and end (win/loss) ❌✅
+- Clear start, middle, and end (win/loss) ✅
 - Some sort of strategy or skill is involved and is not just random ✅
 - Works on desktop and mobile ❌✅
 - Has some need for a server side service ❌✅
-- Needs a custom favicon ❌✅
-- It should look good and feel like polished software ❌✅
+- Needs a custom favicon ✅
+- It should look good and feel like polished software ✅
 
 **2. Create a server-side API for the game** ❌✅
 
@@ -51,14 +51,14 @@ Develop a game that doesn't already exist using your abilities augmented with AI
 
 **3. Deployment** ❌✅
 
-- The static web app needs to be deployed as a Azure Static App ❌✅
-- The API should be deployed to an Azure App Service ❌✅
-- There should be two GitHub Actions for deployment. One for the client web app and one for the API ❌✅
-- The logic for the API should be implemented as a service ❌✅
-- The database should be deployed to an Azure SQL database ❌✅
-  - You can either use Azure auth or SQL auth ❌✅
-  - Make sure to set network permissions correctly ❌✅
-- Unit Tests should run on build ❌✅
+- The static web app needs to be deployed as a Azure Static App ✅
+- The API should be deployed to an Azure App Service ✅
+- There should be two GitHub Actions for deployment. One for the client web app and one for the API ✅
+- The logic for the API should be implemented as a service ✅
+- The database should be deployed to an Azure SQL database ✅
+  - You can either use Azure auth or SQL auth ✅
+  - Make sure to set network permissions correctly ✅
+- Unit Tests should run on build ✅
 
 **4. Unit testing** ❌✅
 
@@ -68,6 +68,6 @@ Develop a game that doesn't already exist using your abilities augmented with AI
 
 ## Extra Credit
 
-- Add cool animations ❌✅
+- Add cool animations ✅
 - Create a hip logo (3) ❌✅
 - Have several people play the game and provide a place where people can put testimonials ❌✅
