@@ -40,7 +40,7 @@ const saveScore = async () => {
     DateAchieved: new Date().toISOString()
   }
 
-  await $fetch('http://localhost:5143/api/score', {
+  await $fetch('https://grid-snap-api-a7c2b6b9dygdc3gt.eastus2-01.azurewebsites.net/api/score', {
     method: 'POST',
     body: scoreData
   })
