@@ -27,4 +27,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "game-app"
-          output_location: "./output/public"
+          output_location: "output/public"
