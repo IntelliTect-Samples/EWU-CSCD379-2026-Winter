@@ -20,12 +20,6 @@ jobs:
           npm install
           npm run generate
           npm run test
-      - name: Debug Folder Structure
-        run: |
-          cd game-app
-          npm run build
-          echo "--- Content of .output ---"
-          ls -R .output
       - name: Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -33,5 +27,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "game-app"
-          output_location: ".output/public"
-          api_location: ""
+          output_location: "./output/public"
