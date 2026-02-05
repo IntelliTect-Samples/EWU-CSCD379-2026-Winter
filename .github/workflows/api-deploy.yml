@@ -1,0 +1,36 @@
+name: API DEPLOY
+
+on:
+  push:
+    branches: [ Assignment3 ]
+    paths: [ 'game-api/**' ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x' 
+
+      - name: Restore dependencies
+        run: dotnet restore game-api/
+
+      - name: Build
+        run: dotnet build game-api/game-api.csproj --configuration Release
+
+      - name: Test
+        run: dotnet test game-api/tests/tests.csproj --configuration Release
+
+      - name: Publish
+        run: dotnet publish game-api/game-api.csproj -c Release -o ./publish
+
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'grid-snap-api'
+          publish-profile: ${{ secrets.AZURE_API_PUBLISH_PROFILE }}
+          package: ./publish
