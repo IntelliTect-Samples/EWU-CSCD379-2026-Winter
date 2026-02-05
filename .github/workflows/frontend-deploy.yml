@@ -28,3 +28,4 @@ jobs:
           action: "upload"
           app_location: "game-app"
           output_location: ".output/public"
+          api_location: ""
