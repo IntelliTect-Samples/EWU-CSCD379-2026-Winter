@@ -8,7 +8,6 @@ describe('Leaderboard Setup Test', () => {
     expect(isSetupCorrect).toBe(true)
   })
 
-  // Test comment
   it('sorts difficulty correctly (Hard > Medium > Easy)', () => {
     const diffOrder: Record<string, number> = { 'Hard': 1, 'Medium': 2, 'Easy': 3 };
     const mockData = [
