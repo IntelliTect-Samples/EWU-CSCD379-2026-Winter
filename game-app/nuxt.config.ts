@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     preset: 'azure-swa'
   },
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   css: [
     '@/assets/css/main.css',
     '@/assets/css/game.css',
