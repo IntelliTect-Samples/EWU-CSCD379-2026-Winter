@@ -1,7 +1,7 @@
 {
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/_nuxt/**", "/sounds/**", "/*.{js,css,png,jpg,ico}"]
+    "exclude": ["/_nuxt/**", "/sounds/**", "/*.js", "/*.css"]
   },
   "mimeTypes": {
     ".js": "application/javascript",
