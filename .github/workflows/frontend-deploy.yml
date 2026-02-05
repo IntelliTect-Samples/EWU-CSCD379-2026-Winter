@@ -1,0 +1,25 @@
+name: Manual Azure SWA Deploy
+
+on:
+  push:
+    branches: [ Assignment3 ]
+    paths: [ 'game-app/**' ]
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Tests
+        run: |
+          cd game-app
+          npm install
+          npm run test
+      - name: Build And Deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRID_SNAP }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "/game-app"
+          output_location: ".output/public"
