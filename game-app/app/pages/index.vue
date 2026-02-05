@@ -137,8 +137,12 @@ const getDiffColor = (diff) => {
   }
 };
 
-onMounted(() => {
+const isLoaded = ref(false);
+
+onMounted(async() => {
+  if (isLoaded.value) return;
   document.documentElement.setAttribute('data-theme', theme.value);
-  fetchLeaderboard();
+  await fetchLeaderboard();
+  isLoaded.value = true;
 });
 </script>
