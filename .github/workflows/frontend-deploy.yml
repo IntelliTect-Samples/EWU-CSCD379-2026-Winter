@@ -20,6 +20,12 @@ jobs:
           npm install
           npm run generate
           npm run test
+      - name: Debug Folder Structure
+        run: |
+          cd game-app
+          npm run build
+          echo "--- Content of .output ---"
+          ls -R .output
       - name: Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
