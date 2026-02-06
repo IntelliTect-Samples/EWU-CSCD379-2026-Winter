@@ -252,19 +252,23 @@ const endGame = (reason) => {
   gameOver.value = true
   clearInterval(turnTimer.value)
 
-  const winner = currentPlayer.value === 1 ? 2 : 1
-  
+  const loser = currentPlayer.value
+  const winner = loser === 1 ? 2 : 1
+
   setTimeout(() => {
     navigateTo({
       path: '/results',
       query: {
-        name: `Player ${winner}`,
+        name: `Player ${loser}`,
         diff: 'Duel',
-        score: `Player ${winner} won - ${reason}`
+        score: 0,
+        result: 'lose',
+        reason
       }
-    });
-  }, 500);
+    })
+  }, 500)
 }
+
 
 onMounted(() => {
   if (isDuel.value) {

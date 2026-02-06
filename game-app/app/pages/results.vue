@@ -1,8 +1,14 @@
 <template>
   <div class="results-wrapper">
     <div class="victory-card">
-      <h2 class="victory-title">Grid Cleared!</h2>
-      <div class="final-time"> You completed the grid in: {{ animatedScore }}s</div>
+      <h2 class="victory-title"> {{ route.query.result === 'lose' ? 'Game Over!' : 'Grid Cleared!' }}</h2>
+      <div class="final-time" v-if="route.query.result !== 'lose'">
+        You completed the grid in: {{ animatedScore }}s
+      </div>
+
+      <div class="final-time" v-else>
+        You haven't completed the grid...
+      </div>
       
       <div class="stats-grid">
         <div class="stat-item">

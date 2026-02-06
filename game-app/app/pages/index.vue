@@ -33,26 +33,34 @@
       </header>
 
       <div class="setup-section">
-        <input 
-          v-model="playerName" 
-          placeholder="Enter Your Name" 
-          class="modern-input"
-        />
-
-        <div class="difficulty-grid">
-          <button @click="startGame('Easy')" class="diff-btn easy">
-            <span class="label">Easy</span>
-            <span class="desc">3x3 Grid</span>
-          </button>
-          <button @click="startGame('Medium')" class="diff-btn medium">
-            <span class="label">Medium</span>
-            <span class="desc">4x4 Grid</span>
-          </button>
-          <button @click="startGame('Hard')" class="diff-btn hard">
-            <span class="label">Hard</span>
-            <span class="desc">5x5 Grid</span>
+        <div class="solo-section">
+          <button @click="showSoloSetup = !showSoloSetup" class="solo-btn">
+            ⚡ Solo Mode
           </button>
         </div>
+        <div v-if="showSoloSetup" class="solo-setup">
+          <input  
+            v-model="playerName" 
+            placeholder="Enter Your Name" 
+            class="modern-input"
+          />
+
+          <div class="difficulty-grid">
+            <button @click="startGame('Easy')" class="diff-btn easy">
+              <span class="label">Easy</span>
+              <span class="desc">3x3 Grid</span>
+            </button>
+            <button @click="startGame('Medium')" class="diff-btn medium">
+              <span class="label">Medium</span>
+              <span class="desc">4x4 Grid</span>
+            </button>
+            <button @click="startGame('Hard')" class="diff-btn hard">
+              <span class="label">Hard</span>
+              <span class="desc">5x5 Grid</span>
+            </button>
+          </div>
+        </div>
+
         <div class="duel-section">
           <button @click="startDuel" class="duel-btn">
             ⚔️ Duel Mode
@@ -110,6 +118,7 @@ const theme = ref('dark');
 const showInstructions = ref(false);
 const showLeaderboard = ref(false);
 const leaderboard = ref([]);
+const showSoloSetup = ref(false);
 
 const themeLabel = computed(() => theme.value === 'dark' ? 'Dark' : 'Light');
 
@@ -168,15 +177,9 @@ const getDiffColor = (diff) => {
 const isLoaded = ref(false);
 
 const startDuel = () => {
-  if (!playerName.value.trim()) {
-    alert("Please enter a name to begin.");
-    return;
-  }
-
   navigateTo({
     path: '/game',
     query: {
-      name: playerName.value,
       mode: 'duel'
     }
   });
