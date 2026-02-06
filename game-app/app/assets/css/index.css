@@ -3,6 +3,7 @@
   padding: 0;
   margin: 10px 0 0 0;
   list-style: none;
+
 }
 
 .leader-row {
@@ -24,18 +25,36 @@
   min-width: 65px;
   text-align: center;
   display: inline-block;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+.leaderboard-card {
+  color: black;
+}
+
+.leaderboard-card h3 {
+  color: black;
+}
+
+.leaderboard-card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  width: 360px;
+  max-width: 90vw;
+}
+
 
 /* Difficulty Colors */
 .fake-chip.easy { background-color: #43a047; }
 .fake-chip.medium { background-color: #fb8c00; }
 .fake-chip.hard { background-color: #e53935; }
+.fake-chip.duel { background-color: #1e88e5; }
 
 /* Text and Score Styling */
 .leader-text {
   font-size: 0.95rem;
-  color: var(--text-color, #ffffff);
+  color: var(--text-color, #000000);
 }
 
 .leader-score {
@@ -44,6 +63,13 @@
   margin-left: 6px;
 }
 
+
+.glass-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* 👈 centers both buttons */
+  gap: 0px;
+}
 .duel-section {
   margin-top: 24px;
   display: flex;
@@ -51,7 +77,7 @@
 }
 
 .duel-btn {
-  width: 50%;
+  width: 100%;
   padding: 14px;
   border-radius: 14px;
   background: linear-gradient(135deg, #0713f0, #2691e3);
@@ -82,7 +108,7 @@
 }
 
 .solo-btn {
-  width: 50%;
+  width: 100%;
   padding: 14px;
   border-radius: 14px;
   background: linear-gradient(135deg, #81cfd0, #99c5e7);

@@ -58,10 +58,10 @@ const gridClass = computed(() =>
 const correctSound = new Audio('/sounds/correct.mp3');
 const wrongSound = new Audio('/sounds/wrong.mp3');
 
-const currentPlayer = ref(1) // 1 or 2
-const turnTime = ref(5)
-const turnTimer = ref(null)
-const gameOver = ref(false)
+const currentPlayer = ref(1);
+const turnTime = ref(5);
+const turnTimer = ref(null);
+const gameOver = ref(false);
 
 const mode = route.query.mode || 'solo';
 const isDuel = computed(() => mode === 'duel');
@@ -210,65 +210,86 @@ const setupDuelGame = () => {
       display: i + 1,
       state: ''
     }))
-  )
-
-  targetNumber.value = 1
-  currentPlayer.value = 1
+  );
+  targetNumber.value = 1;
+  currentPlayer.value = 1;
   gameOver.value = false;
-  startTurnTimer()
+  startTime.value = Date.now(); 
+  startTurnTimer();
 }
+
+const DUEL_GRID_SIZE = 100;
+
+const handleDuelClick = (tile) => {
+  if (gameOver.value) return
+
+  if (tile.number === targetNumber.value) {
+    playCorrect()
+    tile.state = 'correct'
+
+    if (targetNumber.value === DUEL_GRID_SIZE) {
+      endDuelWin()
+      return
+    }
+
+    targetNumber.value++
+    switchPlayer()
+  } else {
+    playWrong()
+    tile.state = 'wrong'
+    endGame()
+  }
+}
+
+const switchPlayer = () => { 
+  currentPlayer.value = currentPlayer.value === 1 ? 2 : 1 
+  startTurnTimer() 
+}
+
 const startTurnTimer = () => {
-  turnTime.value = 10
+  turnTime.value = 15
 
   clearInterval(turnTimer.value)
   turnTimer.value = setInterval(() => {
     turnTime.value--
 
     if (turnTime.value <= 0) {
-      endGame(`Player ${currentPlayer.value} ran out of time`)
+      endGame()
     }
   }, 1000)
 }
 
-const handleDuelClick = (tile) => {
-  if (gameOver.value) return
-
-  if (tile.number === targetNumber.value) {
-    tile.state = 'correct'
-    targetNumber.value++
-
-    switchPlayer()
-  } else {
-    tile.state = 'wrong'
-    endGame(`Player ${currentPlayer.value} clicked wrong`)
-  }
-}
-const switchPlayer = () => {
-  currentPlayer.value = currentPlayer.value === 1 ? 2 : 1
-  startTurnTimer()
-}
-
-const endGame = (reason) => {
+const endGame = () => {
   gameOver.value = true
   clearInterval(turnTimer.value)
-
-  const loser = currentPlayer.value
-  const winner = loser === 1 ? 2 : 1
 
   setTimeout(() => {
     navigateTo({
       path: '/results',
       query: {
-        name: `Player ${loser}`,
         diff: 'Duel',
-        score: 0,
-        result: 'lose',
-        reason
+        result: 'lose'
       }
     })
-  }, 500)
+  }, 400)
 }
 
+const endDuelWin = () => {
+  gameOver.value = true
+  clearInterval(turnTimer.value)
+
+  const duelTime = ((Date.now() - startTime.value) / 1000).toFixed(2)
+
+  setTimeout(() => {
+    navigateTo({
+      path: '/results',
+      query: {
+        diff: 'Duel',
+        score: duelTime
+      }
+    })
+  }, 400)
+}
 
 onMounted(() => {
   if (isDuel.value) {

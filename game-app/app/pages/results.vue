@@ -1,30 +1,47 @@
 <template>
   <div class="results-wrapper">
     <div class="victory-card">
-      <h2 class="victory-title"> {{ route.query.result === 'lose' ? 'Game Over!' : 'Grid Cleared!' }}</h2>
-      <div class="final-time" v-if="route.query.result !== 'lose'">
+      <h2 class="victory-title">
+        {{ isLose ? 'Game Over' : 'Grid Cleared!' }}
+      </h2>
+      <div v-if="!isLose" class="final-time">
         You completed the grid in: {{ animatedScore }}s
       </div>
-
-      <div class="final-time" v-else>
-        You haven't completed the grid...
+      <div v-else class="final-time">
+        You haven’t completed the grid in time.
       </div>
-      
-      <div class="stats-grid">
+      <div v-if="showStats" class="stats-grid">
         <div class="stat-item">
-          <span class="label">Player: </span>
+          <span class="label">Player:</span>
           <span class="value">{{ route.query.name }}</span>
         </div>
         <div class="stat-item">
-          <span class="label">Rank: </span>
+          <span class="label">Rank:</span>
           <span class="value">{{ route.query.diff }}</span>
         </div>
       </div>
-
       <div class="action-group">
-        <button @click="saveScore" class="btn-primary">Submit to Leaderboard</button>
-        <button @click="goToMenu" class="btn-secondary">Main Menu</button>
+        <button
+          v-if="canSubmit"
+          @click="saveScore"
+          class="btn-primary"
+        >
+          Submit to Leaderboard
+        </button>
+
+        <button
+          v-if="isLose"
+          @click="tryAgain"
+          class="btn-primary"
+        >
+          Try Again
+        </button>
+
+        <button @click="goToMenu" class="btn-secondary">
+          Main Menu
+        </button>
       </div>
+
     </div>
   </div>
 </template>
@@ -33,36 +50,37 @@
 const route = useRoute()
 
 const score = computed(() => route.query.score)
-const name = computed(() => route.query.name)
 const difficulty = computed(() => route.query.diff)
+const isLose = computed(() => route.query.result === 'lose')
+const isDuel = computed(() => difficulty.value === 'Duel')
+
+const showStats = computed(() => !isDuel.value && !isLose.value)
+const canSubmit = computed(() => !isLose.value)
 
 const animatedScore = ref(0)
 
 const saveScore = async () => {
   const scoreData = {
-    PlayerName: String(name.value),
+    PlayerName: route.query.name || 'Duel',
     Time: parseFloat(score.value),
-    Difficulty: String(difficulty.value),
+    Difficulty: difficulty.value,
     DateAchieved: new Date().toISOString()
   }
 
-  await $fetch('https://grid-snap-api-a7c2b6b9dygdc3gt.eastus2-01.azurewebsites.net/api/score', {
-    method: 'POST',
-    body: scoreData
-  })
+  await $fetch(
+    'https://grid-snap-api-a7c2b6b9dygdc3gt.eastus2-01.azurewebsites.net/api/score',
+    {
+      method: 'POST',
+      body: scoreData
+    }
+  )
 
-  alert("Score Saved!")
+  alert('Score Saved!')
   navigateTo('/')
 }
 
 onMounted(() => {
-  const ripple = document.createElement('div')
-  ripple.className = 'victory-ripple'
-  document.body.appendChild(ripple)
-
-  setTimeout(() => {
-    ripple.remove()
-  }, 1200)
+  if (isLose.value) return
 
   let current = 0
   const target = parseFloat(score.value)
@@ -79,15 +97,16 @@ onMounted(() => {
   }, 30)
 })
 
-const theme = computed(() => route.query.theme || 'dark')
-
-const goToMenu = () => {
+const tryAgain = () => {
   navigateTo({
-    path: '/',
+    path: '/game',
     query: {
-      theme: theme.value
+      mode: 'duel'
     }
   })
 }
 
+const goToMenu = () => {
+  navigateTo('/')
+}
 </script>

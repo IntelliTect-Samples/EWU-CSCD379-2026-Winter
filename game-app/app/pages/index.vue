@@ -4,26 +4,39 @@
       <div class="brand">GridSnap</div>
       <div class="menu-actions">
         <button class="menu-btn" @click="toggleInstructions">How to play</button>
-        <div class="leaderboard-wrapper">
-          <button class="menu-btn" @click="showLeaderboard = !showLeaderboard">Leaderboard</button>
-          <div v-if="showLeaderboard" class="dropdown-leaderboard">
-            <h4>Top Scores</h4>
-            <ul>
-              <li v-for="(entry, i) in leaderboard" :key="i" class="leader-row">
+        <button class="menu-btn" @click="showLeaderboard = true">Leaderboard</button>
+      
+        <div v-if="showLeaderboard" class="instructions-modal" @click.self="showLeaderboard = false">
+          <div class="instructions-card leaderboard-card">
+            <h3>Leaderboard</h3>
+            <ul class="leaderboard-list">
+              <li
+                v-for="(entry, i) in leaderboard"
+                :key="i"
+                class="leader-row"
+              >
                 <span :class="['fake-chip', entry.diff.toLowerCase()]">
                   {{ entry.diff }}
                 </span>
-                
+
                 <span class="leader-text">
-                  <strong>{{ entry.name }}</strong> 
+                  <strong>{{ entry.name }}</strong>
                   <span class="leader-score">— {{ entry.score }}s</span>
                 </span>
               </li>
-              <li v-if="leaderboard.length === 0" class="muted">(None here yet)</li>
+
+              <li v-if="leaderboard.length === 0" class="muted">
+                No scores yet
+              </li>
             </ul>
+
+            <button class="close-btn" @click="showLeaderboard = false">
+              Close
+            </button>
           </div>
         </div>
-        <button class="theme-toggle" @click="toggleTheme">Mode: {{ themeLabel }}</button>
+
+        <button class="theme-toggle" @click="toggleTheme">Theme: {{ themeLabel }}</button>
       </div>
     </div>
 
@@ -114,7 +127,7 @@
 const playerName = ref('');
 
 // UI state
-const theme = ref('dark');
+const theme = useState('theme', () => 'dark');
 const showInstructions = ref(false);
 const showLeaderboard = ref(false);
 const leaderboard = ref([]);
@@ -146,6 +159,7 @@ const fetchLeaderboard = async () => {
 // UI Theme toggle
 const toggleTheme = () => {
   theme.value = theme.value === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', theme.value);
   document.documentElement.setAttribute('data-theme', theme.value);
 };
 
@@ -163,15 +177,6 @@ const startGame = (difficulty) => {
     path: '/game',
     query: { name: playerName.value, diff: difficulty }
   });
-};
-
-const getDiffColor = (diff) => {
-  switch (diff) {
-    case 'Hard': return 'red-darken-2';
-    case 'Medium': return 'orange-darken-1';
-    case 'Easy': return 'green-darken-1';
-    default: return 'grey';
-  }
 };
 
 const isLoaded = ref(false);
