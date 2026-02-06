@@ -44,7 +44,6 @@
   max-width: 90vw;
 }
 
-
 /* Difficulty Colors */
 .fake-chip.easy { background-color: #43a047; }
 .fake-chip.medium { background-color: #fb8c00; }
@@ -63,11 +62,10 @@
   margin-left: 6px;
 }
 
-
 .glass-card {
   display: flex;
   flex-direction: column;
-  align-items: center;   /* 👈 centers both buttons */
+  align-items: center;  
   gap: 0px;
 }
 .duel-section {

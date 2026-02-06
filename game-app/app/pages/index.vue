@@ -111,7 +111,7 @@
         </p>
         <p>
           Players take turns clicking the next correct number in the sequence.
-          Each player has <strong>10 seconds per turn</strong>.
+          Each player has <strong>15 seconds per turn</strong>.
         </p>
         <p>
           Clicking the wrong tile or running out of time immediately ends the match.
