@@ -29,3 +29,6 @@ app.UseCors("AllowNuxt");
 app.MapControllers(); 
 
 app.Run();
+
+// Expose Program type for WebApplicationFactory-based integration tests
+public partial class Program { }
