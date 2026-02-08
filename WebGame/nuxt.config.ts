@@ -5,7 +5,11 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
-        { rel: "icon", type: "image/png", href: "/images/Animations/IdleFrames/character_2.png" },
+        {
+          rel: "icon",
+          type: "image/png",
+          href: "/images/Animations/IdleFrames/character_2.png",
+        },
       ],
     },
   },
