@@ -8,6 +8,11 @@ export default defineNuxtConfig({
     }
   },
   ssr: false,
+  runtimeConfig: {
+    public: {
+      api: 'https://grid-snap-api-a7c2b6b9dygdc3gt.eastus2-01.azurewebsites.net/api/score'
+    }
+  },
   nitro: {
     preset: 'azure-swa'
   },
