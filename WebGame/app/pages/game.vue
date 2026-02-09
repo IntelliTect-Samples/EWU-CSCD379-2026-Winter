@@ -552,9 +552,27 @@ const funnyNames = [
   "Oodle",
 ];
 
-// Get a random funny name
+// Get a random funny name (fallback)
 function getRandomFunnyName(): string {
   return funnyNames[Math.floor(Math.random() * funnyNames.length)]!;
+}
+
+// Fetch a dooble name from the Azure API
+async function fetchDoobleNameFromAPI(): Promise<string> {
+  try {
+    const response = await fetch(
+      "https://doobleapi.azurewebsites.net/dooble/dooblename",
+    );
+    if (!response.ok) throw new Error("API request failed");
+    const name = await response.text();
+    return name.trim() || getRandomFunnyName();
+  } catch (error) {
+    console.warn(
+      "Failed to fetch dooble name from API, using fallback:",
+      error,
+    );
+    return getRandomFunnyName();
+  }
 }
 
 // Dooble visual state interface
@@ -616,10 +634,11 @@ function triggerSpawnAnimation(visual: DoobleVisual) {
 }
 
 // Spawn a copy of the dooble
-function spawnCopyOfDooble(visual: DoobleVisual) {
+async function spawnCopyOfDooble(visual: DoobleVisual) {
   if (!doobleVisuals.value.some((d) => d.id === visual.id)) return;
 
-  const newDooble = new Dooble(getRandomFunnyName(), visual.dooble.type);
+  const name = await fetchDoobleNameFromAPI();
+  const newDooble = new Dooble(name, visual.dooble.type);
   newDooble.stats = { hunger: 0, age: 0 };
   // Spawn near the parent
   const newVisual = createDoobleVisual(newDooble, visual.x, visual.y);
@@ -787,8 +806,9 @@ function purchaseItem(
 }
 
 // Spawn a blooble helper
-function spawnBlooble() {
-  const blooble = new Dooble(getRandomFunnyName(), "blooble");
+async function spawnBlooble() {
+  const name = await fetchDoobleNameFromAPI();
+  const blooble = new Dooble(name, "blooble");
   blooble.stats = { hunger: 0, age: 0 };
   const visual = createDoobleVisual(blooble, 100, 100);
   visual.isUnnamed = true;
@@ -1332,8 +1352,8 @@ function spawnNewDooble() {
 }
 
 // Confirm dooble name
-function confirmDoobleName() {
-  const name = newDoobleName.value.trim() || getRandomFunnyName();
+async function confirmDoobleName() {
+  const name = newDoobleName.value.trim() || (await fetchDoobleNameFromAPI());
 
   if (pendingNameDooble.value) {
     // Naming an existing unnamed dooble
