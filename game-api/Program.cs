@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using game_api.Data;
 using game_api.Services;
-using System.Data.SqlTypes;
 
 var builder = WebApplication.CreateBuilder(args);
 

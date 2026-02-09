@@ -47,6 +47,8 @@
 </template>
 
 <script setup>
+import { onMounted, ref, computed } from 'vue';
+const config = useRuntimeConfig();
 const route = useRoute()
 
 const score = computed(() => route.query.score)
@@ -68,7 +70,7 @@ const saveScore = async () => {
   }
 
   await $fetch(
-    'https://grid-snap-api-a7c2b6b9dygdc3gt.eastus2-01.azurewebsites.net/api/score',
+    config.public.api,
     {
       method: 'POST',
       body: scoreData

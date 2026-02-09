@@ -1,10 +1,6 @@
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
-using game_api.Controller;
 using game_api.Model;
-using game_api.Services;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace game_api_tests;
 
