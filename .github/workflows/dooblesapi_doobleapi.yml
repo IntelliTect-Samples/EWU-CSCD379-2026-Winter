@@ -28,7 +28,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Run tests
-        working-directory: ./DooblesApi
+        working-directory: ./DooblesApi.Tests
         run: dotnet test --no-build --verbosity normal
 
       - name: dotnet publish
@@ -68,5 +68,6 @@ jobs:
           app-name: 'doobleapi'
           slot-name: 'Production'
           package: .
+
 
 
