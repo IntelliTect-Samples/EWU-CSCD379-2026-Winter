@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DooblesApi.Migrations
 {
     [DbContext(typeof(DooblesDbContext))]
-    [Migration("20260209055416_InitialCreate")]
+    [Migration("20260210032147_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -5481,6 +5481,30 @@ namespace DooblesApi.Migrations
                             Id = 1088,
                             Name = "Rippityrop"
                         });
+                });
+
+            modelBuilder.Entity("DooblesApi.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ReviewText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reviewer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reviews");
                 });
 #pragma warning restore 612, 618
         }

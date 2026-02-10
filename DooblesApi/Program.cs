@@ -1,37 +1,45 @@
 using DooblesApi.Data;
+using DooblesApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
 // Add DbContext
 builder.Services.AddDbContext<DooblesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var app = builder.Build();
+// Register application services
+builder.Services.AddScoped<IDoobleService, DoobleService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Add CORS for your front-end
+builder.Services.AddCors(options =>
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+           .AllowAnyMethod()
+.AllowAnyHeader();
+    });
+});
+
+var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.UseRouting();
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+// Simple root endpoint
+app.MapGet("/", () => "DooblesApi");
+
 app.MapControllers();
 
+// Apply migrations on startup
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<DooblesDbContext>();
@@ -39,3 +47,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+public partial class Program { } // For integration testing purposes

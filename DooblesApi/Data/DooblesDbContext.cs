@@ -10,6 +10,7 @@ public class DooblesDbContext : DbContext
     }
 
     public DbSet<DoobledName> DoobledNames { get; set; }
+    public DbSet<Review> Reviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

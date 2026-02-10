@@ -25,6 +25,21 @@ namespace DooblesApi.Migrations
                     table.PrimaryKey("PK_DoobledNames", x => x.Id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Stars = table.Column<int>(type: "int", nullable: false),
+                    ReviewText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Reviewer = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                });
+
             migrationBuilder.InsertData(
                 table: "DoobledNames",
                 columns: new[] { "Id", "Name" },
@@ -1126,6 +1141,9 @@ namespace DooblesApi.Migrations
         {
             migrationBuilder.DropTable(
                 name: "DoobledNames");
+
+            migrationBuilder.DropTable(
+                name: "Reviews");
         }
     }
 }
