@@ -40,7 +40,7 @@ app.MapGet("/", () => "DooblesApi");
 app.MapControllers();
 
 // Apply migrations on startup
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() && OperatingSystem.IsWindows())
 {
     using (var scope = app.Services.CreateScope())
         {
