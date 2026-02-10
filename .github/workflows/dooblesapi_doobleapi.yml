@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - doobleapi
 on:
   push:
     branches:
-      - DooblesAPI
+      - WebGameBillMiller
   workflow_dispatch:
 
 jobs:
@@ -68,6 +68,7 @@ jobs:
           app-name: 'doobleapi'
           slot-name: 'Production'
           package: .
+
 
 
 
