@@ -24,9 +24,11 @@
         <button
           v-if="canSubmit"
           @click="saveScore"
+          :disabled="isSubmittingScore"
           class="btn-primary"
+          :style="{ opacity: isSubmittingScore ? 0.5 : 1, cursor: isSubmittingScore ? 'not-allowed' : 'pointer' }"
         >
-          Submit to Leaderboard
+          {{ isSubmittingScore ? 'Submitting...' : 'Submit to Leaderboard' }}
         </button>
 
         <button
@@ -48,20 +50,22 @@
 
 <script setup>
 import { onMounted, ref, computed } from 'vue';
-const config = useRuntimeConfig();
 const route = useRoute()
-
+const config = useRuntimeConfig();
+const isSubmittingScore = ref(false)
 const score = computed(() => route.query.score)
 const difficulty = computed(() => route.query.diff)
 const isLose = computed(() => route.query.result === 'lose')
 const isDuel = computed(() => difficulty.value === 'Duel')
-
 const showStats = computed(() => !isDuel.value && !isLose.value)
 const canSubmit = computed(() => !isLose.value)
-
 const animatedScore = ref(0)
 
 const saveScore = async () => {
+  if (isSubmittingScore.value) {
+    return
+  }
+
   const scoreData = {
     PlayerName: route.query.name || 'Duel',
     Time: parseFloat(score.value),
@@ -69,16 +73,21 @@ const saveScore = async () => {
     DateAchieved: new Date().toISOString()
   }
 
-  await $fetch(
-    config.public.api,
-    {
+  isSubmittingScore.value = true
+
+  try {
+    await $fetch(config.public.api, {
       method: 'POST',
       body: scoreData
-    }
-  )
+    })
 
-  alert('Score Saved!')
-  navigateTo('/')
+    alert('Score Saved!')
+    navigateTo('/')
+  } catch {
+    console.error('Failed to submit score.')
+    alert('The database needs a moment to wake up. Please try again when the button unlocks.')
+    isSubmittingScore.value = false
+  }
 }
 
 onMounted(() => {

@@ -156,6 +156,8 @@
 </template>
 
 <script setup>
+import { onMounted, ref, computed } from 'vue';
+const config = useRuntimeConfig();
 const playerName = ref('');
 
 // UI state
@@ -174,7 +176,7 @@ const themeLabel = computed(() => theme.value === 'dark' ? 'Dark' : 'Light');
 // Fetch leaderboard from backend
 const fetchLeaderboard = async () => {
   try {
-    const data = await $fetch('https://grid-snap-api-a7c2b6b9dygdc3gt.eastus2-01.azurewebsites.net/api/score');
+    const data = await $fetch(config.public.api);
     leaderboard.value = data.map(entry => ({
       name: entry.playerName,
       score: entry.time,
@@ -246,16 +248,23 @@ const startDuel = () => {
 };
 
 onMounted(async() => {
-  if (isLoaded.value) return;
+  if (isLoaded.value) {
+    return;
+  } 
+  
   document.documentElement.setAttribute('data-theme', theme.value);
-  await fetchLeaderboard();
   
   // Load testimonials from localStorage
   const saved = localStorage.getItem('testimonials');
   if (saved) {
-    testimonials.value = JSON.parse(saved);
+    try {
+      testimonials.value = JSON.parse(saved)
+    } catch (e) {
+      console.error("Failed to parse testimonials.", e);
+    }
   }
   
+  await fetchLeaderboard();
   isLoaded.value = true;
 });
 </script>
