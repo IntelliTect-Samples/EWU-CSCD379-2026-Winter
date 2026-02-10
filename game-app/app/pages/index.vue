@@ -5,6 +5,7 @@
       <div class="menu-actions">
         <button class="menu-btn" @click="toggleInstructions">How to play</button>
         <button class="menu-btn" @click="showLeaderboard = true">Leaderboard</button>
+        <button class="menu-btn" @click="showTestimonials = true">Testimonials</button>
       
         <div v-if="showLeaderboard" class="instructions-modal" @click.self="showLeaderboard = false">
           <div class="instructions-card leaderboard-card">
@@ -37,6 +38,37 @@
         </div>
 
         <button class="theme-toggle" @click="toggleTheme">Theme: {{ themeLabel }}</button>
+      </div>
+    </div>
+
+    <div v-if="showTestimonials" class="instructions-modal" @click.self="showTestimonials = false">
+      <div class="instructions-card leaderboard-card">
+        <h3>Testimonials</h3>
+        <div class="testimonials-container">
+          <div v-for="(testimonial, i) in testimonials" :key="i" class="testimonial-item">
+            <p class="testimonial-text">"{{ testimonial.message }}"</p>
+            <p class="testimonial-author">— {{ testimonial.name }}</p>
+          </div>
+          <div v-if="testimonials.length === 0" class="muted">
+            No testimonials yet. Be the first!
+          </div>
+        </div>
+        <div class="testimonial-form">
+          <hr />
+          <h4>Share Your Experience</h4>
+          <input 
+            v-model="testimonialName" 
+            placeholder="Your Name" 
+            class="modern-input"
+          />
+          <textarea 
+            v-model="testimonialMessage" 
+            placeholder="Share your thoughts about GridSnap..." 
+            class="modern-input testimonial-textarea"
+          ></textarea>
+          <button @click="submitTestimonial" class="close-btn">Submit Testimonial</button>
+        </div>
+        <button class="close-btn" @click="showTestimonials = false">Close</button>
       </div>
     </div>
 
@@ -124,15 +156,17 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue';
-const config = useRuntimeConfig();
 const playerName = ref('');
 
 // UI state
 const theme = useState('theme', () => 'dark');
 const showInstructions = ref(false);
 const showLeaderboard = ref(false);
+const showTestimonials = ref(false);
 const leaderboard = ref([]);
+const testimonials = ref([]);
+const testimonialName = ref('');
+const testimonialMessage = ref('');
 const showSoloSetup = ref(false);
 
 const themeLabel = computed(() => theme.value === 'dark' ? 'Dark' : 'Light');
@@ -140,7 +174,7 @@ const themeLabel = computed(() => theme.value === 'dark' ? 'Dark' : 'Light');
 // Fetch leaderboard from backend
 const fetchLeaderboard = async () => {
   try {
-    const data = await $fetch(config.public.api);
+    const data = await $fetch('https://grid-snap-api-a7c2b6b9dygdc3gt.eastus2-01.azurewebsites.net/api/score');
     leaderboard.value = data.map(entry => ({
       name: entry.playerName,
       score: entry.time,
@@ -167,6 +201,25 @@ const toggleTheme = () => {
 
 const toggleInstructions = () => {
   showInstructions.value = !showInstructions.value;
+};
+
+// Testimonials
+const submitTestimonial = async () => {
+  if (!testimonialName.value.trim() || !testimonialMessage.value.trim()) {
+    alert('Please enter both name and testimonial.');
+    return;
+  }
+  
+  testimonials.value.push({
+    name: testimonialName.value,
+    message: testimonialMessage.value
+  });
+  
+  testimonialName.value = '';
+  testimonialMessage.value = '';
+  
+  // Save to localStorage
+  localStorage.setItem('testimonials', JSON.stringify(testimonials.value));
 };
 
 const startGame = (difficulty) => {
@@ -196,6 +249,13 @@ onMounted(async() => {
   if (isLoaded.value) return;
   document.documentElement.setAttribute('data-theme', theme.value);
   await fetchLeaderboard();
+  
+  // Load testimonials from localStorage
+  const saved = localStorage.getItem('testimonials');
+  if (saved) {
+    testimonials.value = JSON.parse(saved);
+  }
+  
   isLoaded.value = true;
 });
 </script>
