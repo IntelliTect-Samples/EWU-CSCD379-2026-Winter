@@ -40,10 +40,13 @@ app.MapGet("/", () => "DooblesApi");
 app.MapControllers();
 
 // Apply migrations on startup
-using (var scope = app.Services.CreateScope())
+if (app.Environment.IsDevelopment())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<DooblesDbContext>();
-    dbContext.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<DooblesDbContext>();
+            dbContext.Database.Migrate();
+        }
 }
 
 app.Run();
