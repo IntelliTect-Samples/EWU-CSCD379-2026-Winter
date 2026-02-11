@@ -1,13 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
 using DooblesApi.Models;
+using DooblesApi.Data;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using DooblesApi.Data;
 using Microsoft.AspNetCore.Hosting;
-
-
 
 namespace DooblesApi.Tests.IntegrationTests;
 
@@ -20,28 +18,36 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         _client = factory.WithWebHostBuilder(builder =>
         {
             builder.UseEnvironment("Testing");
-        
+
             builder.ConfigureServices(services =>
             {
-                // Remove DbContext registration
+                // Remove existing DbContext registrations
                 var dbContextDescriptor = services.SingleOrDefault(
-                    d => d.ServiceType == typeof(DooblesDbContext));
-        
+                    d => d.ServiceType == typeof(DbContextOptions<DooblesDbContext>));
+
                 if (dbContextDescriptor != null)
                     services.Remove(dbContextDescriptor);
-        
-                // Remove DbContextOptions registration
-                var optionsDescriptor = services.SingleOrDefault(
-                    d => d.ServiceType == typeof(DbContextOptions<DooblesDbContext>));
-        
-                if (optionsDescriptor != null)
-                    services.Remove(optionsDescriptor);
-        
-                // Add InMemory database
+
                 services.AddDbContext<DooblesDbContext>(options =>
                 {
                     options.UseInMemoryDatabase("TestDb");
                 });
+
+                // Build the service provider & seed data
+                var sp = services.BuildServiceProvider();
+
+                using var scope = sp.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<DooblesDbContext>();
+
+                db.Database.EnsureCreated();
+
+                // 🌱 Minimal seed data
+                db.Doobles.Add(new Dooble
+                {
+                    Name = "TestDooble"
+                });
+
+                db.SaveChanges();
             });
         }).CreateClient();
     }
@@ -49,31 +55,24 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task RootEndpoint_ReturnsDooblesApi()
     {
-        // Act
         var response = await _client.GetStringAsync("/");
-
-        // Assert
         Assert.Equal("DooblesApi", response);
     }
 
     [Fact]
     public async Task GetDoobledName_ReturnsOk()
     {
-        // Act
         var response = await _client.GetAsync("/dooble/dooblename");
-
-        // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
     public async Task GetAllNames_ReturnsOk()
     {
-        // Act
         var response = await _client.GetAsync("/dooble/all");
 
-        // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
         var names = await response.Content.ReadFromJsonAsync<List<string>>();
         Assert.NotNull(names);
         Assert.NotEmpty(names);
@@ -82,7 +81,6 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task PostReview_CreatesReview()
     {
-        // Arrange
         var review = new Review
         {
             Stars = 5,
@@ -90,10 +88,8 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
             Reviewer = "IntegrationTester"
         };
 
-        // Act
         var response = await _client.PostAsJsonAsync("/review", review);
-
-        // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
     }
 }
+
