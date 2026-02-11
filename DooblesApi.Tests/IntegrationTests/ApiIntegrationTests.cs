@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Http.Json;
 using DooblesApi.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DooblesApi.Tests.IntegrationTests;
 
