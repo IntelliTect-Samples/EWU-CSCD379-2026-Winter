@@ -13,6 +13,7 @@ public class Stylist
     public decimal WorkStartTime24H { get; set; }
     [Precision(18, 2)]
     public decimal WorkEndTime24H { get; set; }
+    public byte[]? Image { get; set; } = null;
     public ICollection<StylistService> StylistServices { get; set; } = [];
     public ICollection<Appointment> Appointments { get; set; } = [];
 }
