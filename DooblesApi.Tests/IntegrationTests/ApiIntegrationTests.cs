@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using DooblesApi.Data;
+using Microsoft.AspNetCore.Hosting;
+
 
 
 namespace DooblesApi.Tests.IntegrationTests;
