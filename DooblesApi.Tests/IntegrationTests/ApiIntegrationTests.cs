@@ -11,7 +11,22 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 
     public ApiIntegrationTests(WebApplicationFactory<Program> factory)
     {
-        _client = factory.CreateClient();
+        _client = factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureServices(services =>
+            {
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType == typeof(DbContextOptions<DooblesDbContext>));
+
+                if (descriptor != null)
+                    services.Remove(descriptor);
+
+                services.AddDbContext<DooblesDbContext>(options =>
+                {
+                options.UseInMemoryDatabase("TestDb");
+                });
+            });
+        }).CreateClient();
     }
 
     [Fact]
