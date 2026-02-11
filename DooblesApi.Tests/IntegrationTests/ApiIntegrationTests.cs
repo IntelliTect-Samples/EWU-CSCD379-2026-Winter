@@ -1,11 +1,12 @@
 using System.Net;
 using System.Net.Http.Json;
-using DooblesApi.Models;
 using DooblesApi.Data;
+using DooblesApi.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Hosting;
+using Xunit;
 
 namespace DooblesApi.Tests.IntegrationTests;
 
@@ -21,19 +22,18 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 
             builder.ConfigureServices(services =>
             {
-                // Remove existing DbContext registrations
-                var dbContextDescriptor = services.SingleOrDefault(
+                // Remove existing DbContext
+                var descriptor = services.SingleOrDefault(
                     d => d.ServiceType == typeof(DbContextOptions<DooblesDbContext>));
 
-                if (dbContextDescriptor != null)
-                    services.Remove(dbContextDescriptor);
+                if (descriptor != null)
+                    services.Remove(descriptor);
 
+                // Add InMemory database
                 services.AddDbContext<DooblesDbContext>(options =>
-                {
-                    options.UseInMemoryDatabase("TestDb");
-                });
+                    options.UseInMemoryDatabase("TestDb"));
 
-                // Build the service provider & seed data
+                // Build service provider and seed data
                 var sp = services.BuildServiceProvider();
 
                 using var scope = sp.CreateScope();
@@ -41,11 +41,14 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 
                 db.Database.EnsureCreated();
 
-                // 🌱 Minimal seed data
-                db.Doobles.Add(new Dooble
+                // ✅ Seed required data for tests
+                if (!db.DoobledNames.Any())
                 {
-                    Name = "TestDooble"
-                });
+                    db.DoobledNames.AddRange(
+                        new DoobledName { Id = 1, Name = "TestDooble" },
+                        new DoobledName { Id = 2, Name = "AnotherDooble" }
+                    );
+                }
 
                 db.SaveChanges();
             });
@@ -89,7 +92,7 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         };
 
         var response = await _client.PostAsJsonAsync("/review", review);
+
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
     }
 }
-
