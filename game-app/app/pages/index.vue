@@ -1,7 +1,9 @@
 <template>
   <div class="lobby-wrapper">
     <div class="topbar">
-      <div class="brand">GridSnap</div>
+      <div class="brand">
+        <img src="/logo.png" alt="GridSnap Logo" class="brand-logo" />
+      </div>
       <div class="menu-actions">
         <button class="menu-btn" @click="toggleInstructions">How to play</button>
         <button class="menu-btn" @click="showLeaderboard = true">Leaderboard</button>

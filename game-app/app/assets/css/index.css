@@ -226,3 +226,13 @@
   padding: 1.5rem;
   font-style: italic;
 }
+
+.brand {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  height: 100px;  
+  width: auto;
+}
