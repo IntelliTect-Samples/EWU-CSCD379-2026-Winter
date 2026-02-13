@@ -2213,6 +2213,20 @@ function goBack() {
   text-shadow: 1px 1px 0 #000;
 }
 
+.reward-label {
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.6rem;
+  color: #aaa;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.reward-type {
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.6rem;
+  color: #fff;
+}
+
 .reward-amount.gem {
   color: #a855f7;
 }
@@ -2293,5 +2307,492 @@ function goBack() {
   color: #ffd700;
   margin-bottom: 16px;
   text-shadow: 0 0 10px #ffd700;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+/* Tablets and smaller */
+@media (max-width: 768px) {
+  .game-content {
+    padding: 10px;
+  }
+
+  .back-btn {
+    top: 10px;
+    left: 10px;
+    font-size: 0.7rem !important;
+    padding: 6px 10px !important;
+  }
+
+  /* Top Right HUD */
+  .top-right-hud {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+
+  .food-bar {
+    gap: 3px;
+    padding: 6px 8px;
+    flex-wrap: wrap;
+    max-width: 200px;
+    justify-content: flex-end;
+  }
+
+  .food-slot .nes-icon.heart {
+    transform: scale(1);
+  }
+
+  .slot-timer {
+    font-size: 0.3rem;
+    bottom: -10px;
+  }
+
+  .currency-display {
+    gap: 10px;
+    padding: 6px 10px;
+  }
+
+  .currency-item .nes-icon {
+    transform: scale(1);
+  }
+
+  .currency-value {
+    font-size: 0.6rem;
+    min-width: 30px;
+  }
+
+  .shop-btn {
+    font-size: 0.6rem !important;
+    padding: 6px 10px !important;
+  }
+
+  /* Dooble sprites */
+  .dooble-sprite {
+    width: 80px;
+    height: 80px;
+  }
+
+  .exclamation-mark {
+    font-size: 1rem;
+    top: -12px;
+  }
+
+  /* Stats Panel */
+  .stats-panel {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    padding: 14px !important;
+  }
+
+  .stats-title {
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+  }
+
+  .stat-row {
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .stat-row label {
+    font-size: 0.5rem;
+    min-width: 60px;
+  }
+
+  .stat-row progress {
+    height: 16px;
+    min-width: 60px;
+  }
+
+  .stat-value {
+    font-size: 0.45rem;
+    min-width: 35px;
+  }
+
+  .action-buttons {
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .action-buttons button {
+    font-size: 0.6rem !important;
+    padding: 6px 10px !important;
+  }
+
+  /* Modals */
+  .modal-content {
+    max-width: 90%;
+    padding: 20px !important;
+  }
+
+  .modal-title {
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+  }
+
+  .modal-text {
+    font-size: 0.6rem;
+    margin-bottom: 12px;
+  }
+
+  /* Mini-game */
+  .mini-game {
+    max-width: 95%;
+    padding: 16px !important;
+  }
+
+  .mini-game-instructions {
+    font-size: 0.5rem !important;
+  }
+
+  .power-bar {
+    height: 32px;
+  }
+
+  .bar-markers {
+    font-size: 0.4rem;
+  }
+
+  .attempts-display .nes-icon.heart {
+    transform: scale(1);
+  }
+
+  .feed-message-box {
+    font-size: 0.6rem;
+    padding: 6px 12px !important;
+  }
+
+  .mini-game-buttons {
+    gap: 8px;
+  }
+
+  .mini-game-buttons .nes-btn {
+    font-size: 0.6rem !important;
+    padding: 6px 10px !important;
+  }
+
+  /* Shop Modal */
+  .shop-modal {
+    padding: 16px !important;
+    max-height: 85vh;
+  }
+
+  .shop-title {
+    font-size: 1rem;
+    margin-bottom: 14px;
+  }
+
+  .shop-tabs {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .shop-tabs .nes-btn {
+    font-size: 0.5rem !important;
+    padding: 6px 8px !important;
+  }
+
+  .shop-currency {
+    font-size: 0.65rem;
+    padding: 6px;
+    margin-bottom: 14px;
+  }
+
+  .shop-item {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .item-icon {
+    font-size: 1.5rem;
+    width: 40px;
+  }
+
+  .item-name {
+    font-size: 0.55rem;
+  }
+
+  .item-description {
+    font-size: 0.4rem;
+  }
+
+  .item-level {
+    font-size: 0.4rem;
+  }
+
+  .item-price .nes-btn {
+    font-size: 0.5rem !important;
+    padding: 4px 6px !important;
+  }
+
+  /* Death Notification */
+  .death-notification {
+    right: 10px;
+    left: 10px;
+    transform: translateY(-50%);
+  }
+
+  .death-modal {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .death-title {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .death-message {
+    font-size: 0.55rem;
+    margin-bottom: 14px;
+  }
+
+  .death-reward {
+    padding: 8px;
+    margin-bottom: 0;
+  }
+
+  .reward-amount {
+    font-size: 0.8rem;
+  }
+
+  @keyframes slideIn {
+    from {
+      right: -100%;
+    }
+    to {
+      right: 10px;
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      right: 10px;
+      opacity: 1;
+    }
+    to {
+      right: -100%;
+      opacity: 0;
+    }
+  }
+
+  /* Game Over Modal */
+  .game-over-modal {
+    padding: 20px !important;
+  }
+
+  .game-over-title {
+    font-size: 1.2rem;
+  }
+
+  .game-over-message {
+    font-size: 0.6rem;
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+
+  .win-title {
+    font-size: 1.2rem;
+  }
+
+  /* Population Warning */
+  .population-warning {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+  }
+
+  .warning-banner {
+    padding: 8px 12px !important;
+  }
+
+  .warning-text {
+    font-size: 0.5rem;
+    line-height: 1.5;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .back-btn {
+    font-size: 0.55rem !important;
+    padding: 4px 8px !important;
+  }
+
+  .food-bar {
+    max-width: 150px;
+    padding: 4px 6px;
+  }
+
+  .food-slot .nes-icon.heart {
+    transform: scale(0.8);
+  }
+
+  .currency-value {
+    font-size: 0.5rem;
+  }
+
+  .shop-btn {
+    font-size: 0.5rem !important;
+    padding: 4px 8px !important;
+  }
+
+  .dooble-sprite {
+    width: 64px;
+    height: 64px;
+  }
+
+  .exclamation-mark {
+    font-size: 0.8rem;
+    top: -10px;
+  }
+
+  .stats-panel {
+    padding: 10px !important;
+  }
+
+  .stats-title {
+    font-size: 0.7rem;
+  }
+
+  .stat-row label {
+    font-size: 0.45rem;
+    min-width: 50px;
+  }
+
+  .stat-row progress {
+    height: 14px;
+    min-width: 50px;
+  }
+
+  .stat-value {
+    font-size: 0.4rem;
+  }
+
+  .action-buttons button {
+    font-size: 0.5rem !important;
+    padding: 4px 8px !important;
+  }
+
+  .modal-title {
+    font-size: 0.75rem;
+  }
+
+  .modal-text {
+    font-size: 0.5rem;
+  }
+
+  .shop-title {
+    font-size: 0.85rem;
+  }
+
+  .shop-tabs .nes-btn {
+    font-size: 0.45rem !important;
+  }
+
+  .item-icon {
+    font-size: 1.2rem;
+    width: 32px;
+  }
+
+  .item-name {
+    font-size: 0.5rem;
+  }
+
+  .item-description {
+    font-size: 0.35rem;
+  }
+
+  .item-price .nes-btn {
+    font-size: 0.45rem !important;
+  }
+
+  .game-over-title,
+  .win-title {
+    font-size: 1rem;
+  }
+
+  .game-over-message {
+    font-size: 0.5rem;
+  }
+
+  .death-title {
+    font-size: 0.85rem;
+  }
+
+  .death-message {
+    font-size: 0.5rem;
+  }
+
+  .warning-text {
+    font-size: 0.45rem;
+  }
+}
+
+/* Landscape mode on mobile - hide some UI elements for more game space */
+@media (max-height: 500px) and (orientation: landscape) {
+  .food-bar {
+    display: none;
+  }
+
+  .back-btn {
+    top: 5px;
+    left: 5px;
+    font-size: 0.5rem !important;
+    padding: 3px 6px !important;
+  }
+
+  .top-right-hud {
+    top: 5px;
+    right: 5px;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .currency-display {
+    padding: 4px 8px;
+  }
+
+  .shop-btn {
+    padding: 4px 8px !important;
+  }
+
+  .stats-panel {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .population-warning {
+    bottom: 5px;
+  }
+
+  .warning-text {
+    font-size: 0.4rem;
+  }
+}
+
+/* Touch-friendly button sizes */
+@media (hover: none) and (pointer: coarse) {
+  .nes-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .close-btn {
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .dooble {
+    /* Larger touch target */
+    padding: 10px;
+    margin: -10px;
+  }
 }
 </style>

@@ -128,4 +128,86 @@ function openSettings() {
 .btn-icon {
   font-size: 1rem;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .menu-container {
+    gap: 30px;
+    padding: 0 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .title-card {
+    padding: 16px 24px !important;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .title-text {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+
+  .menu-btn {
+    font-size: 1rem !important;
+    padding: 10px 30px !important;
+    min-width: 220px;
+    gap: 10px;
+  }
+
+  .btn-icon {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-container {
+    gap: 24px;
+    padding: 0 12px;
+  }
+
+  .title-card {
+    padding: 12px 16px !important;
+  }
+
+  .title-text {
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    text-shadow:
+      2px 2px 0 #e65100,
+      -1px -1px 0 #ff8f00;
+  }
+
+  .menu-buttons {
+    gap: 12px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .menu-btn {
+    font-size: 0.9rem !important;
+    padding: 10px 24px !important;
+    min-width: 180px;
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .btn-icon {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .title-text {
+    font-size: 1.2rem;
+  }
+
+  .menu-btn {
+    font-size: 0.8rem !important;
+    padding: 8px 20px !important;
+    min-width: 160px;
+  }
+}
 </style>
