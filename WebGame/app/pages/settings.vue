@@ -27,51 +27,101 @@
             </div>
           </div>
 
-          <!-- Send Feedback -->
+          <!-- Write a Review -->
           <div class="setting-row">
-            <label class="setting-label">💬 Send Feedback</label>
-            <div class="feedback-area">
-              <textarea
-                v-if="showFeedbackInput"
-                class="nes-textarea"
-                v-model="feedbackText"
-                placeholder="Tell us what you think..."
-                rows="3"
-              ></textarea>
-              <div class="feedback-buttons">
+            <label class="setting-label">⭐ Write a Review</label>
+            <div class="review-area">
+              <div v-if="showReviewInput" class="review-form">
+                <input
+                  type="text"
+                  class="nes-input review-input"
+                  v-model="reviewerName"
+                  placeholder="Your name..."
+                />
+                <div class="star-rating">
+                  <span class="star-label">Rating:</span>
+                  <span
+                    v-for="star in 5"
+                    :key="star"
+                    class="star"
+                    :class="{ filled: star <= reviewStars }"
+                    @click="reviewStars = star"
+                  >
+                    {{ star <= reviewStars ? "★" : "☆" }}
+                  </span>
+                </div>
+                <textarea
+                  class="nes-textarea"
+                  v-model="reviewText"
+                  placeholder="Tell us what you think..."
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="review-buttons">
                 <button
-                  v-if="!showFeedbackInput"
+                  v-if="!showReviewInput"
                   class="nes-btn is-primary"
-                  @click="showFeedbackInput = true"
+                  @click="showReviewInput = true"
                 >
-                  Write Feedback
+                  Write Review
                 </button>
                 <template v-else>
                   <button
                     class="nes-btn is-success"
-                    @click="submitFeedback"
-                    :disabled="!feedbackText.trim()"
-                  >
-                    Send
-                  </button>
-                  <button
-                    class="nes-btn is-error"
-                    @click="
-                      showFeedbackInput = false;
-                      feedbackText = '';
+                    @click="submitReview"
+                    :disabled="
+                      !reviewText.trim() || !reviewerName.trim() || isSubmitting
                     "
                   >
+                    {{ isSubmitting ? "Sending..." : "Send" }}
+                  </button>
+                  <button class="nes-btn is-error" @click="cancelReview">
                     Cancel
                   </button>
                 </template>
               </div>
               <p
-                v-if="feedbackMessage"
-                class="feedback-message"
-                :class="feedbackMessageClass"
+                v-if="reviewMessage"
+                class="review-message"
+                :class="reviewMessageClass"
               >
-                {{ feedbackMessage }}
+                {{ reviewMessage }}
               </p>
+            </div>
+          </div>
+
+          <!-- All Reviews -->
+          <div class="setting-row">
+            <label class="setting-label">📝 All Reviews</label>
+            <div class="reviews-list">
+              <button
+                class="nes-btn is-primary refresh-btn"
+                @click="fetchReviews"
+                :disabled="isLoadingReviews"
+              >
+                {{ isLoadingReviews ? "Loading..." : "🔄 Refresh" }}
+              </button>
+              <div
+                v-if="reviews.length === 0 && !isLoadingReviews"
+                class="no-reviews"
+              >
+                No reviews yet. Be the first to write one!
+              </div>
+              <div
+                v-for="review in reviews"
+                :key="review.id"
+                class="review-card nes-container is-rounded"
+              >
+                <div class="review-header">
+                  <span class="review-author">{{ review.reviewer }}</span>
+                  <span class="review-stars">
+                    <span v-for="s in 5" :key="s" class="star-display">
+                      {{ s <= review.stars ? "★" : "☆" }}
+                    </span>
+                  </span>
+                </div>
+                <p class="review-text">{{ review.reviewText }}</p>
+              </div>
             </div>
           </div>
 
@@ -127,23 +177,100 @@ function updateVolume() {
   localStorage.setItem(VOLUME_KEY, String(musicVolume.value));
 }
 
-// Feedback
-const showFeedbackInput = ref(false);
-const feedbackText = ref("");
-const feedbackMessage = ref("");
-const feedbackMessageClass = ref("");
+// Review API
+const API_BASE = "https://doobleapi.azurewebsites.net";
 
-function submitFeedback() {
-  if (!feedbackText.value.trim()) return;
-  // For now just acknowledge — no backend
-  feedbackMessage.value = "Thanks for your feedback!";
-  feedbackMessageClass.value = "is-success";
-  feedbackText.value = "";
-  showFeedbackInput.value = false;
-  setTimeout(() => {
-    feedbackMessage.value = "";
-  }, 3000);
+interface Review {
+  id: number;
+  stars: number;
+  reviewText: string;
+  reviewer: string;
 }
+
+// Review form state
+const showReviewInput = ref(false);
+const reviewerName = ref("");
+const reviewStars = ref(5);
+const reviewText = ref("");
+const reviewMessage = ref("");
+const reviewMessageClass = ref("");
+const isSubmitting = ref(false);
+
+// Reviews list state
+const reviews = ref<Review[]>([]);
+const isLoadingReviews = ref(false);
+
+// Fetch all reviews from API
+async function fetchReviews() {
+  isLoadingReviews.value = true;
+  try {
+    const response = await fetch(`${API_BASE}/review`);
+    if (!response.ok) throw new Error("Failed to fetch reviews");
+    reviews.value = await response.json();
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    reviewMessage.value = "Failed to load reviews";
+    reviewMessageClass.value = "is-error";
+    setTimeout(() => {
+      reviewMessage.value = "";
+    }, 3000);
+  } finally {
+    isLoadingReviews.value = false;
+  }
+}
+
+// Submit a review to API
+async function submitReview() {
+  if (!reviewText.value.trim() || !reviewerName.value.trim()) return;
+
+  isSubmitting.value = true;
+  try {
+    const response = await fetch(`${API_BASE}/review`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        stars: reviewStars.value,
+        reviewText: reviewText.value.trim(),
+        reviewer: reviewerName.value.trim(),
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to submit review");
+
+    reviewMessage.value = "Thanks for your review!";
+    reviewMessageClass.value = "is-success";
+    resetReviewForm();
+    // Refresh the reviews list
+    await fetchReviews();
+  } catch (error) {
+    console.error("Error submitting review:", error);
+    reviewMessage.value = "Failed to submit review. Please try again.";
+    reviewMessageClass.value = "is-error";
+  } finally {
+    isSubmitting.value = false;
+    setTimeout(() => {
+      reviewMessage.value = "";
+    }, 3000);
+  }
+}
+
+function resetReviewForm() {
+  reviewText.value = "";
+  reviewerName.value = "";
+  reviewStars.value = 5;
+  showReviewInput.value = false;
+}
+
+function cancelReview() {
+  resetReviewForm();
+}
+
+// Fetch reviews on mount
+onMounted(() => {
+  fetchReviews();
+});
 
 // Cheat codes
 const cheatCode = ref("");
@@ -269,37 +396,136 @@ function goBack() {
   text-align: right;
 }
 
-/* Feedback */
-.feedback-area {
+.review-message.is-success {
+  color: #4ade80;
+}
+
+.review-message.is-error {
+  color: #f87171;
+}
+
+/* Review Form */
+.review-area {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.feedback-area .nes-textarea {
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-input {
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.6rem;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.star-label {
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.6rem;
+  color: #fff;
+}
+
+.star {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.star.filled {
+  color: #ffd93d;
+}
+
+.star:hover {
+  color: #ffd93d;
+}
+
+.review-area .nes-textarea {
   font-family: "Press Start 2P", cursive;
   font-size: 0.6rem;
   resize: vertical;
 }
 
-.feedback-buttons {
+.review-buttons {
   display: flex;
   gap: 10px;
 }
 
-.feedback-buttons .nes-btn {
+.review-buttons .nes-btn {
   font-size: 0.6rem !important;
   padding: 6px 14px !important;
 }
 
-.feedback-message {
+.review-message {
   font-family: "Press Start 2P", cursive;
   font-size: 0.6rem;
   margin: 0;
 }
 
-.feedback-message.is-success {
-  color: #4ade80;
+/* Reviews List */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.refresh-btn {
+  font-size: 0.6rem !important;
+  padding: 6px 14px !important;
+  align-self: flex-start;
+}
+
+.no-reviews {
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.6rem;
+  color: #888;
+  text-align: center;
+  padding: 20px;
+}
+
+.review-card {
+  background: rgba(50, 50, 50, 0.9) !important;
+  padding: 12px !important;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.review-author {
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.6rem;
+  color: #ffd93d;
+}
+
+.review-stars {
+  color: #ffd93d;
+}
+
+.star-display {
+  font-size: 0.8rem;
+}
+
+.review-text {
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.55rem;
+  color: #ddd;
+  margin: 0;
+  line-height: 1.5;
 }
 
 /* Cheat */
