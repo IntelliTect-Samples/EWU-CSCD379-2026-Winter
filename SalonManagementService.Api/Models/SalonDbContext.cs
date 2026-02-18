@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace SalonManagementService.Api.Models;
 
-public class SalonDbContext(DbContextOptions<SalonDbContext> options) : DbContext(options)
+public class SalonDbContext(DbContextOptions<SalonDbContext> options) : IdentityDbContext<User>(options)
 {
     public DbSet<Stylist> Stylists => Set<Stylist>();
     public DbSet<Service> Services => Set<Service>();

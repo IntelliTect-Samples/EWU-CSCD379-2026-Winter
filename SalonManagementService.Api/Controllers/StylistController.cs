@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SalonManagementService.Api.Dtos;
 using SalonManagementService.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SalonManagementService.Api.Controllers;
 
@@ -99,6 +100,7 @@ public class StylistController(SalonDbContext dbContext) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = Roles.Admin)]
     public async Task<ActionResult> DeleteStylist(Guid id)
     {
         var stylist = await dbContext.Stylists
@@ -116,6 +118,7 @@ public class StylistController(SalonDbContext dbContext) : ControllerBase
     }
 
     [HttpGet("Image/{id}")]
+    [Authorize]
     public async Task<ActionResult> Image(Guid id)
     {
         byte[]? stylistImage = await dbContext.Stylists
@@ -132,6 +135,7 @@ public class StylistController(SalonDbContext dbContext) : ControllerBase
     }
 
     [HttpPut("Image/{id}")]
+    [Authorize(Roles = Roles.Stylist)]
     public async Task<ActionResult> UpdateImage(Guid id, IFormFile image)
     {
         var stylist = await dbContext.Stylists

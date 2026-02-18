@@ -1,11 +1,15 @@
 using SalonManagementService.Api.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace SalonManagementService.Api;
 
 public static class SalonSeeder
 {
-    public static void SeedData(SalonDbContext context)
+    public static async Task SeedData(SalonDbContext context, RoleManager<IdentityRole> roleManager)
     {
+        // Seed roles first
+        await SeedRoles(roleManager);
+
         if (context.Stylists.Any() || context.Services.Any() || context.Appointments.Any())
         {
             return;
@@ -172,5 +176,18 @@ public static class SalonSeeder
 
         context.AppointmentStylistServices.AddRange(appointmentStylistServices);
         context.SaveChanges();
+    }
+
+    private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+    {
+        string[] roleNames = { Roles.Admin, Roles.Stylist, Roles.Customer };
+
+        foreach (var roleName in roleNames)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
     }
 }
