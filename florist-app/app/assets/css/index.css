@@ -6,8 +6,20 @@
   letter-spacing: -2px;
 }
 
-.font-serif {
-  font-family: 'serif';
+.editorial-text {
+  font-family: 'Alice', serif;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #4A5D48;
+  font-weight: 400;
+  letter-spacing: 0px;
+}
+
+.category-subtitle {
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 0.85rem;
+  color: #d18b99;
 }
 
 .modern-card {
