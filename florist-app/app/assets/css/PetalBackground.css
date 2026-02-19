@@ -1,0 +1,41 @@
+.petal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.petal {
+  position: absolute;
+  top: -10%;
+  animation: drift linear infinite;
+  filter: blur(0.5px);
+  will-change: transform;
+}
+
+.shape-rose {
+  border-radius: 150% 10% 150% 10%
+}
+
+.shape-rose2 {
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+
+@keyframes drift {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+    33% {
+        transform: translateY(33vh) rotate(120deg) rotateY(180deg) translateX(var(--sway-amount));
+    }
+    66% {
+        transform: translateY(66vh) rotate(240deg) rotateY(0deg) translateX(calc(var(--sway-amount) * -0.8));
+    }
+    100% {
+        transform: translateY(115vh) rotate(480deg) translateX(var(--sway-amount));
+    }
+}

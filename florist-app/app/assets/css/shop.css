@@ -1,0 +1,90 @@
+.shop-container {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+.category-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 300;
+  color: #2D5A27;
+  letter-spacing: -2px;
+}
+
+.category-subtitle {
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  font-size: 0.85rem;
+  color: #d18b99;
+}
+
+.filter-item {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.filter-item.active, .filter-item:hover {
+  color: #2D5A27;
+  border-bottom: 1px solid #2D5A27;
+}
+
+.product-image {
+  transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.product-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #333;
+}
+
+.product-price {
+  content: '$';
+  font-size: 0.85rem;
+  color: #d18b99;
+  font-family: 'Playfair Display', serif;
+  margin-top: 4px;
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden;
+  background-color: #f9f9f9;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.show-overlay {
+  opacity: 1;
+}
+
+.view-btn {
+  letter-spacing: 2px;
+  color: #2D5A27 !important;
+  border: 1px solid #2D5A27;
+  background: white;
+}

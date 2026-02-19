@@ -1,0 +1,33 @@
+.display-main {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 300;
+  color: #2D5A27;
+  letter-spacing: -2px;
+}
+
+.font-serif {
+  font-family: 'serif';
+}
+
+.modern-card {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.modern-card:hover {
+  transform: translateY(-10px);
+}
+
+.shop-btn {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  letter-spacing: 2px;
+}
+
+.shop-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 90, 39, 0.15) !important;
+  background-color: #3a7532 !important; /* Slightly lighter green on hover */
+}

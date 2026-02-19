@@ -1,0 +1,134 @@
+<template>
+  <div class="admin-page-wrapper">
+    <PetalBackground />
+
+    <v-container class="position-relative py-16" style="z-index: 1">
+      
+      <v-row v-if="!isAuthenticated" justify="center" align="center" style="min-height: 60vh;">
+        <v-col cols="12" md="5" lg="4">
+          <v-card class="glass-card pa-10 text-center" elevation="0">
+            <h1 class="display-main mb-2">Staff Portal</h1>
+            
+            <v-text-field
+              v-model="loginForm.username"
+              label="Username"
+              variant="outlined"
+              color="#B64995"
+              class="mb-4 boutique-input"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="loginForm.password"
+              label="Password"
+              type="password"
+              variant="outlined"
+              color="#B64995"
+              class="mb-8 boutique-input"
+            ></v-text-field>
+
+            <v-alert v-if="loginError" color="#d18b99" variant="tonal" icon="mdi-flower-pollen" class="mb-6 text-left">
+              The garden gate remains locked. Please check your credentials.
+            </v-alert>
+
+            <v-btn
+              block
+              size="x-large"
+              color="#2D5A27"
+              variant="flat"
+              rounded="xl"
+              class="letter-spacing-2"
+              @click="handleLogin"
+            >
+              Enter Portal
+            </v-btn>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <div v-else class="fade-in">
+        <v-row align="end" class="mb-12">
+          <v-col cols="12" md="8">
+            <h1 class="display-main">Collection Management</h1>
+            <p class="brand-ethos">
+              CURRENT ACCESS: <span class="text-green-darken-3 font-weight-bold">{{ userRole }}</span>
+            </p>
+          </v-col>
+          <v-col cols="12" md="4" class="text-md-right">
+            <v-btn variant="text" color="grey-darken-1" @click="logout" class="mr-4">Sign Out</v-btn>
+            <v-btn 
+              v-if="userRole === 'ADMIN'" 
+              color="#2D5A27" 
+              variant="flat" 
+              rounded="xl" 
+              prepend-icon="mdi-plus"
+              class="px-6"
+            >
+              Add New Stem
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col v-for="item in products" :key="item.id" cols="12">
+            <v-card class="glass-card mb-4 pa-4 d-flex align-center" elevation="0">
+              <v-avatar size="60" class="mr-6 rounded-lg">
+                <v-img :src="item.imageUrl" cover></v-img>
+              </v-avatar>
+              
+              <div class="flex-grow-1">
+                <h3 class="staff-name" style="font-size: 1.2rem;">{{ item.name }}</h3>
+                <span class="brand-ethos" style="font-size: 0.6rem;">{{ item.season }} COLLECTION</span>
+              </div>
+
+              <div class="text-right px-6">
+                <p class="staff-name" style="font-size: 1.2rem;">${{ item.price }}</p>
+              </div>
+
+              <div v-if="userRole === 'ADMIN'" class="admin-actions ml-4">
+                <v-btn icon="mdi-pencil-outline" variant="text" color="#2D5A27"></v-btn>
+                <v-btn icon="mdi-trash-can-outline" variant="text" color="#d18b99"></v-btn>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
+    </v-container>
+  </div>
+</template>
+
+
+
+<script setup>
+import { ref } from 'vue'
+import '~/assets/css/staff.css'
+
+const isAuthenticated = ref(false)
+const userRole = ref('') 
+const loginError = ref(false)
+const loginForm = ref({ username: '', password: '' })
+
+const products = ref([
+  { id: 1, name: "Spring Awakening No. 01", price: 185.00, season: "Spring", imageUrl: "/spring-01.jpg" },
+  { id: 2, name: "Midnight Calla Lily", price: 210.00, season: "Autumn", imageUrl: "/autumn-01.jpg" }
+])
+
+const handleLogin = () => {
+  if (loginForm.value.username === 'admin' && loginForm.value.password === 'admin') {
+    isAuthenticated.value = true
+    userRole.value = 'ADMIN'
+    loginError.value = false
+  } else if (loginForm.value.username === 'staff' && loginForm.value.password === 'staff') {
+    isAuthenticated.value = true
+    userRole.value = 'STAFF'
+    loginError.value = false
+  } else {
+    loginError.value = true
+  }
+}
+
+const logout = () => {
+  isAuthenticated.value = false
+  userRole.value = ''
+  loginForm.value = { username: '', password: '' }
+}
+</script>
