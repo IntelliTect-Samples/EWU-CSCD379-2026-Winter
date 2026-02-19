@@ -1,13 +1,14 @@
 <template>
   <div class="admin-page-wrapper">
-    <PetalBackground />
-
+    <ClientOnly>
+      <PetalBackground />
+    </ClientOnly>
     <v-container class="position-relative py-16" style="z-index: 1">
       
       <v-row v-if="!isAuthenticated" justify="center" align="center" style="min-height: 60vh;">
         <v-col cols="12" md="5" lg="4">
           <v-card class="glass-card pa-10 text-center" elevation="0">
-            <h1 class="display-main mb-2">Staff Portal</h1>
+            <h1 class="display-main mb-2">Garden Portal</h1>
             
             <v-text-field
               v-model="loginForm.username"
@@ -100,8 +101,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import '~/assets/css/staff.css'
+import { useRouter } from 'vue-router'
+import '~/assets/css/login.css'
 
+const router = useRouter()
 const isAuthenticated = ref(false)
 const userRole = ref('') 
 const loginError = ref(false)
@@ -113,15 +116,31 @@ const products = ref([
 ])
 
 const handleLogin = () => {
-  if (loginForm.value.username === 'admin' && loginForm.value.password === 'admin') {
+  const { username, password } = loginForm.value
+
+  // 1. ADMIN REDIRECT
+  if (username === 'admin' && password === 'admin') {
     isAuthenticated.value = true
     userRole.value = 'ADMIN'
     loginError.value = false
-  } else if (loginForm.value.username === 'staff' && loginForm.value.password === 'staff') {
+    // You can choose to stay here or redirect:
+    // router.push('/portal/inventory') 
+  } 
+  
+  // 2. STAFF REDIRECT
+  else if (username === 'staff' && password === 'staff') {
     isAuthenticated.value = true
     userRole.value = 'STAFF'
     loginError.value = false
-  } else {
+    // router.push('/portal/inventory')
+  } 
+  
+  // 3. CUSTOMER REDIRECT (Any other valid-looking login)
+  else if (username.length > 2 && password === 'guest') {
+    router.push('/shop')
+  }
+  
+  else {
     loginError.value = true
   }
 }
@@ -130,5 +149,6 @@ const logout = () => {
   isAuthenticated.value = false
   userRole.value = ''
   loginForm.value = { username: '', password: '' }
+  router.push('/login')
 }
 </script>

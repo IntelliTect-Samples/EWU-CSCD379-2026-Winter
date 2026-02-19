@@ -1,6 +1,8 @@
 <template>
   <div>
-    <PetalBackground />
+    <ClientOnly>
+      <PetalBackground />
+    </ClientOnly>
     <v-container fluid class="shop-container px-md-16 py-10">
       <header class="shop-header mb-16 text-center">
         <h2 class="category-title">The Collection</h2>

@@ -1,7 +1,8 @@
 <template>
   <v-app>
-    <PetalBackground />
-
+    <ClientOnly>
+      <PetalBackground />
+    </ClientOnly>
     <v-app-bar 
       flat 
       class="px-md-12" 
@@ -27,21 +28,37 @@
           </v-btn>
         </template>
 
-        <v-list class="menu-glass mt-2" min-width="200">
-          <v-list-item to="/shop" prepend-icon="mdi-flower" title="Shop" class="menu-item" />
-          <v-divider class="my-2"></v-divider>
-          <v-list-item to="/staff" prepend-icon="mdi-flower-tulip" title="Staff Portal" />
-          <v-list-item class="mt-2">
-            <v-btn 
-              block 
-              flat 
-              color="#2D5A27" 
-              class="text-white rounded-pill"
-              @click="loginDialog = true"
-            >
-              Login
-            </v-btn>
+        <v-list class="menu-glass mt-2" min-width="220">
+          <v-list-item 
+            to="/shop" 
+            prepend-icon="mdi-flower" 
+            title="Shop" 
+            class="menu-item" 
+          />
+
+          <v-list-item 
+            to="/cart" 
+            prepend-icon="mdi-basket-outline" 
+            title="Cart"
+            class="menu-item"
+          >
+            <template v-slot:append>
+              <v-badge
+                color="#B64995"
+                :content="cart.length"
+                :model-value="cart.length > 0"
+                inline
+              >
+              </v-badge>
+            </template>
           </v-list-item>
+
+          <v-list-item 
+            to="/login" 
+            prepend-icon="mdi-flower-tulip" 
+            title="Garden Portal" 
+            class="menu-item" 
+          />
         </v-list>
       </v-menu>
     </v-app-bar>
@@ -61,6 +78,7 @@
 import { ref, computed } from 'vue'
 import '~/assets/css/NavigationBar.css'
 
+const { cart, cartTotal } = useCart()
 const loginDialog = ref(false)
 const route = useRoute()
 
@@ -68,8 +86,8 @@ const currentRouteName = computed(() => {
   switch (route.path) {
     case '/shop':
       return 'Shop'
-    case '/staff':
-      return 'Staff Portal'
+    case '/login':
+      return 'Garden Portal'
     default:
       return 'Page'
   }
