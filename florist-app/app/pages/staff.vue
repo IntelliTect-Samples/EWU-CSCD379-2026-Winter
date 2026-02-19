@@ -108,8 +108,8 @@ const loginError = ref(false)
 const loginForm = ref({ username: '', password: '' })
 
 const products = ref([
-  { id: 1, name: "Spring Awakening No. 01", price: 185.00, season: "Spring", imageUrl: "/spring-01.jpg" },
-  { id: 2, name: "Midnight Calla Lily", price: 210.00, season: "Autumn", imageUrl: "/autumn-01.jpg" }
+  { id: 1, name: "Spring Awakening", price: 185.00, season: "Spring", imageUrl: "images/spring-flowers.jpg" },
+  { id: 2, name: "Autumn Glow", price: 210.00, season: "Autumn", imageUrl: "images/fall-flowers.jpg" }
 ])
 
 const handleLogin = () => {
