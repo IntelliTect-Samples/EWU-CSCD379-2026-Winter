@@ -75,3 +75,18 @@ const currentRouteName = computed(() => {
   }
 })
 </script>
+
+<style>
+[v-cloak] {
+  display: none;
+}
+
+.v-application {
+  opacity: 0;
+  animation: fadeIn 0.4s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+</style>
