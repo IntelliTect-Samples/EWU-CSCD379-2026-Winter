@@ -11,6 +11,7 @@ namespace SalonManagementService.Api.Controllers;
 public class StylistController(SalonDbContext dbContext) : ControllerBase
 {
     [HttpGet("List")]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<StylistDto>>> List()
     {
         var stylists = await dbContext.Stylists
@@ -32,6 +33,7 @@ public class StylistController(SalonDbContext dbContext) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{Roles.Stylist}, {Roles.Admin}")]
     public async Task<ActionResult<StylistDto>> UpsertStylist([FromBody] StylistDto dto)
     {
         if (!ModelState.IsValid)

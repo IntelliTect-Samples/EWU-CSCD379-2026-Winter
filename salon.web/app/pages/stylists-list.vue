@@ -18,7 +18,7 @@
                             formatTime(stylist.workEndTime24H) }}
                         </div>
                     </v-card-text>
-                    <v-card-actions>
+                    <v-card-actions v-if="canEdit">
                         <v-spacer></v-spacer>
                         <v-btn color="primary" icon="mdi-pencil" @click="editStylist(stylist)"></v-btn>
                     </v-card-actions>
@@ -27,8 +27,8 @@
         </v-row>
 
         <!-- Floating Action Button for Adding New Stylist -->
-        <v-btn color="primary" icon="mdi-plus" size="large" position="fixed" location="bottom right" class="ma-4"
-            @click="addStylist"></v-btn>
+        <v-btn v-if="canEdit" color="primary" icon="mdi-plus" size="large" position="fixed" location="bottom right"
+            class="ma-4" @click="addStylist"></v-btn>
 
         <!-- Stylist Dialog -->
         <StylistDialog v-model="dialogVisible" :stylist="selectedStylist" @saved="refreshList" />
@@ -38,8 +38,10 @@
 <script setup lang="ts">
 import StylistDialog from '../../components/StylistDialog.vue';
 
-const config = useRuntimeConfig();
-const apiBase = config.public.apiBase;
+const { apiFetch } = useApiFetch();
+const { roles } = useAuth();
+
+const canEdit = computed(() => roles.value.includes('Admin') || roles.value.includes('Stylist'));
 
 interface StylistDto {
     stylistId?: string;
@@ -59,9 +61,8 @@ const selectedStylist = ref<StylistDto | null>(null);
 // Fetch stylists on mount
 const fetchStylists = async () => {
     try {
-        const response = await fetch(`${apiBase}/Stylist/List`);
-        if (response.ok) {
-            const data = await response.json();
+        const { data } = await apiFetch<StylistDto[]>('/Stylist/List');
+        if (data) {
             stylists.value = data;
         }
     } catch (error) {

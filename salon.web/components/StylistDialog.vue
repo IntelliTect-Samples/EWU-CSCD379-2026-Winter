@@ -48,10 +48,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useRuntimeConfig } from '#app';
 
-const config = useRuntimeConfig();
-const apiBase = config.public.apiBase;
+const { apiFetch } = useApiFetch();
 
 interface StylistDto {
     stylistId?: string;
@@ -132,19 +130,14 @@ const save = async () => {
         };
 
         // Save stylist data
-        const response = await fetch(`${apiBase}/Stylist`, {
+        const { data: savedStylist, response } = await apiFetch(`/Stylist`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify(dto)
         });
 
         if (!response.ok) {
             throw new Error('Failed to save stylist');
         }
-
-        const savedStylist = await response.json();
 
         // Use existing ID if editing, otherwise use the newly created ID
         const stylistId = props.stylist?.stylistId || savedStylist.stylistId;
@@ -154,7 +147,7 @@ const save = async () => {
             const formDataImage = new FormData();
             formDataImage.append('image', imageFile.value);
 
-            const imageResponse = await fetch(`${apiBase}/Stylist/Image/${stylistId}`, {
+            const { response: imageResponse } = await apiFetch(`/Stylist/Image/${stylistId}`, {
                 method: 'PUT',
                 body: formDataImage
             });
@@ -176,7 +169,7 @@ const confirmDelete = async () => {
 
     if (confirm('Are you sure you want to delete this stylist?')) {
         try {
-            const response = await fetch(`${apiBase}/Stylist/${props.stylist.stylistId}`, {
+            const { response } = await apiFetch(`/Stylist/${props.stylist.stylistId}`, {
                 method: 'DELETE'
             });
 
