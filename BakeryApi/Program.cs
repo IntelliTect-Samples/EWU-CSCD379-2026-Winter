@@ -23,6 +23,8 @@ var app = builder.Build();
 
 app.UseCors("AllowFrontend");
 
+app.UseStaticFiles();
+
 app.UseAuthorization();
 app.MapControllers();
 

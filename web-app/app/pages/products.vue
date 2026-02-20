@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getProducts } from '../../services/api'
+import { getProducts } from '~/services/api'
 
 const products = ref([])
 
@@ -15,8 +15,8 @@ onMounted(async () => {
 
     <div v-for="p in products" :key="p.id">
       <h3>{{ p.name }}</h3>
-      <p>{{ p.description }}</p>
       <p>${{ p.price }}</p>
+      <img v-if="p.imageUrl" :src="p.imageUrl" width="150" />
     </div>
   </div>
 </template>

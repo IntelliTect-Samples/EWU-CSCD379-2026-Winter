@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BakeryApi.Data;
 using BakeryApi.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BakeryApi.Controllers
 {
@@ -28,5 +29,30 @@ namespace BakeryApi.Controllers
             _context.SaveChanges();
             return Ok(product);
         }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var imageUrl = $"http://localhost:5000/Uploads/{fileName}";
+
+            return Ok(new { imageUrl });
+        }
     }
 }
+
