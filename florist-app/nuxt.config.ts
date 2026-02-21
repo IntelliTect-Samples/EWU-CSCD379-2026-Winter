@@ -33,6 +33,13 @@ export default defineNuxtConfig({
       ]
     }
   },
+  css: [
+    '@/assets/css/index.css',
+    '@/assets/css/login.css',
+    '@/assets/css/NavigationBar.css',
+    '@/assets/css/PetalBackground.css',
+    '@/assets/css/shop.css'
+  ],
   runtimeConfig: {
     public: {
       apiBase: 'https://bs-botanicals-api-dtgjbhfwacheb7bb.eastus2-01.azurewebsites.net/api'
