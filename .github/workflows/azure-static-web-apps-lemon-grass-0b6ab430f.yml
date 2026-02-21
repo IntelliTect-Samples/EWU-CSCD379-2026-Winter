@@ -33,5 +33,5 @@ jobs:
           app_location: "florist-app/.output/public" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "" # Built app content directory - optional
-          skip-app-build: true # Skip app build during workflow - optional
+          skip_app_build: true # Skip app build during workflow - optional
           ###### End of Repository/Build Configurations ######
