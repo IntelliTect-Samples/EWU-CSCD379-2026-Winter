@@ -17,6 +17,8 @@ export default defineNuxtConfig({
     transpile: ['vuetify'],
   },
   app: {
+    baseURL: '/',
+    buildAssetsDir: '_nuxt',
     head: {
       title: 'Bloom & Stem',
       link: [
