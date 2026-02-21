@@ -1,3 +1,5 @@
+import { computed } from 'vue'
+
 export const useCart = () => {
   const cart = useState('cart', () => [])
 
