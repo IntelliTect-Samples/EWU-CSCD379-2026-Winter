@@ -1,59 +1,37 @@
-name: Azure Static Web Apps CI/CD
+name: Manual Azure SWA Deploy
 
 on:
   push:
-    branches:
-      - Assignment4
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - Assignment4
+    branches: [ Assignment4 ]
+      
+    paths: [ 'florist-app/**' ]
 
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
-    permissions:
-       id-token: write
-       contents: read
     steps:
       - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          submodules: true
-          lfs: false
-      - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
-      - name: Get Id Token
-        uses: actions/github-script@v6
-        id: idtoken
-        with:
-           script: |
-               const coredemo = require('@actions/core')
-               return await coredemo.getIDToken()
-           result-encoding: string
-      - name: Build And Deploy
+          node-version: '20'
+      - name: Build
+        run: |
+          cd florist-app
+          npm install
+          npm run generate
+      - name: Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_LEMON_GRASS_0B6AB430F }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/florist-app" # App source code path
+          app_location: "florist-app/.output/public" # App source code path
           api_location: "" # Api source code path - optional
-          output_location: ".output/public" # Built app content directory - optional
-          app_build_command: "npm run build" # App build command - optional
-          github_id_token: ${{ steps.idtoken.outputs.result }}
+          output_location: "" # Built app content directory - optional
+          skip-app-build: true # Skip app build during workflow - optional
           ###### End of Repository/Build Configurations ######
-
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-    steps:
-      - name: Close Pull Request
-        id: closepullrequest
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          action: "close"

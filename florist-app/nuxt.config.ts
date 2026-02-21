@@ -4,6 +4,9 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
   ssr: false,
+  nitro: {
+    preset: 'azure-swa' 
+  },
   srcDir: 'app/',
   dir: {
     public: 'public/'
@@ -12,9 +15,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   build: {
     transpile: ['vuetify'],
-  },
-  nitro: {
-    preset: 'azure-swa' 
   },
   app: {
     head: {
