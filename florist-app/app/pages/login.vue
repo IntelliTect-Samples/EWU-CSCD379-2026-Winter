@@ -124,8 +124,7 @@ const handleLogin = async () => {
   loginError.value = false
 
   try {
-    // 1. CALL YOUR REAL .NET API
-    // The endpoint matches your AuthController [HttpPost("login")]
+    //Call API
     const { data, error } = await $fetch(`${config.public.apiBase}/auth/login`, {
       method: 'POST',
       body: loginForm.value
