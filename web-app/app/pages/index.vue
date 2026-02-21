@@ -3,7 +3,8 @@
 
 <template>
   <div class="page">
-    <h1>Welcome to Sweet Crumbs Bakery 🎂</h1>
+    <img src="/homepage1.png" alt="Bakery Homepage" style="max-width: 100%; height: auto; margin-bottom: 24px;" />
+    <h1>Welcome to HomeSweet Bakery 🎂</h1>
     <p>Fresh baked cakes made with love.</p>
 
     <NuxtLink to="/products">

@@ -5,14 +5,14 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 onMounted(() => {
-  const admin = localStorage.getItem("admin")
+  const admin = localStorage.getItem("isAdmin")
   if (!admin) {
     router.push('/admin/login')
   }
 })
 
 const logout = () => {
-  localStorage.removeItem("admin")
+  localStorage.removeItem("isAdmin")
   router.push('/')
 }
 </script>

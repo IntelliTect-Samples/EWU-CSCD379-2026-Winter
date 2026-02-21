@@ -49,9 +49,23 @@ namespace BakeryApi.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            var imageUrl = $"http://localhost:5000/Uploads/{fileName}";
+            var imageUrl = $"http://localhost:5237/Uploads/{fileName}";
 
             return Ok(new { imageUrl });
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteProduct(int id)
+        {
+            var product = _context.Products.Find(id);
+
+            if (product == null)
+                return NotFound();
+
+            _context.Products.Remove(product);
+            _context.SaveChanges();
+
+            return NoContent();
         }
     }
 }

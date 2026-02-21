@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BakeryApi.Data;
 using BakeryApi.Models;
+using Microsoft.EntityFrameworkCore; 
 
 namespace BakeryApi.Controllers
 {
@@ -18,6 +19,11 @@ namespace BakeryApi.Controllers
         [HttpPost]
         public IActionResult CreateOrder(Order order)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Orders.Add(order);
             _context.SaveChanges();
             return Ok(order);
@@ -26,7 +32,11 @@ namespace BakeryApi.Controllers
         [HttpGet]
         public IActionResult GetOrders()
         {
-            return Ok(_context.Orders.ToList());
+            var orders = _context.Orders
+                .Include(o => o.OrderItems) 
+                .ToList();
+
+            return Ok(orders);
         }
     }
 }

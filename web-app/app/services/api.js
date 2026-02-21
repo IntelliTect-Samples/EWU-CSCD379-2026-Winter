@@ -27,3 +27,9 @@ export const uploadImage = async (file) => {
     body: formData
   })
 }
+
+export const deleteProduct = (id) => {
+  return $fetch(`${API}/products/${id}`, {
+    method: "DELETE"
+  })
+}

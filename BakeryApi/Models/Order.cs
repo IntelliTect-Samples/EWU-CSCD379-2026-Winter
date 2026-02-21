@@ -21,6 +21,6 @@ namespace BakeryApi.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public List<OrderItem> OrderItems { get; set; }
+        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }
