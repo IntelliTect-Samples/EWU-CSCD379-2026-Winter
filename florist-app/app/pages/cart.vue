@@ -58,7 +58,6 @@
         </v-card>
 
         <v-card v-else class="glass-card pa-16 text-center" elevation="0">
-          <v-icon size="64" color="grey-lighten-2" class="mb-4">mdi-flower-outline</v-icon>
           <p class="editorial-text mb-8">Your basket is currently empty.</p>
           <v-btn to="/shop" variant="outlined" color="#2D5A27" rounded="xl">
             Return to Collection
