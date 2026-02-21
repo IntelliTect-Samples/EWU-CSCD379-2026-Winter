@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
+  nitro: {
+    preset: 'azure-swa' 
+  },
   ssr: false,
   srcDir: 'app/',
   dir: {
