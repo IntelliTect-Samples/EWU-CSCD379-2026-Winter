@@ -105,47 +105,53 @@ import { useRouter } from 'vue-router'
 import '~/assets/css/login.css'
 
 const router = useRouter()
+const config = useRuntimeConfig() // Accesses the NUXT_PUBLIC_API_BASE we set in Azure
+
 const isAuthenticated = ref(false)
 const userRole = ref('') 
 const loginError = ref(false)
 const loginForm = ref({ username: '', password: '' })
+
+// This will hold our JWT token in the browser
+const tokenCookie = useCookie('auth_token', { maxAge: 60 * 60 * 3 }) // 3 hours
 
 const products = ref([
   { id: 1, name: "Spring Awakening", price: 185.00, season: "Spring", imageUrl: "images/spring-flowers.jpg" },
   { id: 2, name: "Autumn Glow", price: 210.00, season: "Autumn", imageUrl: "images/fall-flowers.jpg" }
 ])
 
-const handleLogin = () => {
-  const { username, password } = loginForm.value
+const handleLogin = async () => {
+  loginError.value = false
 
-  // 1. ADMIN REDIRECT
-  if (username === 'admin' && password === 'admin') {
-    isAuthenticated.value = true
-    userRole.value = 'ADMIN'
-    loginError.value = false
-    // You can choose to stay here or redirect:
-    // router.push('/portal/inventory') 
-  } 
-  
-  // 2. STAFF REDIRECT
-  else if (username === 'staff' && password === 'staff') {
-    isAuthenticated.value = true
-    userRole.value = 'STAFF'
-    loginError.value = false
-    // router.push('/portal/inventory')
-  } 
-  
-  // 3. CUSTOMER REDIRECT (Any other valid-looking login)
-  else if (username.length > 2 && password === 'guest') {
-    router.push('/shop')
-  }
-  
-  else {
+  try {
+    // 1. CALL YOUR REAL .NET API
+    // The endpoint matches your AuthController [HttpPost("login")]
+    const { data, error } = await $fetch(`${config.public.apiBase}/auth/login`, {
+      method: 'POST',
+      body: loginForm.value
+    })
+
+    if (data) {
+      // 2. SUCCESS! Save the token
+      tokenCookie.value = data // The API returns the JWT string
+      isAuthenticated.value = true
+      
+      // 3. SET ROLE (Assuming your API returns role or you decode it)
+      // For now, let's peek at the username to set the UI role
+      // In a real app, you'd decode the JWT to get the 'role' claim
+      userRole.value = loginForm.value.username.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'STAFF'
+      
+      console.log("Logged in successfully!")
+    }
+  } catch (err) {
+    // 4. FAIL! Show the "Garden gate locked" alert
+    console.error("Login failed:", err)
     loginError.value = true
   }
 }
 
 const logout = () => {
+  tokenCookie.value = null // Clear the cookie
   isAuthenticated.value = false
   userRole.value = ''
   loginForm.value = { username: '', password: '' }

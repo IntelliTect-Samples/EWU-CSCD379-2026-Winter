@@ -3,9 +3,6 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
-  nitro: {
-    preset: 'azure-swa' 
-  },
   ssr: false,
   srcDir: 'app/',
   dir: {
@@ -16,9 +13,12 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
+  nitro: {
+    preset: 'azure-swa' 
+  },
   app: {
     head: {
-      title: 'Bloom & Stem | Artisanal Botanicals',
+      title: 'Bloom & Stem',
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
@@ -31,6 +31,11 @@ export default defineNuxtConfig({
       meta: [
         { name: 'theme-color', content: '#2D5A27' }
       ]
+    }
+  },
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://bs-botanicals-api-dtgjbhfwacheb7bb.eastus2-01.azurewebsites.net/api'
     }
   }
 })
