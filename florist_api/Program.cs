@@ -42,7 +42,7 @@ builder.Services.AddAuthentication(options => {
 // CORS
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowNuxt", policy => {
-        policy.WithOrigins("https://bs-botanicals-api-dtgjbhfwacheb7bb.eastus2-01.azurewebsites.net")
+        policy.WithOrigins("https://agreeable-smoke-0d382ca0f.2.azurestaticapps.net")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
