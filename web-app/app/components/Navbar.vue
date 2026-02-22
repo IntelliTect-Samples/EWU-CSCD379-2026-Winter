@@ -1,23 +1,20 @@
 <template>
   <nav class="navbar">
-
-    <!-- LEFT -->
     <div class="nav-left">
       <NuxtLink to="/">Home</NuxtLink>
       <NuxtLink to="/products">Products</NuxtLink>
     </div>
 
-    <!-- CENTER LOGO -->
     <div class="nav-center">
+      <NuxtLink to="/">
         <img src="/logo.png" alt="HomeSweet Logo" class="logo-img" />
+      </NuxtLink>
     </div>
 
-    <!-- RIGHT -->
     <div class="nav-right">
-      <NuxtLink to="/cart">Go To Cart</NuxtLink>
-      <NuxtLink to="/admin/login">Admin Login</NuxtLink>
+      <NuxtLink to="/cart">Cart</NuxtLink>
+      <NuxtLink to="/admin/login">Admin</NuxtLink>
     </div>
-
   </nav>
 </template>
 
@@ -26,19 +23,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 40px;
-  background: #f8d7da;
+  padding: 14px 28px;
+  background: linear-gradient(90deg, #fff0f3, #fffaf0);
   position: relative;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
 
-/* Left & Right */
 .nav-left,
 .nav-right {
   display: flex;
-  gap: 24px;
+  gap: 18px;
+  align-items: center;
 }
 
-/* Center logo */
 .nav-center {
   position: absolute;
   left: 50%;
@@ -46,18 +44,18 @@
 }
 
 .logo-img {
-  height: 90px;   /* adjust if needed */
+  height: 64px;
   width: auto;
+  display: block;
 }
 
-/* Links */
 a {
   text-decoration: none;
-  color: #333;
-  font-weight: 500;
+  color: #4b3b57;
+  font-weight: 600;
 }
 
 a:hover {
-  color: #c2185b;
+  color: #a33b6a;
 }
-</style>s
+</style>

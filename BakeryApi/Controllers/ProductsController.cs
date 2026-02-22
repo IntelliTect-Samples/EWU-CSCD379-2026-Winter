@@ -31,12 +31,13 @@ namespace BakeryApi.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile file)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded.");
 
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            // Save uploaded files under wwwroot/Uploads so they are served as static files
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
 
             if (!Directory.Exists(uploadsFolder))
                 Directory.CreateDirectory(uploadsFolder);
@@ -49,7 +50,10 @@ namespace BakeryApi.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            var imageUrl = $"http://localhost:5237/Uploads/{fileName}";
+            // Build image URL dynamically from request so it works on any host/port
+            var req = HttpContext.Request;
+            var baseUrl = $"{req.Scheme}://{req.Host}";
+            var imageUrl = $"{baseUrl}/Uploads/{fileName}";
 
             return Ok(new { imageUrl });
         }

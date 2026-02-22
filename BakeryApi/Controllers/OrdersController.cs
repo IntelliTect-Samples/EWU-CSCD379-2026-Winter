@@ -16,6 +16,11 @@ namespace BakeryApi.Controllers
             _context = context;
         }
 
+public class StatusUpdateDto
+{
+    public string? Status { get; set; }
+}
+
         [HttpPost]
         public IActionResult CreateOrder(Order order)
         {
@@ -37,6 +42,20 @@ namespace BakeryApi.Controllers
                 .ToList();
 
             return Ok(orders);
+        }
+
+        [HttpPost("{id}/status")]
+        public IActionResult UpdateStatus(int id, [FromBody] StatusUpdateDto dto)
+        {
+            var order = _context.Orders.Find(id);
+
+            if (order == null)
+                return NotFound();
+
+            order.Status = dto?.Status ?? order.Status;
+            _context.SaveChanges();
+
+            return Ok(order);
         }
     }
 }
