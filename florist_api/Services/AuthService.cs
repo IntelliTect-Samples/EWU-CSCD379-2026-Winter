@@ -18,7 +18,7 @@ namespace florist_api.Services
             _configuration = configuration;
         }
 
-        public async Task<string?> LoginAsync(LoginRequest model)
+        public async Task<LoginResponse?> LoginAsync(LoginRequest model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             
@@ -38,7 +38,12 @@ namespace florist_api.Services
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                return GenerateToken(authClaims);
+                var tokenString = GenerateToken(authClaims);
+                return new LoginResponse
+                {
+                  Token = tokenString,
+                    Role = userRoles.FirstOrDefault() ?? "Staff"  
+                };
             }
             return null;
         }

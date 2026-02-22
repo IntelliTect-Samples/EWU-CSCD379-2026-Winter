@@ -5,7 +5,7 @@ namespace florist_api.Services
 {
     public interface IAuthService
     {
-        Task<string?> LoginAsync(LoginRequest model);
+        Task<LoginResponse?> LoginAsync(LoginRequest model);
         Task<IdentityResult> RegisterEmployeeAsync(EmployeeCreateRequest model);
     }
 }

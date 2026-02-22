@@ -41,8 +41,11 @@ builder.Services.AddAuthentication(options => {
 
 // CORS
 builder.Services.AddCors(options => {
-    options.AddPolicy("OpenPolicy", policy => {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    options.AddPolicy("AllowNuxt", policy => {
+        policy.WithOrigins("https://bs-botanicals-api-dtgjbhfwacheb7bb.eastus2-01.azurewebsites.net")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -56,7 +59,7 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
-app.UseCors("OpenPolicy");
+app.UseCors("AllowNuxt");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

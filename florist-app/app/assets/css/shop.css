@@ -1,9 +1,3 @@
-.shop-container {
-  position: relative;
-  z-index: 1;
-  background: transparent;
-}
-
 .category-title {
   font-family: 'Playfair Display', serif;
   font-size: clamp(3rem, 8vw, 5rem);

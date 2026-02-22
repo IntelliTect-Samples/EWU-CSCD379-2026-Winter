@@ -18,14 +18,14 @@ namespace florist_api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
-            var token = await _authService.LoginAsync(model);
+            var result = await _authService.LoginAsync(model);
             
-            if (token != null)
+            if (result != null)
             {
-                return Ok(new { Token = token });
+                return Ok(result);
             }
             
-            return Unauthorized("Invalid username or password.");
+            return Unauthorized("The garden gate remains locked. Invalid username or password.");
         }
     }
 }

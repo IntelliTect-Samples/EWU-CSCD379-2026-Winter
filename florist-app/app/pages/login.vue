@@ -125,32 +125,28 @@ const handleLogin = async () => {
 
   try {
     //Call API
-    const { data, error } = await $fetch(`${config.public.apiBase}/auth/login`, {
+    const response = await $fetch(`${config.public.apiBase}/auth/login`, {
       method: 'POST',
       body: loginForm.value
     })
 
-    if (data) {
-      // 2. SUCCESS! Save the token
-      tokenCookie.value = data // The API returns the JWT string
+    if (response && response.token) {
+      tokenCookie.value = response.token 
       isAuthenticated.value = true
       
-      // 3. SET ROLE (Assuming your API returns role or you decode it)
-      // For now, let's peek at the username to set the UI role
-      // In a real app, you'd decode the JWT to get the 'role' claim
-      userRole.value = loginForm.value.username.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'STAFF'
+      // 3. Set the role based on what the C# API sends back
+      userRole.value = response.role ? response.role.toUpperCase() : 'STAFF'
       
-      console.log("Logged in successfully!")
+      console.log("Welcome to the Garden Portal!")
     }
   } catch (err) {
-    // 4. FAIL! Show the "Garden gate locked" alert
-    console.error("Login failed:", err)
+    console.error("The gate is locked:", err)
     loginError.value = true
   }
 }
 
 const logout = () => {
-  tokenCookie.value = null // Clear the cookie
+  tokenCookie.value = null
   isAuthenticated.value = false
   userRole.value = ''
   loginForm.value = { username: '', password: '' }
