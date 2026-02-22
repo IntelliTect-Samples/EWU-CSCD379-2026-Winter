@@ -12,7 +12,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-        "Server=(localdb)\\mssqllocaldb;Database=BakeryDb;Trusted_Connection=True;"
+        builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
 

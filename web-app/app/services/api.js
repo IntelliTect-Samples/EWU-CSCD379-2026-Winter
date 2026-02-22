@@ -1,4 +1,6 @@
-const API = "http://localhost:5237/api"
+const config = useRuntimeConfig()
+
+const API = config.public.apiBase + "/api"
 
 export const getProducts = () => {
   return $fetch(`${API}/products`)
@@ -22,7 +24,7 @@ export const uploadImage = async (file) => {
   const formData = new FormData()
   formData.append("file", file)
 
-  return await $fetch("http://localhost:5237/api/products/upload", {
+  return await $fetch(`${API}/products/upload`, {
     method: "POST",
     body: formData
   })
