@@ -3,7 +3,7 @@
     <ClientOnly>
       <PetalBackground />
     </ClientOnly>
-    <v-container class="position-relative py-16" style="z-index: 1">
+    <v-container class="py-16 position-relative" style="z-index: 1;">
       
       <v-row v-if="!isAuthenticated" justify="center" align="center" style="min-height: 60vh;">
         <v-col cols="12" md="5" lg="4">

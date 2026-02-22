@@ -3,7 +3,7 @@
     <ClientOnly>
       <PetalBackground />
     </ClientOnly>
-    <v-container fluid class="shop-container px-md-16 py-10">
+    <v-container class="py-16 position-relative" style="z-index: 1;">
       <header class="shop-header mb-16 text-center">
         <h2 class="category-title">The Collection</h2>
         <p class="category-subtitle">botanicals for every season</p>

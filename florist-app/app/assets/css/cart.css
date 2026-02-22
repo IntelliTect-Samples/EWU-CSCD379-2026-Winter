@@ -1,0 +1,50 @@
+.cart-subtitle {
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 0.85rem;
+  color: #d18b99;
+}
+
+.cart-card {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cart-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(45, 90, 39, 0.08);
+}
+
+
+.cart-item {
+  transition: transform 0.3s ease;
+}
+
+.cart-item:hover {
+  transform: translateY(-4px);
+}
+
+.cart-item-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 300;
+  color: #2D5A27;
+}
+
+.cart-item-meta {
+  font-family: 'Alice', serif;
+  color: #4A5D48;
+}
+
+.cart-checkout-btn {
+  letter-spacing: 2px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.cart-checkout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 90, 39, 0.15) !important;
+  background-color: #3a7532 !important;
+}

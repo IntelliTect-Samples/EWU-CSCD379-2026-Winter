@@ -1,7 +1,16 @@
+.login-page {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: transparent;
+}
+
 .glass-card {
   background: rgba(255, 255, 255, 0.6) !important;
   backdrop-filter: blur(0.4px);
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
   border-radius: 24px !important;
 }
 
@@ -27,7 +36,10 @@
 
 .display-main {
   font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 300;
   color: #2D5A27;
+  letter-spacing: -2px;
 }
 
 .brand-ethos {

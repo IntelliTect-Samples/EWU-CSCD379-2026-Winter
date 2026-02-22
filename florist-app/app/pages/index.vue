@@ -3,7 +3,7 @@
     <ClientOnly>
       <PetalBackground />
     </ClientOnly>
-    <v-container class="position-relative" style="z-index: 1">
+    <v-container class="py-16 position-relative" style="z-index: 1;">
       <v-row justify="center" align="center" style="min-height: 40vh">
         <v-col cols="12" md="8" class="text-center">
           <h1 class="display-main mb-2">Bloom & Stem</h1>

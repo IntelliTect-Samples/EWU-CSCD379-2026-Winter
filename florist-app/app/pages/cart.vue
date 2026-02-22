@@ -2,7 +2,7 @@
     <ClientOnly>
       <PetalBackground />
     </ClientOnly>
-  <v-container class="py-16">
+  <v-container class="py-16 position-relative" style="z-index: 1;">
     <header class="text-center mb-12">
       <h1 class="display-main" style="font-size: 3rem;">Your Bouquet</h1>
       <p class="brand-ethos">Review your selected stems</p>
@@ -59,7 +59,13 @@
 
         <v-card v-else class="glass-card pa-16 text-center" elevation="0">
           <p class="editorial-text mb-8">Your basket is currently empty.</p>
-          <v-btn to="/shop" variant="outlined" color="#2D5A27" rounded="xl">
+          <v-btn to="/shop" 
+            color="#2D5A27" 
+            size="large" 
+            variant="flat" 
+            rounded="xl" 
+            class="shop-cta-btn px-10"
+          > 
             Return to Collection
           </v-btn>
         </v-card>
@@ -69,7 +75,7 @@
 </template>
 
 <script setup>
-import '~/assets/css/NavigationBar.css'
+import '~/assets/css/cart.css'
 const { cart, removeFromCart, cartTotal } = useCart()
 
 const checkout = () => {
