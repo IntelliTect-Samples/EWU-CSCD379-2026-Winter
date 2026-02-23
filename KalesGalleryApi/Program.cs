@@ -41,7 +41,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins(
+                  "http://localhost:3000",
+                  "https://red-sky-0bdfe7310.4.azurestaticapps.net")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -61,25 +63,23 @@ builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // Apply pending migrations automatically (required for Azure hosting)
+    // Apply pending migrations automatically
     using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<GalleryDbContext>();
         await db.Database.MigrateAsync();
     }
+
+    // Seed roles and admin user
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
         await DbSeeder.SeedRolesAndAdminAsync(services);
     }
-}
 
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
     app.UseSwaggerUI();
 }
