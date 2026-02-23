@@ -114,8 +114,4 @@ const formatPrice = (value) => {
     currency: 'USD',
   }).format(value)
 }
-
-const handleAddToCart = (product) => {
-  addToCart(product)
-}
 </script>
