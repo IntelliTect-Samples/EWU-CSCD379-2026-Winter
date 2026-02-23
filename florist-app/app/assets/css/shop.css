@@ -82,3 +82,17 @@
   border: 1px solid #2D5A27;
   background: white;
 }
+
+.add-cart-btn {
+  text-transform: uppercase !important;
+  letter-spacing: 1px;
+  font-family: 'Alice', serif;
+  font-weight: 600;
+  transition: all 0.3s ease !important;
+}
+
+.add-cart-btn:hover {
+  background-color: #d18b99 !important;
+  color: white !important;
+  transform: scale(1.05);
+}

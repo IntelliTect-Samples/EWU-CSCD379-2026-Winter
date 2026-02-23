@@ -29,34 +29,44 @@
 
       <v-row v-else>
         <v-col v-for="product in filteredProducts" :key="product.id" cols="12" sm="6" md="4">
-          <v-hover v-slot="{ isHovering, props }">
-            <v-card v-bind="props" flat class="product-card">
-              <div class="image-container mb-4">
-                <v-img
-                  :src="product.imageUrl"
-                  cover
-                  aspect-ratio="0.75"
-                  class="product-image"
-                >
-                  <template v-slot:placeholder>
-                    <v-row class="fill-height ma-0" align="center" justify="center">
-                      <v-progress-circular indeterminate color="pink-lighten-4"></v-progress-circular>
-                    </v-row>
-                  </template>
-                </v-img>
-                <div class="image-overlay" :class="{ 'show-overlay': isHovering }">
-                  <v-btn variant="text" class="view-btn" @click="openDetails(product.id)">
-                    View Details
-                  </v-btn>
-                </div>
-              </div>
+          <v-card flat class="product-card d-flex flex-column h-100">
+            <div class="image-container mb-4">
+              <v-img
+                :src="product.imageUrl"
+                cover
+                aspect-ratio="0.75"
+                class="product-image"
+              >
+                <template v-slot:placeholder>
+                  <v-row class="fill-height ma-0" align="center" justify="center">
+                    <v-progress-circular indeterminate color="pink-lighten-4"></v-progress-circular>
+                  </v-row>
+                </template>
+              </v-img>
+            </div>
+            
+            <div class="product-info px-4">
+              <h3 class="product-name text-center mb-2">{{ product.name }}</h3>
+            </div>
+
+            <v-spacer></v-spacer>
+
+            <v-card-actions class="px-4 pb-4 pt-0 d-flex justify-space-between align-center">
+              <span class="product-price text-subtitle-1 font-weight-bold">
+                {{ formatPrice(product.price) }}
+              </span>
               
-              <div class="product-info text-center">
-                <h3 class="product-name">{{ product.name }}</h3>
-                <p class="product-price">${{ product.price }}</p>
-              </div>
-            </v-card>
-          </v-hover>
+              <v-btn
+                color="pink-lighten-4"
+                variant="flat"
+                prepend-icon="mdi-cart-plus"
+                @click="addToCart(product)"
+                class="add-cart-btn"
+              >
+                Add
+              </v-btn>
+            </v-card-actions>
+          </v-card>
         </v-col>
       </v-row>
 
@@ -71,12 +81,14 @@
 import { ref, computed, onMounted } from 'vue'
 import '~/assets/css/shop.css'
 
+// --- 1. ADD THIS LINE ---
+const { addToCart } = useCart() 
+
 const activeFilter = ref('All')
 const products = ref([])
 const pending = ref(true)
 
 // --- FORMATTER ---
-// This turns 185 into $185.00 automatically
 const formatPrice = (value) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -88,38 +100,14 @@ const formatPrice = (value) => {
 const fetchProducts = async () => {
   pending.value = true
   try {
-    // Simulating the "Azure Trip" delay
+    // Note: Eventually swap this back to your useFetch('/bouquets') 
+    // once your SQL script is run!
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
     products.value = [
-      {
-        id: 1,
-        name: "Spring Awakening",
-        price: 185.00,
-        season: "Spring",
-        imageUrl: "/images/spring-flowers.jpg"
-      },
-      {
-        id: 2,
-        name: "Summer Solstice",
-        price: 155.00,
-        season: "Summer",
-        imageUrl: "/images/summer-flowers.jpg"
-      },
-      {
-        id: 3,
-        name: "Autumn Glow",
-        price: 210.00,
-        season: "Autumn",
-        imageUrl: "/images/fall-flowers.jpg"
-      },
-      {
-        id: 4,
-        name: "Winter's Embrace",
-        price: 195.00,
-        season: "Winter",
-        imageUrl: "/images/winter-flowers.jpg"
-      }
+      { id: 1, name: "Spring Awakening", price: 185.00, season: "Spring", imageUrl: "/images/spring-flowers.jpg" },
+      { id: 2, name: "Summer Solstice", price: 155.00, season: "Summer", imageUrl: "/images/summer-flowers.jpg" },
+      { id: 3, name: "Autumn Glow", price: 210.00, season: "Autumn", imageUrl: "/images/fall-flowers.jpg" },
+      { id: 4, name: "Winter's Embrace", price: 195.00, season: "Winter", imageUrl: "/images/winter-flowers.jpg" }
     ]
   } catch (error) {
     console.error("Database connection error:", error)
@@ -132,14 +120,14 @@ onMounted(() => {
   fetchProducts()
 })
 
-// --- FILTER LOGIC ---
 const filteredProducts = computed(() => {
   if (activeFilter.value === 'All') return products.value
   return products.value.filter(p => p.season === activeFilter.value)
 })
 
-const openDetails = (id) => {
-  console.log("Navigating to product:", id)
-  // Logic for a future Detail view or Quick View popup
+// --- 2. UPDATE THIS FUNCTION ---
+// Now it calls the composable instead of just logging to the console
+const handleAddToCart = (product) => {
+  addToCart(product)
 }
 </script>
