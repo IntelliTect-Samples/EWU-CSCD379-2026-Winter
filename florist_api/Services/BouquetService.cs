@@ -1,5 +1,6 @@
 using florist_api.Data;
 using florist_api.Models;
+using florist_api.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace florist_api.Services
@@ -26,8 +27,17 @@ namespace florist_api.Services
         }
 
         // Admin: Add new bouquets
-        public async Task<Bouquet> CreateBouquetAsync(Bouquet bouquet)
+        public async Task<Bouquet> CreateBouquetAsync(BouquetCreateRequest dto)
         {
+           var bouquet = new Bouquet
+            {
+                Name = dto.Name,
+                Price = dto.Price,
+                ImageUrl = dto.ImageUrl,
+                Season = dto.Season,
+                IsAvailable = true
+            };
+
             _context.Bouquets.Add(bouquet);
             await _context.SaveChangesAsync();
             return bouquet;

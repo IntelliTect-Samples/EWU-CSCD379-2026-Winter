@@ -4,15 +4,16 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using florist_api.DTOs;
+using florist_api.Models;
 
 namespace florist_api.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -39,21 +40,23 @@ namespace florist_api.Services
                 }
 
                 var tokenString = GenerateToken(authClaims);
+
                 return new LoginResponse
                 {
-                  Token = tokenString,
-                    Role = userRoles.FirstOrDefault() ?? "Staff"  
+                    Token = tokenString,
+                    Username = user.UserName!,
+                    Role = userRoles.FirstOrDefault() ?? "Staff" 
                 };
             }
             return null;
         }
 
         public async Task<IdentityResult> RegisterEmployeeAsync(EmployeeCreateRequest model)
-{
-            // We map Username to both fields so the user never has to provide an email
-            var user = new IdentityUser { 
+        {
+            var user = new ApplicationUser { 
                 UserName = model.Username, 
-                Email = $"{model.Username}@system.local" // Placeholder to satisfy Identity
+                Email = $"{model.Username}@system.local",
+                HireDate = model.HireDate
             };
             
             var result = await _userManager.CreateAsync(user, model.Password);

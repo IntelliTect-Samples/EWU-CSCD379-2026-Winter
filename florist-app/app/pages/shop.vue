@@ -80,35 +80,18 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import '~/assets/css/shop.css'
-
-// --- 1. ADD THIS LINE ---
+const config = useRuntimeConfig()
 const { addToCart } = useCart() 
 
 const activeFilter = ref('All')
 const products = ref([])
 const pending = ref(true)
 
-// --- FORMATTER ---
-const formatPrice = (value) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(value)
-}
-
-// --- DATA FETCHING ---
 const fetchProducts = async () => {
   pending.value = true
   try {
-    // Note: Eventually swap this back to your useFetch('/bouquets') 
-    // once your SQL script is run!
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    products.value = [
-      { id: 1, name: "Spring Awakening", price: 185.00, season: "Spring", imageUrl: "/images/spring-flowers.jpg" },
-      { id: 2, name: "Summer Solstice", price: 155.00, season: "Summer", imageUrl: "/images/summer-flowers.jpg" },
-      { id: 3, name: "Autumn Glow", price: 210.00, season: "Autumn", imageUrl: "/images/fall-flowers.jpg" },
-      { id: 4, name: "Winter's Embrace", price: 195.00, season: "Winter", imageUrl: "/images/winter-flowers.jpg" }
-    ]
+    const data = await $fetch(`${config.public.apiBase}/bouquets`)
+    products.value = data
   } catch (error) {
     console.error("Database connection error:", error)
   } finally {
@@ -125,8 +108,13 @@ const filteredProducts = computed(() => {
   return products.value.filter(p => p.season === activeFilter.value)
 })
 
-// --- 2. UPDATE THIS FUNCTION ---
-// Now it calls the composable instead of just logging to the console
+const formatPrice = (value) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(value)
+}
+
 const handleAddToCart = (product) => {
   addToCart(product)
 }

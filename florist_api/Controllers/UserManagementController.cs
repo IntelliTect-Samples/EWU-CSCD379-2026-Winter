@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using florist_api.DTOs;
+using florist_api.Models;
+using florist_api.Services;
 
 namespace florist_api.Controllers
 {
@@ -13,32 +15,31 @@ namespace florist_api.Controllers
     [Route("api/admin/users")]
     public class UserManagementController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAuthService _authService;
 
-        public UserManagementController(UserManager<IdentityUser> userManager)
+        public UserManagementController(UserManager<ApplicationUser> userManager, IAuthService authService)
         {
             _userManager = userManager;
+            _authService = authService;
         }
 
         // GET: api/admin/users/employees
         [HttpGet("employees")]
-        public async Task<ActionResult<IEnumerable<IdentityUser>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<object>>> GetEmployees()
         {
-            // Gets all users who are in the "Employee" role
             var employees = await _userManager.GetUsersInRoleAsync("Employee");
-            return Ok(employees);
+            return Ok(employees.Select(e => new { e.Id, e.UserName, e.HireDate }));
         }
 
         // POST: api/admin/users/add-employee
         [HttpPost("add-employee")]
-        public async Task<IActionResult> AddEmployee([FromBody] RegisterRequest model)
+        public async Task<IActionResult> AddEmployee([FromBody] EmployeeCreateRequest model)
         {
-            var user = new IdentityUser { UserName = model.Username, Email = model.Username };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _authService.RegisterEmployeeAsync(model);
             
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "Employee");
                 return Ok(new { message = "Employee created successfully" });
             }
             return BadRequest(result.Errors);

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using florist_api.Services;
 using florist_api.DTOs;
+using florist_api.Models;
 
 namespace florist_api.Controllers
 {
@@ -26,6 +27,17 @@ namespace florist_api.Controllers
             }
             
             return Unauthorized("The garden gate remains locked. Invalid username or password.");
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] EmployeeCreateRequest model)
+        {
+            var result = await _authService.RegisterEmployeeAsync(model);
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "User successfully registered in the garden." });
+            }
+            return BadRequest(result.Errors);
         }
     }
 }

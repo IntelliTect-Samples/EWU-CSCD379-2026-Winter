@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using florist_api.Models;
 using florist_api.Services;
+using florist_api.DTOs;
 
 namespace florist_api.Controllers
 {
@@ -42,11 +43,11 @@ namespace florist_api.Controllers
         // ADMIN ONLY: Only the shop owner can add new products
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<Bouquet>> Create([FromBody] Bouquet bouquet)
+        public async Task<ActionResult<Bouquet>> Create([FromBody] BouquetCreateRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var created = await _service.CreateBouquetAsync(bouquet);
+            var created = await _service.CreateBouquetAsync(request);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 

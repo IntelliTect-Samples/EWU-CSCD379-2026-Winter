@@ -4,8 +4,7 @@ using florist_api.Models;
 
 namespace florist_api.Data
 {
-    // Inheriting from IdentityDbContext adds all the User/Role tables automatically
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -18,11 +17,25 @@ namespace florist_api.Data
         {
             base.OnModelCreating(builder);
 
-            // Seed initial Roles into Azure SQL
             builder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>().HasData(
-                new Microsoft.AspNetCore.Identity.IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
-                new Microsoft.AspNetCore.Identity.IdentityRole { Name = "Employee", NormalizedName = "EMPLOYEE" },
-                new Microsoft.AspNetCore.Identity.IdentityRole { Name = "Customer", NormalizedName = "CUSTOMER" }
+                new Microsoft.AspNetCore.Identity.IdentityRole
+                {
+                    Id = "1",
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new Microsoft.AspNetCore.Identity.IdentityRole
+                {
+                    Id = "2",
+                    Name = "Employee",
+                    NormalizedName = "EMPLOYEE"
+                },
+                new Microsoft.AspNetCore.Identity.IdentityRole
+                {
+                    Id = "3",
+                    Name = "Customer",
+                    NormalizedName = "CUSTOMER"
+                }
             );
         }
     }
