@@ -18,7 +18,9 @@ onMounted(() => {
 
 const total = computed(() => {
   return cart.value.reduce((sum, item) => {
-    return sum + item.price * item.quantity
+    const price = Number(item.price) || 0
+    const quantity = Number(item.quantity) || 0
+    return sum + price * quantity
   }, 0)
 })
 
@@ -27,12 +29,14 @@ const checkout = () => {
 }
 
 const submitOrder = async () => {
+  // Validate inputs
   if (!customerName.value || !customerEmail.value || !customerPhone.value) {
     alert("Please fill all fields")
     return
   }
 
-  const order = {
+  // Prepare payload matching backend models
+  const orderPayload = {
     CustomerName: customerName.value,
     CustomerEmail: customerEmail.value,
     CustomerPhone: customerPhone.value,
@@ -45,12 +49,18 @@ const submitOrder = async () => {
     }))
   }
 
-  await createOrder(order)
+  try {
+    const res = await createOrder(orderPayload)
+    console.log('Order response:', res)
+    alert("Order placed successfully!")
 
-  alert("Order placed successfully!")
-
-  localStorage.removeItem('cart')
-  router.push('/')
+    // Clear cart and redirect
+    localStorage.removeItem('cart')
+    router.push('/')
+  } catch (err) {
+    console.error('Order failed:', err)
+    alert('Failed to submit order: ' + (err.data?.title || err.message))
+  }
 }
 </script>
 
@@ -66,7 +76,7 @@ const submitOrder = async () => {
       <h3>{{ item.name }}</h3>
       <p>Price: ${{ item.price }}</p>
       <p>Quantity: {{ item.quantity }}</p>
-      <p>Subtotal: ${{ item.price * item.quantity }}</p>
+      <p>Subtotal: ${{ (Number(item.price) || 0) * (Number(item.quantity) || 0) }}</p>
       <hr />
     </div>
 
