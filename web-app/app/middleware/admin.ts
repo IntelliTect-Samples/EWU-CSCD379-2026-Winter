@@ -1,15 +1,17 @@
-export default defineNuxtRouteMiddleware((to) => {
-  // Skip on server (localStorage only exists in browser)
-  if (import.meta.server) return
+import { useAuth } from '~/composables/useAuth'
 
-  // Allow access to public admin pages (like login)
-  if (to.meta.public) {
-    return
+export default defineNuxtRouteMiddleware((to) => {
+  if (process.server) return
+
+  const { isAuthenticated, isAdmin } = useAuth()
+
+  if (to.meta.public) return
+
+  if (!isAuthenticated.value) {
+    return navigateTo('/admin/login')
   }
 
-  const isAdmin = localStorage.getItem('isAdmin')
-
-  if (!isAdmin) {
-    return navigateTo('/admin/login')
+  if (!isAdmin.value) {
+    return navigateTo('/')
   }
 })

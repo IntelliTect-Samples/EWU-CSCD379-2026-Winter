@@ -2,6 +2,10 @@
 import { ref, onMounted } from 'vue'
 import { getProducts } from '~/services/api'
 
+definePageMeta({
+  middleware: 'admin'
+})
+
 const config = useRuntimeConfig()
 const orders = ref([])
 const products = ref([])

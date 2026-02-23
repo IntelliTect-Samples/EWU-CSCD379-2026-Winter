@@ -21,13 +21,14 @@
           placeholder="Password"
         />
 
-        <!-- <button type="button" @click="showPassword = !showPassword">
-          {{ showPassword ? 'Hide' : 'Show' }} Password
-        </button> -->
-
         <button type="submit">
           Login
         </button>
+
+        <p class="register-link">
+          Don’t have an account?
+          <NuxtLink to="/register">Register here</NuxtLink>
+        </p>
       </form>
     </div>
   </div>
@@ -38,15 +39,22 @@ definePageMeta({ public: true })
 
 const email = ref('')
 const password = ref('')
-const showPassword = ref(false)
 const error = ref(null)
 
-function handleSubmit() {
-  if (email.value === 'admin@bakery.com' && password.value === '123456') {
-    localStorage.setItem('isAdmin', 'true')
-    navigateTo('/admin/dashboard')
-  } else {
-    error.value = 'Invalid credentials'
+const { login, isAdmin } = useAuth()
+
+const handleSubmit = async () => {
+  try {
+    error.value = null
+    await login(email.value, password.value)
+
+    if (isAdmin.value) {
+      navigateTo('/admin/dashboard')
+    } else {
+      error.value = 'You are not an admin'
+    }
+  } catch (err) {
+    error.value = err.message
   }
 }
 </script>
@@ -93,5 +101,16 @@ button {
   padding: 8px;
   margin-bottom: 12px;
   border-radius: 6px;
+}
+
+.register-link {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.register-link a {
+  color: #ff6b6b;
+  text-decoration: none;
+  font-weight: 600;
 }
 </style>

@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using BakeryApi.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BakeryApi.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<User>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
@@ -11,5 +12,6 @@ namespace BakeryApi.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+
     }
 }
