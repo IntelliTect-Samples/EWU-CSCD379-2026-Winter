@@ -61,6 +61,13 @@ builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 var app = builder.Build();
 
+// Apply pending migrations automatically (required for Azure hosting)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<GalleryDbContext>();
+    await db.Database.MigrateAsync();
+}
+
 // Seed roles and admin user
 using (var scope = app.Services.CreateScope())
 {
