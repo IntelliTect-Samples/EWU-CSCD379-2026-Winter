@@ -94,4 +94,6 @@ app.MapIdentityApi<ApplicationUser>();
 
 app.MapControllers();
 
+app.MapGet("/", () => "KalesGalleryApi");
+
 app.Run();
