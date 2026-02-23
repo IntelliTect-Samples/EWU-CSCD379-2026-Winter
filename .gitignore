@@ -348,3 +348,50 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+############################################
+# Nuxt 3 / Vue / Vite (WorkFlow Lite)
+############################################
+# Nuxt build artifacts
+.nuxt/
+.output/
+.nitro/
+
+# Common front-end build/cache
+dist/
+.vite/
+.cache/
+.turbo/
+.pnpm-store/
+.yarn/
+.yarn-cache/
+.yarnrc.yml
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+############################################
+# Environment / secrets
+############################################
+.env
+.env.*
+# Keep the base appsettings files, ignore other environment-specific ones
+**/appsettings.*.json
+!**/appsettings.json
+!**/appsettings.Development.json
+
+############################################
+# Local HTTPS dev certs (optional)
+############################################
+*.pem
+*.key
+
+############################################
+# Azure / deployment artifacts
+############################################
+# If you zip deploy, don't commit zips
+*.zip
+# If you publish locally, don't commit the output
+**/publish/
+
