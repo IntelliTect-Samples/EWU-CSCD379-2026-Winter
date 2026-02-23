@@ -77,6 +77,7 @@ const removeProduct = async (id) => {
 
     <div v-for="p in products" :key="p.id">
       <p>{{ p.name }} - ${{ p.price }}</p>
+      <p>{{ p.description }}</p>
 
       <img v-if="p.imageUrl" :src="p.imageUrl" width="150" />
 

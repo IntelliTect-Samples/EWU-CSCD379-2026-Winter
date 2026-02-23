@@ -36,6 +36,9 @@ const addToCart = (product) => {
         </div>
         <div class="card-body">
           <h3>{{ p.name }}</h3>
+          <h6 class="product-description">
+            {{ p.description }}
+          </h6>
           <p class="price">${{ p.price }}</p>
           <button class="order" @click="addToCart(p)">Place Order</button>
         </div>
