@@ -19,11 +19,11 @@
                 </v-avatar>
               </template>
               
-              <v-list-item-title class="staff-name" style="font-size: 1.5rem;">
+              <v-list-item-title class="cart-item-title" style="font-size: 1.5rem;">
                 {{ item.name }}
               </v-list-item-title>
               
-              <v-list-item-subtitle class="editorial-text mt-1">
+              <v-list-item-subtitle class="cart-item-meta mt-1">
                 {{ item.season }} Collection — ${{ item.price }}
               </v-list-item-subtitle>
 
@@ -42,14 +42,14 @@
 
           <div class="d-flex justify-space-between align-center px-4">
             <div>
-              <p class="brand-ethos mb-0">Total Arrangement</p>
-              <h2 class="staff-name" style="font-size: 2rem;">${{ cartTotal }}</h2>
+              <p class="cart-subtitle mb-0">Total Arrangement</p>
+              <h2 class="cart-item-title" style="font-size: 2rem;">${{ cartTotal }}</h2>
             </div>
             <v-btn 
               color="#2D5A27" 
               size="x-large" 
               rounded="xl" 
-              class="px-10"
+              class="px-10 cart-checkout-btn"
               @click="checkout"
             >
               Checkout
@@ -57,29 +57,56 @@
           </div>
         </v-card>
 
-        <v-card v-else class="glass-card pa-16 text-center" elevation="0">
-          <p class="editorial-text mb-8">Your basket is currently empty.</p>
+        <v-card v-else class="cart-card pa-16 text-center" elevation="0">
+          <p class="cart-item-meta mb-8">Your basket is currently empty.</p>
           <v-btn to="/shop" 
             color="#2D5A27" 
             size="large" 
             variant="flat" 
             rounded="xl" 
-            class="shop-cta-btn px-10"
+            class="cart-checkout-btn px-10"
           > 
             Return to Collection
           </v-btn>
         </v-card>
       </v-col>
     </v-row>
+    <v-dialog v-model="checkoutComplete" max-width="500" persistent>
+      <v-card class="pa-10 text-center"style="border-radius: 24px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
+        <h2 class="cart-item-title text-h4 mb-4">A Garden Awaits</h2>
+        <p class="cart-item-meta mb-8" style="font-size: 1.1rem; line-height: 1.6;">
+          Thank you for your order!. Our florists will begin gathering your stems.
+        </p>
+        <v-btn 
+          color="#2D5A27" 
+          variant="flat" 
+          rounded="xl" 
+          block 
+          class="cart-checkout-btn text-white"
+          @click="closeSuccess"
+        >
+          Continue Wandering
+        </v-btn>
+      </v-card>
+    </v-dialog>
+
   </v-container>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import '~/assets/css/cart.css'
 const { cart, removeFromCart, cartTotal } = useCart()
 
+const checkoutComplete = ref(false)
+
 const checkout = () => {
-  alert("Thank you! Your order has been sent to our florists.")
+  checkoutComplete.value = true
+}
+
+const closeSuccess = () => {
+  checkoutComplete.value = false
   cart.value = []
+  navigateTo('/shop')
 }
 </script>

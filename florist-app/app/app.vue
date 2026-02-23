@@ -18,14 +18,22 @@
 
       <v-menu transition="slide-y-transition">
         <template v-slot:activator="{ props }">
-          <v-btn
-            icon="mdi-menu"
-            variant="text"
-            color="#2D5A27"
-            v-bind="props"
-            class="menu-icon-btn"
+          <v-badge
+            color="#B64995"
+            dot
+            :model-value="cart.length > 0"
+            offset-x="10"
+            offset-y="10"
           >
-          </v-btn>
+            <v-btn
+              icon="mdi-menu"
+              variant="text"
+              color="#2D5A27"
+              v-bind="props"
+              class="menu-icon-btn"
+            >
+            </v-btn>
+          </v-badge>
         </template>
 
         <v-list class="menu-glass mt-2" min-width="220">

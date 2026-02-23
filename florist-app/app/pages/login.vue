@@ -97,22 +97,18 @@
   </div>
 </template>
 
-
-
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import '~/assets/css/login.css'
 
 const router = useRouter()
-const config = useRuntimeConfig() // Accesses the NUXT_PUBLIC_API_BASE we set in Azure
-
+const config = useRuntimeConfig()
 const isAuthenticated = ref(false)
 const userRole = ref('') 
 const loginError = ref(false)
 const loginForm = ref({ username: '', password: '' })
 
-// This will hold our JWT token in the browser
 const tokenCookie = useCookie('auth_token', { maxAge: 60 * 60 * 3 }) // 3 hours
 
 const products = ref([
