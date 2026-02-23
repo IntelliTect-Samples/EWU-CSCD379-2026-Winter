@@ -57,7 +57,7 @@
           </div>
         </v-card>
 
-        <v-card v-else class="cart-card pa-16 text-center" elevation="0">
+        <v-card v-else class="pa-16 text-center" elevation="0">
           <p class="cart-item-meta mb-8">Your basket is currently empty.</p>
           <v-btn to="/shop" 
             color="#2D5A27" 
