@@ -2,11 +2,12 @@
 import { ref, onMounted } from 'vue'
 import { getProducts } from '~/services/api'
 
+const config = useRuntimeConfig()
 const orders = ref([])
 const products = ref([])
 
 const load = async () => {
-  const res = await fetch("http://localhost:5237/api/orders")
+  const res = await fetch(`${config.public.apiBase}/api/orders`)
   orders.value = await res.json()
   products.value = await getProducts()
 }
@@ -22,7 +23,7 @@ const formatDate = (iso) => {
 const updateStatus = async (orderId, status) => {
   if (!confirm(`Change order #${orderId} status to '${status}'?`)) return
 
-  await fetch(`http://localhost:5237/api/orders/${orderId}/status`, {
+  await fetch(`${config.public.apiBase}/api/orders/${orderId}/status`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ status })
