@@ -82,12 +82,10 @@ const submitOrder = async () => {
 
     <h2 v-if="cart.length > 0">Total: ${{ total }}</h2>
 
-    <!-- STEP 1: CLICK CHECKOUT -->
     <button v-if="cart.length > 0 && !showForm" @click="checkout">
       Checkout
     </button>
 
-    <!-- STEP 2: SHOW FORM -->
     <div v-if="showForm">
       <h2>Customer Information</h2>
 
