@@ -75,7 +75,7 @@
       <v-card class="pa-10 text-center"style="border-radius: 24px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
         <h2 class="cart-item-title text-h4 mb-4">A Garden Awaits</h2>
         <p class="cart-item-meta mb-8" style="font-size: 1.1rem; line-height: 1.6;">
-          Thank you for your order!. Our florists will begin gathering your stems.
+          Thank you for your order! Our florists will begin gathering your stems.
         </p>
         <v-btn 
           color="#2D5A27" 
