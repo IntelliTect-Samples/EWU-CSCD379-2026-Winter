@@ -69,15 +69,13 @@ if (app.Environment.IsDevelopment())
         var db = scope.ServiceProvider.GetRequiredService<GalleryDbContext>();
         await db.Database.MigrateAsync();
     }
-
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        await DbSeeder.SeedRolesAndAdminAsync(services);
+    }
 }
 
-// Seed roles and admin user
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    await DbSeeder.SeedRolesAndAdminAsync(services);
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

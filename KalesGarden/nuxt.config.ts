@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: "http://localhost:5090/api",
+      apiBase: "https://kalesgardenapi.azurewebsites.net/api",
     },
   },
 });
