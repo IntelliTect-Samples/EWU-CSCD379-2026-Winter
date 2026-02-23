@@ -4,7 +4,7 @@
     </ClientOnly>
   <v-container class="py-16 position-relative" style="z-index: 1;">
     <header class="text-center mb-12">
-      <h1 class="display-main" style="font-size: 3rem;">Your Bouquet</h1>
+      <h1 class="cart-item-title">Your Bouquet</h1>
       <p class="brand-ethos">Review your selected stems</p>
     </header>
 
