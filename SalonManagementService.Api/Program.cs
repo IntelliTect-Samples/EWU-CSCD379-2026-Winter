@@ -18,9 +18,21 @@ builder.Services.AddDbContext<SalonDbContext>(options =>
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("IsAtLeast21", policy =>
+        policy.RequireAssertion(context =>
+        {
+            var dobClaim = context.User.FindFirst("DateOfBirth");
+            if (dobClaim is null || !DateTime.TryParse(dobClaim.Value, out var dob)) return false;
+            var age = DateTime.Today.Year - dob.Year;
+            if (dob.Date > DateTime.Today.AddYears(-age)) age--;
+            return age >= 21;
+        }));
+});
 builder.Services.AddIdentityApiEndpoints<User>()
     .AddRoles<IdentityRole>()
+    .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
     .AddEntityFrameworkStores<SalonDbContext>();
 
 // Configure CORS

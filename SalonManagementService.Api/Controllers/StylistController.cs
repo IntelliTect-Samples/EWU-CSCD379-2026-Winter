@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SalonManagementService.Api.Dtos;
 using SalonManagementService.Api.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace SalonManagementService.Api.Controllers;
 
@@ -154,6 +155,14 @@ public class StylistController(SalonDbContext dbContext) : ControllerBase
 
         await dbContext.SaveChangesAsync();
 
+        return Ok();
+    }
+
+    [HttpPost("book")]
+    [Authorize(Policy = "IsAtLeast21")]
+    public async Task<ActionResult> BookAppointment(DateTime appointmentTime, Guid stylistId)
+    {
+        // do something
         return Ok();
     }
 }
