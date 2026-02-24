@@ -3,7 +3,7 @@
     <div 
       v-for="n in 100" 
       :key="n" 
-      :class="['petal', n % 2 === 0 ? 'shape-rose' : 'shape-rose2']"
+      :class="['petal', n % 2 === 0 ? 'shape-petal' : 'shape-petal-2']"
       :style="generatePetalStyle()"
     ></div>
   </div>

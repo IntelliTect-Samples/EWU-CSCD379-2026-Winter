@@ -7,12 +7,40 @@
         <v-col cols="12" md="5" lg="4">
           <v-card class="glass-card pa-10 text-center" elevation="0">
             <h1 class="display-main mb-2">Garden Portal</h1>
-            <v-text-field v-model="loginForm.username" label="Username" variant="outlined" color="#B64995" class="mb-4 boutique-input"></v-text-field>
-            <v-text-field v-model="loginForm.password" label="Password" type="password" variant="outlined" color="#B64995" class="mb-8 boutique-input"></v-text-field>
-            <v-alert v-if="loginError" color="#d18b99" variant="tonal" icon="mdi-flower-pollen" class="mb-6 text-left">
-              The garden gate remains locked.
-            </v-alert>
-            <v-btn block size="x-large" color="#2D5A27" variant="flat" rounded="xl" @click="handleLogin">Enter Portal</v-btn>
+            <v-form @submit.prevent="handleLogin">
+              <v-text-field 
+                autofocus
+                v-model="loginForm.username" 
+                label="Username" 
+                variant="outlined" 
+                color="#B64995" 
+                class="mb-4 boutique-input"
+              ></v-text-field>
+
+              <v-text-field 
+                v-model="loginForm.password" 
+                label="Password" 
+                type="password" 
+                variant="outlined" 
+                color="#B64995" 
+                class="mb-8 boutique-input"
+              ></v-text-field>
+
+              <v-alert v-if="loginError" color="#d18b99" variant="tonal" icon="mdi-flower-pollen" class="mb-6 text-left">
+                The garden gate remains locked.
+              </v-alert>
+
+              <v-btn 
+                type="submit" 
+                block 
+                size="x-large" 
+                color="#2D5A27" 
+                variant="flat" 
+                rounded="xl"
+              >
+                Enter Portal
+              </v-btn>
+            </v-form>
           </v-card>
         </v-col>
       </v-row>
@@ -20,7 +48,7 @@
       <ManagementPortal 
         v-else 
         :userRole="userRole" 
-        :token="tokenCookie"
+        :username="userCookie"  :token="tokenCookie"
         @logout="logout"
         @session-expired="sessionExpired = true"
       />
@@ -52,6 +80,7 @@ const loginForm = ref({ Username: '', Password: '' })
 const sessionExpired = ref(false)
 
 const tokenCookie = useCookie('auth_token', { maxAge: 2100 }) 
+const userCookie = useCookie('user_name', { maxAge: 2100 })
 const roleCookie = useCookie('user_role', { maxAge: 2100 })
 
 const handleLogin = async () => {
@@ -68,6 +97,7 @@ const handleLogin = async () => {
     if (response && response.token) {
       tokenCookie.value = response.token 
       roleCookie.value = response.role.toUpperCase() 
+      userCookie.value = response.username || 'Admin'
       isAuthenticated.value = true
       userRole.value = roleCookie.value
     }

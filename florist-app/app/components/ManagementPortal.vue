@@ -4,27 +4,23 @@
       <PetalBackground />
     </ClientOnly>
 
-    <v-container class="py-12 position-relative" style="z-index: 1;">
+    <v-container class="py-1 position-relative" style="z-index: 1;">
       <v-row class="mb-10" align="end">
-        <v-col cols="12" md="7">
-          <p class="mgmt-subtitle mb-2">Internal Administration</p>
-          <h1 class="mgmt-display-title">Studio Management</h1>
+        <v-col cols="12" md="8">
+          <h1 class="mgmt-display-title">Management Dashboard</h1>
         </v-col>
-        <v-col cols="12" md="5" class="text-md-right">
-          <v-btn 
-            variant="text" 
-            prepend-icon="mdi-account-circle-outline" 
-            class="editorial-text mr-4"
-            style="text-transform: none"
-          >
+        <v-col cols="12" md="4" class="d-flex justify-md-end align-center">
+          <span class="editorial-text mr-6 d-none d-sm-inline" style="font-size: 0.9rem; opacity: 0.8;">
+            <v-icon start size="small">mdi-account-circle-outline</v-icon>
             {{ username }} Admin
-          </v-btn>
+          </span>
           <v-btn 
             @click="handleLogout"
-            color="#d18b99" 
-            variant="outlined" 
+            color="#2D5A27" 
+            variant="flat" 
             rounded="xl"
-            class="px-6"
+            class="px-8 shadow-btn"
+            style="letter-spacing: 1px; text-transform: uppercase; font-size: 0.75rem; font-weight: 600;"
           >
             Sign Out
           </v-btn>
@@ -42,7 +38,7 @@
             <div class="d-flex justify-space-between align-center mb-8">
               <h2 class="display-main" style="font-size: 1.8rem;">Inventory</h2>
               <v-btn color="#2D5A27" rounded="xl" class="px-8 shadow-btn" @click="openAddDialog">
-                + Add New Stem
+                + Add New Product
               </v-btn>
             </div>
             
@@ -77,7 +73,17 @@
           </v-window-item>
 
           <v-window-item value="employees">
-             </v-window-item>
+            <div class="d-flex justify-space-between align-center mb-8">
+              <h2 class="display-main" style="font-size: 1.8rem;">Studio Team</h2>
+              <v-btn color="#2D5A27" rounded="xl" class="px-8 shadow-btn" disabled>
+                + Add Team Member
+              </v-btn>
+            </div>
+            
+            <v-alert type="info" variant="tonal" color="#2D5A27" icon="mdi-account-group-outline">
+              Team management features are currently being cultivated. Check back soon!
+            </v-alert>
+          </v-window-item>
         </v-window>
       </v-card>
     </v-container>
@@ -91,6 +97,7 @@ import '~/assets/css/management.css'
 // Receive data from login.vue
 const props = defineProps({
   userRole: String,
+  username: String,
   token: String
 })
 
@@ -100,6 +107,7 @@ const emit = defineEmits(['logout', 'session-expired'])
 const config = useRuntimeConfig()
 const inventory = ref([])
 const showAddDialog = ref(false)
+const activeTab = ref('inventory')
 const isEditing = ref(false)
 const currentEditId = ref(null)
 

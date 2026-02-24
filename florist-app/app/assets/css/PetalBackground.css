@@ -17,11 +17,11 @@
   will-change: transform;
 }
 
-.shape-rose {
+.shape-petal {
   border-radius: 150% 10% 150% 10%
 }
 
-.shape-rose2 {
+.shape-petal-2 {
     border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
 }
 
