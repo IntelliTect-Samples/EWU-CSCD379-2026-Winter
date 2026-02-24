@@ -5,9 +5,11 @@
       <p>Browse our collection of beautiful art pieces</p>
     </hgroup>
 
-    <div v-if="isAdmin" style="margin-bottom: 1rem">
-      <button @click="openAddModal">Add New Art Piece</button>
-    </div>
+    <ClientOnly>
+      <div v-if="isAdmin" style="margin-bottom: 1rem">
+        <button @click="openAddModal">Add New Art Piece</button>
+      </div>
+    </ClientOnly>
 
     <div v-if="pending" aria-busy="true">Loading gallery...</div>
 
@@ -55,70 +57,6 @@
           </footer>
         </article>
       </div>
-
-      <!-- Add / Edit Modal -->
-      <dialog :open="showModal" v-if="showModal">
-        <article>
-          <header>
-            <button
-              aria-label="Close"
-              rel="prev"
-              @click="showModal = false"
-            ></button>
-            <h3>{{ editingPiece ? "Edit Art Piece" : "Add New Art Piece" }}</h3>
-          </header>
-          <form @submit.prevent="submitArtPiece">
-            <label>
-              Name
-              <input v-model="artForm.name" required />
-            </label>
-            <label>
-              Description
-              <textarea v-model="artForm.description" required />
-            </label>
-            <label>
-              Price
-              <input
-                v-model.number="artForm.price"
-                type="number"
-                min="0"
-                step="0.01"
-                required
-              />
-            </label>
-            <label>
-              <input
-                v-model="artForm.isAvailable"
-                type="checkbox"
-                role="switch"
-              />
-              Available
-            </label>
-            <label>
-              Image {{ editingPiece ? "(leave blank to keep current)" : "" }}
-              <input
-                type="file"
-                @change="onFileChange"
-                accept="image/*"
-                :required="!editingPiece"
-              />
-            </label>
-            <footer>
-              <button
-                type="button"
-                class="secondary"
-                @click="showModal = false"
-              >
-                Cancel
-              </button>
-              <button type="submit" :aria-busy="submitting">
-                {{ submitting ? "Saving..." : editingPiece ? "Update" : "Add" }}
-              </button>
-            </footer>
-            <p v-if="formError" style="color: red">{{ formError }}</p>
-          </form>
-        </article>
-      </dialog>
     </div>
 
     <div v-else>
@@ -126,6 +64,66 @@
         <p>No art pieces found. Check back soon!</p>
       </article>
     </div>
+
+    <!-- Add / Edit Modal -->
+    <dialog :open="showModal" v-if="showModal">
+      <article>
+        <header>
+          <button
+            aria-label="Close"
+            rel="prev"
+            @click="showModal = false"
+          ></button>
+          <h3>{{ editingPiece ? "Edit Art Piece" : "Add New Art Piece" }}</h3>
+        </header>
+        <form @submit.prevent="submitArtPiece">
+          <label>
+            Name
+            <input v-model="artForm.name" required />
+          </label>
+          <label>
+            Description
+            <textarea v-model="artForm.description" required />
+          </label>
+          <label>
+            Price
+            <input
+              v-model.number="artForm.price"
+              type="number"
+              min="0"
+              step="0.01"
+              required
+            />
+          </label>
+          <label>
+            <input
+              v-model="artForm.isAvailable"
+              type="checkbox"
+              role="switch"
+            />
+            Available
+          </label>
+          <label>
+            Image {{ editingPiece ? "(leave blank to keep current)" : "" }}
+            <input
+              type="file"
+              @change="onFileChange"
+              accept="image/*"
+              :required="!editingPiece"
+            />
+          </label>
+          <footer>
+            <button type="button" class="secondary" @click="showModal = false">
+              Cancel
+            </button>
+            <button type="submit" :aria-busy="submitting">
+              {{ submitting ? "Saving..." : editingPiece ? "Update" : "Add" }}
+            </button>
+          </footer>
+          <p v-if="formError" style="color: red">{{ formError }}</p>
+        </form>
+      </article>
+    </dialog>
   </main>
 </template>
 
@@ -133,10 +131,18 @@
 import type { ArtPiece } from "~/types";
 import { useAuth } from "../composables/useAuth";
 import { useApi } from "../composables/useApi";
-import { computed, ref, reactive } from "vue";
+import { computed, ref, reactive, onMounted } from "vue";
 
 const { apiBase } = useApi();
-const { user, token } = useAuth();
+const { user, token, restoreToken, fetchUser } = useAuth();
+
+// Ensure auth state is available on this page
+onMounted(async () => {
+  restoreToken();
+  if (token.value && !user.value) {
+    await fetchUser();
+  }
+});
 
 const isAdmin = computed(() => {
   return user.value?.roles?.includes("Admin") ?? false;
