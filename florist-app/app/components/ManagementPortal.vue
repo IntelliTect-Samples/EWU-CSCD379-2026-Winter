@@ -10,17 +10,15 @@
           <h1 class="mgmt-display-title">Management Dashboard</h1>
         </v-col>
         <v-col cols="12" md="4" class="d-flex justify-md-end align-center">
-          <span class="editorial-text mr-6 d-none d-sm-inline" style="font-size: 0.9rem; opacity: 0.8;">
+          <span class="editorial-text mr-8 d-none d-sm-inline" style="font-size: 1.1rem; font-weight: 500; color: #2D5A27;">
             <v-icon start size="small">mdi-account-circle-outline</v-icon>
-            {{ username }} Admin
+            {{ username }}
           </span>
           <v-btn 
             @click="handleLogout"
             color="#2D5A27" 
-            variant="flat" 
-            rounded="xl"
+            rounded="xl" 
             class="px-8 shadow-btn"
-            style="letter-spacing: 1px; text-transform: uppercase; font-size: 0.75rem; font-weight: 600;"
           >
             Sign Out
           </v-btn>
@@ -48,7 +46,7 @@
                   <th>Botanical</th>
                   <th>Season</th>
                   <th>Pricing</th>
-                  <th class="text-right">Manage</th>
+                  <th class="text-center">Manage</th> <th class="text-right">Stock Level</th>
                 </tr>
               </thead>
               <tbody>
@@ -64,8 +62,49 @@
                   <td><v-chip variant="outlined" color="#2D5A27" size="small">{{ item.season }}</v-chip></td>
                   <td class="price-text">${{ item.price }}</td>
                   <td class="text-right">
-                    <v-btn icon="mdi-pencil-outline" variant="text" color="grey" class="action-btn"></v-btn>
-                    <v-btn icon="mdi-delete-outline" variant="text" color="#d18b99" class="action-btn"></v-btn>
+                    <v-btn 
+                      @click="openEditDialog(item)"
+                      icon="mdi-pencil-outline" 
+                      variant="text" 
+                      color="grey" 
+                      class="action-btn"
+                    ></v-btn>
+
+                    <v-btn 
+                      @click="confirmDelete(item.id)"
+                      icon="mdi-delete-outline" 
+                      variant="text" 
+                      color="#d18b99" 
+                      class="action-btn"
+                    ></v-btn>
+                  </td>
+                  <td class="text-center">
+                    <div class="d-flex align-center justify-center">
+                      <div class="d-flex align-center border rounded-pill px-2" style="border-color: #2D5A27 !important; height: 32px;">
+                        <v-btn 
+                          icon="mdi-minus" 
+                          variant="text" 
+                          density="comfortable" 
+                          size="x-small" 
+                          color="#2D5A27"
+                          @click="adjustStock(item, -1)"
+                          :disabled="item.inventoryCount <= 0"
+                        ></v-btn>
+
+                        <span class="mx-3 editorial-text" style="min-width: 20px; font-weight: 600;">
+                          {{ item.inventoryCount }}
+                        </span>
+
+                        <v-btn 
+                          icon="mdi-plus" 
+                          variant="text" 
+                          density="comfortable" 
+                          size="x-small" 
+                          color="#2D5A27"
+                          @click="adjustStock(item, 1)"
+                        ></v-btn>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -87,6 +126,76 @@
         </v-window>
       </v-card>
     </v-container>
+    <v-dialog v-model="showAddDialog" max-width="500px">
+      <v-card class="pa-8 text-center" style="background-color: white; border-radius: 24px;">
+        <v-card-title class="display-main px-0 mb-6" style="font-size: 1.8rem; font-weight: 600; color: #2D5A27;">{{ isEditing ? 'Edit Botanical' : 'New Botanical' }}</v-card-title>
+        <v-card-text>
+          <v-text-field v-model="newBouquet.name" label="Name" variant="outlined"></v-text-field>
+          <v-select v-model="newBouquet.season" :items="['Spring', 'Summer', 'Autumn', 'Winter']" label="Season" variant="outlined"></v-select>
+          <v-text-field v-model.number="newBouquet.price" label="Price" type="number" variant="outlined"></v-text-field>
+          <v-text-field v-model="newBouquet.imageUrl" label="Image URL" variant="outlined"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn 
+            color="#d18b99" 
+            variant="flat"
+            rounded="xl"
+            size="small"
+            class="px-6"
+            @click="showAddDialog = false"
+            >
+              Cancel
+            </v-btn>
+          <v-btn 
+            color="#2D5A27" 
+            variant="flat" 
+            rounded="xl"
+            size="small"
+            class="px-6"
+            @click="saveBouquet"
+            >
+              Save Changes
+          </v-btn>
+          <v-text-field 
+            v-model.number="newBouquet.inventoryCount" 
+            label="Initial Stock" 
+            type="number" 
+            variant="outlined" 
+            color="#2D5A27"
+          ></v-text-field>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="showDeleteDialog" max-width="400px">
+      <v-card class="pa-8 text-center" style="background-color: white; border-radius: 24px;">
+        <h2 class="display-main mb-2" style="color: #2D5A27;">Delete Product</h2>
+        <p class="brand-ethos mb-6">Are you sure you want to remove this product from the collection? This action cannot be undone.</p>
+        
+        <v-card-actions class="px-0 flex-column">
+          <v-btn 
+            color="#2D5A27" 
+            variant="flat" 
+            block 
+            rounded="xl" 
+            @click="showDeleteDialog = false"
+          >
+            Keep in Collection
+          </v-btn>
+        </v-card-actions>
+        <v-card-actions class="px-0">
+          <v-btn 
+            color="#d18b99" 
+            variant="flat" 
+            block 
+            rounded="xl" 
+            @click="deleteStem(itemToDelete)"
+          >
+            Confirm Deletion
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -107,9 +216,12 @@ const emit = defineEmits(['logout', 'session-expired'])
 const config = useRuntimeConfig()
 const inventory = ref([])
 const showAddDialog = ref(false)
+const showDeleteDialog = ref(false)
+const itemToDelete = ref(null)
 const activeTab = ref('inventory')
 const isEditing = ref(false)
 const currentEditId = ref(null)
+
 
 const newBouquet = ref({ name: '', price: 0, season: '', imageUrl: '', inventoryCount: 0 })
 const seasonRules = [v => !!v || 'The garden requires a season.']
@@ -127,6 +239,11 @@ const openEditDialog = (item) => {
   currentEditId.value = item.id
   newBouquet.value = { ...item }
   showAddDialog.value = true
+}
+
+const confirmDelete = (id) => {
+  itemToDelete.value = id
+  showDeleteDialog.value = true
 }
 
 const fetchManagementProducts = async () => {
@@ -178,12 +295,12 @@ const adjustStock = async (item, change) => {
 }
 
 const deleteStem = async (id) => {
-  if (!confirm("Prune this arrangement?")) return
   try {
     await $fetch(`${config.public.apiBase}/bouquets/${id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${props.token}` }
     })
+    showDeleteDialog.value = false
     await fetchManagementProducts()
   } catch (err) {
     if (err.status === 401) emit('session-expired')

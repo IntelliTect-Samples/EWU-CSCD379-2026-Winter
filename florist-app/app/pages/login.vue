@@ -54,11 +54,10 @@
       />
 
       <v-dialog v-model="sessionExpired" persistent max-width="400">
-        <v-card class="glass-card pa-8 text-center">
-          <v-icon color="#d18b99" size="64" class="mb-4">mdi-flower-pollen-outline</v-icon>
+        <v-card class="pa-8 text-center" style="background-color: #fdfaf8; border: 1px solid #e0e0e0; border-radius: 24px;">
           <h2 class="display-main mb-2">Session Wilted</h2>
-          <p class="brand-ethos mb-6">Security timeout. Please re-enter the gate.</p>
-          <v-btn block color="#2D5A27" rounded="xl" @click="logout">Re-enter Portal</v-btn>
+          <p class="brand-ethos mb-6">Please login again.</p>
+          <v-btn block color="#2D5A27" variant="flat" rounded="xl" @click="logout">Re-enter Portal</v-btn>
         </v-card>
       </v-dialog>
       

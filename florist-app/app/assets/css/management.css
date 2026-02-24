@@ -10,7 +10,7 @@
 
 .mgmt-card {
   background: rgba(255, 255, 255, 0.9) !important;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(0.4px);
   border: 1px solid rgba(45, 90, 39, 0.05) !important;
   border-radius: 24px !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
@@ -21,10 +21,9 @@
   text-transform: uppercase;
   letter-spacing: 3px;
   font-size: 0.75rem;
-  color: #d18b99; /* Your signature rose color */
+  color: #d18b99;
 }
 
-/* Customizing Vuetify Tabs to match the brand */
 .v-tab {
   font-family: 'Alice', serif !important;
   text-transform: none !important;
