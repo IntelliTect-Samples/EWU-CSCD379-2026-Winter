@@ -1,0 +1,67 @@
+/* assets/css/management.css */
+
+.mgmt-display-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  color: #2D5A27;
+  letter-spacing: -1px;
+}
+
+.mgmt-card {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(45, 90, 39, 0.05) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
+}
+
+.mgmt-subtitle {
+  font-family: 'Alice', serif;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 0.75rem;
+  color: #d18b99; /* Your signature rose color */
+}
+
+/* Customizing Vuetify Tabs to match the brand */
+.v-tab {
+  font-family: 'Alice', serif !important;
+  text-transform: none !important;
+  font-size: 1.1rem !important;
+  letter-spacing: 0px !important;
+  color: #4A5D48 !important;
+}
+
+.v-tab--selected {
+  color: #2D5A27 !important;
+  font-weight: 600 !important;
+}
+
+.inventory-table {
+  background: transparent !important;
+  font-family: 'Alice', serif;
+}
+
+.inventory-table thead th {
+  font-family: 'Alice', serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.75rem !important;
+  color: #2D5A27 !important;
+  border-bottom: 2px solid #f4f1ee !important;
+}
+
+.price-text {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  color: #2D5A27;
+}
+
+.action-btn {
+  transition: transform 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}

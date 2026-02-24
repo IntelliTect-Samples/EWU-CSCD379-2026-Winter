@@ -6,6 +6,7 @@ using System.Text;
 using florist_api.Data;
 using florist_api.Services;
 using florist_api.Models;
+using System.Security.Authentication.ExtendedProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,10 +46,10 @@ builder.Services.AddCors(options => {
     options.AddPolicy("AllowNuxt", policy => {
         policy.WithOrigins("https://agreeable-smoke-0d382ca0f.2.azurestaticapps.net")
               .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+              .AllowAnyHeader();
     });
 });
+
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi(); 
@@ -60,6 +61,7 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseCors("AllowNuxt");
 app.UseAuthentication();
 app.UseAuthorization();

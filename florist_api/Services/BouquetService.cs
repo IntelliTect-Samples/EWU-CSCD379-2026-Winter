@@ -14,28 +14,26 @@ namespace florist_api.Services
             _context = context;
         }
 
-        // Public & Staff: View all flowers
         public async Task<IEnumerable<Bouquet>> GetAllBouquetsAsync()
         {
             return await _context.Bouquets.ToListAsync();
         }
 
-        // Customer & Staff: View specific details
         public async Task<Bouquet?> GetByIdAsync(int id)
         {
             return await _context.Bouquets.FindAsync(id);
         }
 
-        // Admin: Add new bouquets
         public async Task<Bouquet> CreateBouquetAsync(BouquetCreateRequest dto)
         {
-           var bouquet = new Bouquet
+            var bouquet = new Bouquet
             {
                 Name = dto.Name,
                 Price = dto.Price,
                 ImageUrl = dto.ImageUrl,
                 Season = dto.Season,
-                IsAvailable = true
+                IsAvailable = true,
+                InventoryCount = 0 // Default new stems to zero stock
             };
 
             _context.Bouquets.Add(bouquet);
@@ -43,7 +41,22 @@ namespace florist_api.Services
             return bouquet;
         }
 
-        // Admin: Update prices specifically
+        // Admin: Full update for typos, season changes, etc.
+        public async Task<bool> UpdateBouquetAsync(int id, Bouquet updatedData)
+        {
+            var bouquet = await _context.Bouquets.FindAsync(id);
+            if (bouquet == null) return false;
+
+            bouquet.Name = updatedData.Name;
+            bouquet.Season = updatedData.Season;
+            bouquet.ImageUrl = updatedData.ImageUrl;
+            bouquet.IsAvailable = updatedData.IsAvailable;
+            // We usually exclude Price here if we want Price updates to be a separate, audited action
+            
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> UpdatePriceAsync(int id, decimal newPrice)
         {
             var bouquet = await _context.Bouquets.FindAsync(id);
@@ -54,7 +67,17 @@ namespace florist_api.Services
             return true;
         }
 
-        // Admin: Delete from inventory
+        // Admin & Employee: The key "Staff Action"
+        public async Task<bool> UpdateInventoryAsync(int id, int count)
+        {
+            var bouquet = await _context.Bouquets.FindAsync(id);
+            if (bouquet == null) return false;
+
+            bouquet.InventoryCount = count;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> DeleteAsync(int id)
         {
             var bouquet = await _context.Bouquets.FindAsync(id);

@@ -1,78 +1,74 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using florist_api.Models;
 using florist_api.Services;
 using florist_api.DTOs;
 
-namespace florist_api.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class BouquetsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class BouquetsController : ControllerBase
+    private readonly IBouquetService _service;
+
+    public BouquetsController(IBouquetService service)
     {
-        private readonly IBouquetService _service;
+        _service = service;
+    }
 
-        public BouquetsController(IBouquetService service)
-        {
-            _service = service;
-        }
+    // PUBLIC: Anyone can see the catalog
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Bouquet>>> GetAll()
+    {
+        return Ok(await _service.GetAllBouquetsAsync());
+    }
 
-        // GET: api/bouquets
-        // PUBLIC: Anyone can see the catalog
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Bouquet>>> GetAll()
-        {
-            var bouquets = await _service.GetAllBouquetsAsync();
-            return Ok(bouquets);
-        }
+    // AUTHORIZED: Customers, Employees, and Admins
+    [Authorize]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Bouquet>> GetById(int id)
+    {
+        var bouquet = await _service.GetByIdAsync(id);
+        if (bouquet == null) return NotFound();
+        return Ok(bouquet);
+    }
 
-        // GET: api/bouquets/5
-        // AUTHORIZED: Customers, Employees, and Admins can view details
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Bouquet>> GetById(int id)
-        {
-            var bouquet = await _service.GetByIdAsync(id);
-            if (bouquet == null) return NotFound();
-            
-            return Ok(bouquet);
-        }
+    // ADMIN ONLY: Only the owner can add new bouquets
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<ActionResult<Bouquet>> Create([FromBody] BouquetCreateRequest request)
+    {
+        var created = await _service.CreateBouquetAsync(request);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
 
-        // POST: api/bouquets
-        // ADMIN ONLY: Only the shop owner can add new products
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<ActionResult<Bouquet>> Create([FromBody] BouquetCreateRequest request)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+    // ADMIN ONLY: Only the owner can alter prices
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("{id}/price")]
+    public async Task<IActionResult> UpdatePrice(int id, [FromBody] decimal newPrice)
+    {
+        var success = await _service.UpdatePriceAsync(id, newPrice);
+        if (!success) return NotFound();
+        return NoContent();
+    }
 
-            var created = await _service.CreateBouquetAsync(request);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-        }
+    // ADMIN & EMPLOYEE: Both can adjust the inventory count
+    [Authorize(Roles = "Admin,Employee")]
+    [HttpPatch("{id}/inventory")]
+    public async Task<IActionResult> UpdateInventory(int id, [FromBody] int count)
+    {
+        var success = await _service.UpdateInventoryAsync(id, count);
+        if (!success) return NotFound();
+        return NoContent();
+    }
 
-        // PATCH: api/bouquets/5/price
-        // ADMIN ONLY: Update price for a specific bouquet
-        [Authorize(Roles = "Admin")]
-        [HttpPatch("{id}/price")]
-        public async Task<IActionResult> UpdatePrice(int id, [FromBody] decimal newPrice)
-        {
-            var success = await _service.UpdatePriceAsync(id, newPrice);
-            if (!success) return NotFound();
-
-            return NoContent();
-        }
-
-        // DELETE: api/bouquets/5
-        // ADMIN ONLY: Remove from inventory
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var success = await _service.DeleteAsync(id);
-            if (!success) return NotFound();
-
-            return NoContent();
-        }
+    // ADMIN ONLY: Only owner can prune the collection
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var success = await _service.DeleteAsync(id);
+        if (!success) return NotFound();
+        return NoContent();
     }
 }

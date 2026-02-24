@@ -8,8 +8,9 @@ namespace florist_api.Services
         Task<IEnumerable<Bouquet>> GetAllBouquetsAsync();
         Task<Bouquet?> GetByIdAsync(int id);
         Task<Bouquet> CreateBouquetAsync(BouquetCreateRequest bouquet); 
-        
+        Task<bool> UpdateBouquetAsync(int id, Bouquet bouquet);
         Task<bool> UpdatePriceAsync(int id, decimal newPrice);
+        Task<bool> UpdateInventoryAsync(int id, int count);
         Task<bool> DeleteAsync(int id);
     }
 }

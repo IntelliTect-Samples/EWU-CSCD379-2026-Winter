@@ -26,6 +26,9 @@ namespace florist_api.Models
         public string Season { get; set; }
 
         public bool IsAvailable { get; set; } = true;
+        
+        [Range(0, 10000)]
+        public int InventoryCount { get; set; } = 0;
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
