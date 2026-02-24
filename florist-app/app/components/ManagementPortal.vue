@@ -35,7 +35,6 @@
         <v-tabs v-model="activeTab" color="#2D5A27" class="mb-8">
           <v-tab value="inventory">The Collection</v-tab>
           <v-tab value="employees">The Team</v-tab>
-          <v-tab value="analytics">Insights</v-tab>
         </v-tabs>
 
         <v-window v-model="activeTab">
