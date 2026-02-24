@@ -5,6 +5,10 @@
       <p>Browse our collection of beautiful art pieces</p>
     </hgroup>
 
+    <div v-if="isAdmin" style="margin-bottom: 1rem">
+      <button @click="openAddModal">Add New Art Piece</button>
+    </div>
+
     <div v-if="pending" aria-busy="true">Loading gallery...</div>
 
     <div v-else-if="error">
@@ -15,9 +19,6 @@
     </div>
 
     <div v-else-if="artPieces && artPieces.length">
-      <div v-if="isAdmin" style="margin-bottom: 1rem">
-        <button @click="openAddModal">Add New Art Piece</button>
-      </div>
       <div class="grid">
         <article v-for="piece in artPieces" :key="piece.id">
           <header>
