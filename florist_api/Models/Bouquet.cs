@@ -23,7 +23,7 @@ namespace florist_api.Models
         [Required(ErrorMessage = "Every bouquet must belong to a season.")]
         [RegularExpression("^(Spring|Summer|Autumn|Winter)$", 
          ErrorMessage = "Season must be Spring, Summer, Autumn, or Winter")]
-        public string Season { get; set; }
+        public string? Season { get; set; }
 
         public bool IsAvailable { get; set; } = true;
         
