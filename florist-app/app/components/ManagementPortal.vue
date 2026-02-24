@@ -17,7 +17,7 @@
             class="editorial-text mr-4"
             style="text-transform: none"
           >
-            {{ username }}
+            {{ username }} Admin
           </v-btn>
           <v-btn 
             @click="handleLogout"
@@ -41,7 +41,7 @@
           <v-window-item value="inventory">
             <div class="d-flex justify-space-between align-center mb-8">
               <h2 class="display-main" style="font-size: 1.8rem;">Inventory</h2>
-              <v-btn color="#2D5A27" rounded="xl" class="px-8 shadow-btn">
+              <v-btn color="#2D5A27" rounded="xl" class="px-8 shadow-btn" @click="openAddDialog">
                 + Add New Stem
               </v-btn>
             </div>
@@ -98,7 +98,7 @@ const props = defineProps({
 const emit = defineEmits(['logout', 'session-expired'])
 
 const config = useRuntimeConfig()
-const products = ref([])
+const inventory = ref([])
 const showAddDialog = ref(false)
 const isEditing = ref(false)
 const currentEditId = ref(null)
@@ -126,7 +126,7 @@ const fetchManagementProducts = async () => {
     const data = await $fetch(`${config.public.apiBase}/bouquets`, {
       headers: { Authorization: `Bearer ${props.token}` }
     })
-    products.value = data
+    inventory.value = data
   } catch (err) {
     if (err.status === 401) emit('session-expired')
   }
@@ -181,6 +181,10 @@ const deleteStem = async (id) => {
     if (err.status === 401) emit('session-expired')
   }
 }
+
+const handleLogout = () => {
+  emit('logout');
+};
 
 onMounted(() => {
   fetchManagementProducts()
