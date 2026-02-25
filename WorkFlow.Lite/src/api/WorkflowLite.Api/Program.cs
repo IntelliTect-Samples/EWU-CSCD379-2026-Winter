@@ -26,7 +26,7 @@ builder.Services.AddCors(opt =>
     opt.AddPolicy("web", p => p
         .WithOrigins(
             "http://localhost:3000",
-            "https://YOUR_STATIC_WEB_APP_URL_HERE"
+            "https://wonderful-ground-02b56aa10.4.azurestaticapps.net"
         )
         .AllowAnyHeader()
         .AllowAnyMethod());
