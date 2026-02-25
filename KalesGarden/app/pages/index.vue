@@ -21,8 +21,14 @@
     </div>
 
     <div v-else-if="artPieces && artPieces.length">
-      <div class="grid">
-        <article v-for="piece in artPieces" :key="piece.id">
+      <div class="gallery-grid">
+        <article
+          v-for="piece in artPieces"
+          :key="piece.id"
+          class="gallery-card"
+          @click="openLightbox(piece)"
+          style="cursor: pointer"
+        >
           <header>
             <img
               v-if="piece.imageUrl"
@@ -46,11 +52,13 @@
             <span v-else data-tooltip="This piece has been sold">
               &nbsp;&#x2718; Sold
             </span>
-            <button v-if="isAdmin" @click="openEditModal(piece)">Edit</button>
+            <button v-if="isAdmin" @click.stop="openEditModal(piece)">
+              Edit
+            </button>
             <button
               v-if="isAdmin"
               class="secondary"
-              @click="deleteArt(piece.id)"
+              @click.stop="deleteArt(piece.id)"
             >
               Delete
             </button>
@@ -64,6 +72,39 @@
         <p>No art pieces found. Check back soon!</p>
       </article>
     </div>
+
+    <!-- Lightbox Modal -->
+    <dialog
+      :open="!!lightboxPiece"
+      v-if="lightboxPiece"
+      class="lightbox-dialog"
+      @click.self="lightboxPiece = null"
+    >
+      <article class="lightbox-content" @click.stop>
+        <header>
+          <button
+            aria-label="Close"
+            rel="prev"
+            @click="lightboxPiece = null"
+          ></button>
+          <h3>{{ lightboxPiece.name }}</h3>
+        </header>
+        <img
+          v-if="lightboxPiece.imageUrl"
+          :src="lightboxPiece.imageUrl"
+          :alt="lightboxPiece.name"
+          class="lightbox-image"
+        />
+        <p>{{ lightboxPiece.description }}</p>
+        <footer>
+          <strong>${{ lightboxPiece.price.toFixed(2) }}</strong>
+          <span v-if="lightboxPiece.isAvailable">
+            &nbsp;&#x2714; Available</span
+          >
+          <span v-else> &nbsp;&#x2718; Sold</span>
+        </footer>
+      </article>
+    </dialog>
 
     <!-- Add / Edit Modal -->
     <dialog :open="showModal" v-if="showModal">
@@ -154,6 +195,12 @@ const {
   error,
   refresh,
 } = useFetch<ArtPiece[]>(`${apiBase}/ArtPieces`, { server: false });
+
+// Lightbox state
+const lightboxPiece = ref<ArtPiece | null>(null);
+function openLightbox(piece: ArtPiece) {
+  lightboxPiece.value = piece;
+}
 
 // Modal state
 const showModal = ref(false);
@@ -259,3 +306,60 @@ async function deleteArt(id: number) {
   }
 }
 </script>
+
+<style scoped>
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1200px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gallery-card {
+  margin-bottom: 0;
+}
+
+.lightbox-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.lightbox-content {
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 0 auto;
+}
+
+.lightbox-image {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+}
+</style>
