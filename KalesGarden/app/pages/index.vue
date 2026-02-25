@@ -153,7 +153,7 @@ const {
   pending,
   error,
   refresh,
-} = useFetch<ArtPiece[]>(`${apiBase}/ArtPieces`);
+} = useFetch<ArtPiece[]>(`${apiBase}/ArtPieces`, { server: false });
 
 // Modal state
 const showModal = ref(false);
