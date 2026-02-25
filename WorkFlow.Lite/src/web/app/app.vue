@@ -17,6 +17,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { navigateTo } from 'nuxt/app'
 import { useApi } from '../composables/api'
 import { useAuthService } from '../composables/auth'
 

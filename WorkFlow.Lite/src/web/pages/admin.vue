@@ -13,12 +13,17 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ middleware: ['admin'] })
+import { onMounted, ref } from 'vue'
+import { navigateTo } from 'nuxt/app'
+import { useApi } from '../composables/api'
 
-const { apiFetch } = useApi()
+const { token, roles, apiFetch } = useApi()
 const data = ref<any>(null)
 
 onMounted(async () => {
+  if (!token.value) return navigateTo('/login')
+  if (!roles.value.includes('Admin')) return navigateTo('/')
+
   data.value = await apiFetch('/api/admin/all')
 })
 </script>

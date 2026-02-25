@@ -25,6 +25,9 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useWorkOrdersService } from '../composables/workorders'
+
 definePageMeta({ middleware: ['auth'] })
 
 const headers = [
@@ -35,6 +38,7 @@ const headers = [
 ]
 
 const { getMine, create: createWO } = useWorkOrdersService()
+
 const mine = ref<any[]>([])
 
 const title = ref('')
@@ -44,17 +48,24 @@ const priorities = ['Low', 'Medium', 'High', 'Urgent']
 const msg = ref('')
 
 async function refresh() {
-  mine.value = await getMine() as any[]
+  mine.value = (await getMine()) as any[]
 }
+
 onMounted(refresh)
 
 async function create() {
   msg.value = ''
   try {
-    await createWO({ title: title.value, description: description.value, priority: priority.value })
+    await createWO({
+      title: title.value,
+      description: description.value,
+      priority: priority.value
+    })
+
     title.value = ''
     description.value = ''
     priority.value = 'Medium'
+
     await refresh()
     msg.value = 'Created!'
   } catch {

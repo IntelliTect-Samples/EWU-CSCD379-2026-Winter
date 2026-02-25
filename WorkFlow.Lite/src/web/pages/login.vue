@@ -15,6 +15,10 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { navigateTo } from 'nuxt/app'
+import { useAuthService } from '../composables/auth'
+
 const email = ref('')
 const password = ref('')
 const msg = ref('')
