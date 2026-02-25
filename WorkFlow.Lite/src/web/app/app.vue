@@ -17,6 +17,9 @@
 </template>
 
 <script setup lang="ts">
+import { useApi } from '../composables/api'
+import { useAuthService } from '../composables/auth'
+
 const { token } = useApi()
 const auth = useAuthService()
 

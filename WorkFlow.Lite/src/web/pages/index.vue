@@ -30,6 +30,9 @@
 
 <script setup lang="ts">
 import * as signalR from '@microsoft/signalr'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useRuntimeConfig } from 'nuxt/app'
+import { useWorkOrdersService } from '../composables/workorders'
 
 const headers = [
   { title: 'ID', key: 'id' },
@@ -45,10 +48,8 @@ const items = ref<any[]>([])
 let conn: signalR.HubConnection | null = null
 
 onMounted(async () => {
-  // Initial load
-  items.value = await getPublicBoard() as any[]
+  items.value = (await getPublicBoard()) as any[]
 
-  // Setup SignalR
   const config = useRuntimeConfig()
 
   conn = new signalR.HubConnectionBuilder()
@@ -57,20 +58,17 @@ onMounted(async () => {
     .build()
 
   conn.on('WorkOrderCreated', async () => {
-    items.value = await getPublicBoard() as any[]
+    items.value = (await getPublicBoard()) as any[]
   })
 
   conn.on('WorkOrderUpdated', async () => {
-    items.value = await getPublicBoard() as any[]
+    items.value = (await getPublicBoard()) as any[]
   })
 
   await conn.start()
 })
 
-// Clean up connection when leaving page
 onUnmounted(async () => {
-  if (conn) {
-    await conn.stop()
-  }
+  if (conn) await conn.stop()
 })
 </script>

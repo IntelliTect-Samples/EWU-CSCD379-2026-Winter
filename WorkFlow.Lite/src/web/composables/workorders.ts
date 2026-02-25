@@ -1,3 +1,5 @@
+import { useApi } from './api'
+
 export function useWorkOrdersService() {
   const { apiFetch } = useApi()
   return {
