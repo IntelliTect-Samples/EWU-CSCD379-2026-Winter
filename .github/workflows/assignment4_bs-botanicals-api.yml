@@ -24,13 +24,13 @@ jobs:
           dotnet-version: '9.x'
 
       - name: Restore dependencies
-        run: dotnet restore florist_api/
+        run: dotnet restore florist_api/florist_api.csproj
 
       - name: Build with dotnet
-        run: dotnet build florist_api/florist_api.csproj --configuration Release
+        run: dotnet build florist_api/florist_api.csproj --configuration Release --no-restore
 
-      #- name: Test
-      # run: dotnet test florist_api/tests/tests.csproj --configuration Release
+      - name: Test
+        run: dotnet test florist_api/Tests/Tests.csproj --configuration Release --no-build
 
       - name: Publish
         run: dotnet publish florist_api/florist_api.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp

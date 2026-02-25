@@ -11,19 +11,19 @@ namespace florist_api.Models
 
         [Required(ErrorMessage = "A bouquet name is required")]
         [StringLength(100)]
-        public string Name { get; set; } = string.Empty;
+        public required string Name { get; set; } = string.Empty;
 
         [Required]
         [Range(0.01, 10000.00)]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
-        public string? ImageUrl { get; set; }
+        public required string ImageUrl { get; set; }
 
         [Required(ErrorMessage = "Every bouquet must belong to a season.")]
         [RegularExpression("^(Spring|Summer|Autumn|Winter)$", 
          ErrorMessage = "Season must be Spring, Summer, Autumn, or Winter")]
-        public string? Season { get; set; }
+        public required string Season { get; set; }
 
         public bool IsAvailable { get; set; } = true;
         
