@@ -28,12 +28,12 @@ namespace florist_api.Services
         {
             var bouquet = new Bouquet
             {
-                Name = dto.Name,
+                Name = dto.Name!,
                 Price = dto.Price,
-                ImageUrl = dto.ImageUrl,
-                Season = dto.Season,
+                ImageUrl = dto.ImageUrl!,
+                Season = dto.Season!,
                 IsAvailable = true,
-                InventoryCount = 0 // Default new stems to zero stock
+                InventoryCount = 0
             };
 
             _context.Bouquets.Add(bouquet);
@@ -47,9 +47,9 @@ namespace florist_api.Services
             var bouquet = await _context.Bouquets.FindAsync(id);
             if (bouquet == null) return false;
 
-            bouquet.Name = updatedData.Name;
-            bouquet.Season = updatedData.Season;
-            bouquet.ImageUrl = updatedData.ImageUrl;
+            bouquet.Name = updatedData.Name!;
+            bouquet.Season = updatedData.Season!;
+            bouquet.ImageUrl = updatedData.ImageUrl!;
             bouquet.IsAvailable = updatedData.IsAvailable;
             // We usually exclude Price here if we want Price updates to be a separate, audited action
             
