@@ -83,6 +83,12 @@ catch (Exception ex)
     app.Logger.LogError(ex, "Startup seeding failed (roles/admin). App will continue running.");
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
 app.Run();
 
 static async Task SeedRolesAndAdminAsync(WebApplication app)
