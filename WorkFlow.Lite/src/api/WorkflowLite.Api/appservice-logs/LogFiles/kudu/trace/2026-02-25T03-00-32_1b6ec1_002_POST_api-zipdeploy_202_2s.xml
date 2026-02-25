@@ -1,0 +1,17 @@
+<step title="Incoming Request" date="2026-02-25T03:00:32.124" instance="1b6ec1" url="/api/zipdeploy?isAsync=true" method="POST" type="request" pid="832,1,5" Accept="*/*" Host="workflowlite-api-4448.scm.azurewebsites.net" User-Agent="AZURECLI/2.83.0 (MSI)" Accept-Encoding="gzip, deflate" Authorization="Bea..." Cache-Control="no-cache" Content-Type="application/octet-stream" Content-Length="6271959" x-ms-client-request-id="053e136c-11f6-11f1-961d-c43555af8df4" x-ms-artifact-checksum="470d4ba93652c9019342ee06cd4f48f534bac15b2b629dfedbb61fddfb318bb2" X-ARR-LOG-ID="053e136c-11f6-11f1-961d-c43555af8df4" CLIENT-IP="67.5.112.102:49694" X-SITE-DEPLOYMENT-ID="workflowlite-api-4448" WAS-DEFAULT-HOSTNAME="workflowlite-api-4448.scm.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/zipdeploy?isAsync=true" X-Client-IP="67.5.112.102" X-Client-Port="49694" >
+  <step title="ZipPushDeploy" date="2026-02-25T03:00:33.584" >
+    <step title="ZipDeploy. Extract zip." date="2026-02-25T03:00:33.641" /><!-- duration: 24ms -->
+    <step title="None repository commit" date="2026-02-25T03:00:33.681" >
+      <step title="Commit id: e9df7968-9b8e-45a2-9cf7-f88ddf5cefe0" date="2026-02-25T03:00:33.692" Message="N/A" AuthorName="N/A" AuthorEmail="N/A" /><!-- duration: 15ms -->
+    </step><!-- duration: 29ms -->
+    <step title="Starting PushDeployAsync" date="2026-02-25T03:00:33.714" /><!-- duration: 3ms -->
+    <step title="Writing artifact to /tmp/zipdeploy/00335385-63a3-457e-9db2-58e8305a7243.zip" date="2026-02-25T03:00:33.732" >
+      <step title="Writing multipart request body to /tmp/zipdeploy/00335385-63a3-457e-9db2-58e8305a7243.zip" date="2026-02-25T03:00:33.737" /><!-- duration: 4ms -->
+    </step><!-- duration: 431ms -->
+    <step title="Start deployment in the background" date="2026-02-25T03:00:34.203" >
+      <step title="Acquiring Deployment Lock" date="2026-02-25T03:00:34.233" /><!-- duration: 13ms -->
+      <step title="Acquired Deployment Lock" date="2026-02-25T03:00:34.405" /><!-- duration: 4ms -->
+    </step><!-- duration: 322ms -->
+  </step><!-- duration: 952ms -->
+  <step title="Outgoing response" date="2026-02-25T03:00:34.565" type="response" statusCode="202" statusText="Accepted" /><!-- duration: 4ms -->
+</step><!-- duration: 2458ms -->

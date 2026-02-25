@@ -74,7 +74,14 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<WorkOrdersHub>("/hubs/workorders");
 
-await SeedRolesAndAdminAsync(app);
+try
+{
+    await SeedRolesAndAdminAsync(app);
+}
+catch (Exception ex)
+{
+    app.Logger.LogError(ex, "Startup seeding failed (roles/admin). App will continue running.");
+}
 
 app.Run();
 
