@@ -5,12 +5,15 @@
     </ClientOnly>
 
     <v-container class="py-1 position-relative" style="z-index: 1;">
-      <v-row class="mb-10" align="end">
-        <v-col cols="12" md="8">
+      <v-row class="mb-10 align-center header-row-desktop">
+        <v-col class="py-0">
           <h1 class="mgmt-display-title">Management Dashboard</h1>
         </v-col>
-        <v-col cols="12" md="4" class="d-flex justify-space-between justify-md-end align-center">
-          <span v-if="username" class="mgmt-user-text d-flex align-center" style="font-weight: 500; color: #2D5A27;">
+
+        <v-spacer class="hidden-sm-and-down"></v-spacer>
+
+        <v-col cols="auto" class="d-flex align-center py-0">
+          <span v-if="username" class="mgmt-user-text d-flex align-center me-6">
             <v-icon start size="small">mdi-account-circle-outline</v-icon>
             {{ username }}
           </span>
@@ -49,15 +52,20 @@
             <v-table class="inventory-table">
               <thead>
                 <tr>
-                  <th>Botanical</th>
-                  <th>Season</th>
-                  <th>Pricing</th>
-                  <th class="text-center">Manage</th> <th class="text-right">Stock Level</th>
+                  <th class="text-left">Botanical</th>
+                  
+                  <th class="text-left">Season</th>
+                  
+                  <th class="text-left">Pricing</th>
+                  
+                  <th class="text-right pr-12">Manage</th>
+                  
+                  <th class="text-center">Stock Level</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="item in inventory" :key="item.id">
-                  <td class="py-4">
+                  <td class="text-left py-4">
                     <div class="d-flex align-center">
                       <v-avatar rounded="lg" size="48" class="mr-4">
                         <v-img :src="item.imageUrl" cover />
@@ -65,9 +73,16 @@
                       <span class="editorial-text" style="font-size: 1.1rem">{{ item.name }}</span>
                     </div>
                   </td>
-                  <td><v-chip variant="outlined" color="#2D5A27" size="small">{{ item.season }}</v-chip></td>
-                  <td class="price-text">${{ item.price }}</td>
-                  <td class="text-right">
+
+                  <td class="text-left">
+                    <v-chip variant="outlined" color="#2D5A27" size="small">{{ item.season }}</v-chip>
+                  </td>
+
+                  <td class="text-left price-text">
+                    ${{ item.price }}
+                  </td>
+
+                  <td class="text-right pr-8">
                     <v-btn 
                       icon="mdi-pencil-outline" 
                       variant="text" 
@@ -75,7 +90,6 @@
                       class="action-btn"
                       @click="openEditDialog(item)"
                     ></v-btn>
-
                     <v-btn 
                       icon="mdi-delete-outline" 
                       variant="text" 
@@ -84,6 +98,7 @@
                       @click="confirmDelete(item.id)"
                     ></v-btn>
                   </td>
+
                   <td class="text-center">
                     <div class="d-flex align-center justify-center">
                       <div class="d-flex align-center border rounded-pill px-2" style="border-color: #2D5A27 !important; height: 32px;">
