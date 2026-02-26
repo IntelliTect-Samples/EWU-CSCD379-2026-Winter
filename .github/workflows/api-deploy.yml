@@ -21,13 +21,13 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Restore
-        run: dotnet restore ./src/api/workflowlite.api/WorkflowLite.Api.csproj
+        run: dotnet restore ./WorkFlow.Lite/src/api/WorkflowLite.api/WorkflowLite.Api.csproj
 
       - name: Test
-        run: dotnet test ./src/api/WorkflowLite.Tests/WorkflowLite.Tests.csproj -c Release
+        run: dotnet test ./WorkFlow.Lite/src/api/WorkflowLite.Tests/WorkflowLite.Tests.csproj -c Release
 
       - name: Publish
-        run: dotnet publish ./src/api/workflowlite.api/WorkflowLite.Api.csproj -c Release -o ./api_publish
+        run: dotnet publish ./WorkFlow.Lite/src/api/WorkflowLite.api/WorkflowLite.Api.csproj -c Release -o ./api_publish
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3

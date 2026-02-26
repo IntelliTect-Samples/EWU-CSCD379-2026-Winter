@@ -20,15 +20,15 @@ jobs:
           node-version: 20
 
       - name: Install
-        working-directory: src/web
+        working-directory: WorkFlow.Lite/src/web
         run: npm ci
 
       - name: Test
-        working-directory: src/web
+        working-directory: WorkFlow.Lite/src/web
         run: npm run test:run
 
       - name: Generate static site
-        working-directory: src/web
+        working-directory: WorkFlow.Lite/src/web
         env:
           NUXT_PUBLIC_API_BASE: ${{ secrets.NUXT_PUBLIC_API_BASE }}
         run: npm run generate
@@ -40,5 +40,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
 
-          app_location: src/web/.output/public
+          app_location: WorkFlow.Lite/src/web/.output/public
           skip_app_build: true
