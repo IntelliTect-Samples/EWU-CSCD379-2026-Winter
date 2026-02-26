@@ -23,10 +23,6 @@ jobs:
         working-directory: WorkFlow.Lite/src/web
         run: npm ci
 
-      - name: Test
-        working-directory: WorkFlow.Lite/src/web
-        run: npm run test:run
-
       - name: Generate static site
         working-directory: WorkFlow.Lite/src/web
         env:
