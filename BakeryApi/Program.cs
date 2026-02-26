@@ -1,5 +1,6 @@
 using BakeryApi.Data;
 using BakeryApi.Models;
+using BakeryApi.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -69,6 +70,9 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
+
+// Register services
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
