@@ -55,6 +55,13 @@
     letter-spacing: -1px !important;
   }
 
+  .cart-item-meta.mt-1 {
+    font-size: 0.85rem !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
+    max-width: 150px !important;
+  }
+
   .glass-card {
     padding: 12px !important; 
   }
@@ -82,14 +89,7 @@
     line-height: 1.2 !important;
     width: 80px !important;
   }
-
-  .cart-item-meta.mt-1 {
-    font-size: 0.85rem !important;
-    white-space: normal !important;
-    line-height: 1.2 !important;
-    max-width: 150px !important;
-  }
-
+  
   .v-list-item__prepend {
     margin-left: -12px !important;
     margin-right: 8px !important;
@@ -136,7 +136,9 @@
   }
 
   h2.cart-item-title {
-    font-size: 1.5rem !important; 
+    font-size: 1.4rem !important; 
+    letter-spacing: -0.5px !important;
+    margin-top: 0 !important;
   }
 
   .cart-checkout-btn {
@@ -144,5 +146,15 @@
     font-size: 0.75rem !important; 
     height: 40px !important;
     padding: 0 20px !important;
+  }
+
+  .cart-subtitle {
+    font-size: 0.65rem !important;
+    letter-spacing: 2px !important;
+  }
+
+  .px-4 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
   }
 }

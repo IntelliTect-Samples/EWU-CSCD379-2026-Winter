@@ -55,3 +55,32 @@
   font-family: 'Playfair Display', serif;
   color: #2D5A27;
 }
+
+/* Mobile Layout */
+@media (max-width: 600px) {
+    .display-main {
+        font-size: 2.2rem !important;
+        letter-spacing: -1px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .glass-card {
+        padding: 32px 20px !important;
+        margin: 0 8px !important;
+    }
+
+    .boutique-input {
+        margin-bottom: 8px !important;
+    }
+
+    .v-btn--size-x-large {
+        height: 52px !important;
+        font-size: 0.9rem !important;
+        letter-spacing: 1px !important;
+    }
+
+    .py-16 {
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
+    }
+}

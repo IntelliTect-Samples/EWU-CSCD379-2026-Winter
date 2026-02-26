@@ -27,21 +27,13 @@
       <v-row class="editorial-row pb-16" align="center">
         <v-col cols="12" md="6" class="pr-md-10">
           <div class="position-relative">
-            <v-skeleton-loader
-              v-if="isImageLoading"
-              type="image"
-              height="600"
-              class="editorial-image"
-              rounded="lg"
-            ></v-skeleton-loader>
-
             <v-img
               src="/images/main-flower-page.jpg"
               cover
               height="600"
               class="editorial-image"
               rounded="lg"
-              @load="isImageLoading = false"
+              transition="fade-transition"
             ></v-img>
           </div>
         </v-col>
@@ -63,9 +55,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import '~/assets/css/index.css'
-
-const isImageLoading = ref(true)
 </script>
 

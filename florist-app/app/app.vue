@@ -24,15 +24,14 @@
             :model-value="cart.length > 0"
             offset-x="10"
             offset-y="10"
-          >
+            class="nav-menu-badge"  >
             <v-btn
               icon="mdi-menu"
               variant="text"
               color="#2D5A27"
               v-bind="props"
-              class="menu-icon-btn"
-            >
-            </v-btn>
+              class="menu-icon-btn" >
+            </v-btn> 
           </v-badge>
         </template>
 

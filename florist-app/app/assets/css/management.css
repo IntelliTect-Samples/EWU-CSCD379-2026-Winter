@@ -64,3 +64,122 @@
 .action-btn:hover {
   transform: scale(1.1);
 }
+
+/* Mobile Layout */
+@media (max-width: 600px) {
+  .mgmt-display-title {
+    font-size: 1.6rem !important;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .mgmt-user-display {
+    font-size: 0.85rem !important;
+    margin-right: 12px !important;
+  }
+  
+  .mgmt-user-display .v-icon {
+    font-size: 16px !important;
+  }
+  
+  .v-col {
+    overflow: visible !important;
+  }
+
+  .mgmt-card {
+    padding: 16px !important;
+    border-radius: 16px !important;
+  }
+
+  .dense-actions {
+    gap: 0px !important;
+  }
+
+  .dense-actions .v-btn {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+  }
+
+  .dense-actions .v-btn .v-icon {
+    font-size: 18px !important; 
+  }
+
+  .v-tab {
+    font-size: 0.9rem !important;
+    min-width: 100px !important;
+    padding: 0 8px !important;
+  }
+
+  .logout-btn {
+    height: 32px !important;
+    padding: 0 12px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .inventory-header {
+    flex-direction: row !important; 
+    justify-content: space-between !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .inventory-header h2 {
+    font-size: 1.2rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  .add-btn {
+    height: 36px !important;
+    padding: 0 16px !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: auto !important;
+  }
+
+  .inventory-table {
+    display: block;
+    overflow-x: auto !important;
+    white-space: nowrap;
+  }
+
+  .inventory-table td {
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .inventory-table .editorial-text {
+    font-size: 0.9rem !important;
+  }
+
+  .inventory-table .v-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    margin-right: 8px !important;
+  }
+
+  .inventory-table .border.rounded-pill {
+    height: 28px !important;
+    padding: 0 4px !important;
+  }
+
+  .v-dialog .v-card {
+    padding: 16px !important;
+  }
+
+  .v-card-title {
+    font-size: 1.3rem !important;
+  }
+
+  .dialog-btn {
+    height: 36px !important;
+    font-size: 0.75rem !important;
+    min-width: 110px !important;
+    margin: 0 4px !important;
+  }
+
+  .mgmt-user-text {
+    font-size: 1.0rem !important;
+    margin-right: 0 !important;
+  }
+}

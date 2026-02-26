@@ -51,6 +51,20 @@
     letter-spacing: 2px !important;
   }
 
+  .editorial-row h2.display-main {
+    font-size: 1.5rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.5px !important;
+    margin-bottom: 12px !important;
+    text-align: center;
+  }
+
+  .editorial-image {
+    height: 320px !important;
+    margin-bottom: 20px;
+    border-radius: 16px !important;
+  }
+
   .editorial-text {
     font-size: 1rem !important;
     line-height: 1.6 !important;
@@ -67,9 +81,11 @@
   }
 
   .shop-cta-btn {
-    width: 100%;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    height: 48px !important;
+    padding: 0 32px !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 1px !important;
+    font-weight: 300 !important;
   }
 
   .py-16 {

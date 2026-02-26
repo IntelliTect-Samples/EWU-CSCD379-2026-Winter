@@ -56,6 +56,19 @@
 
 /* Mobile layout */
 @media (max-width: 600px) {
+    .logo-text {
+        font-size: 0.9rem !important;
+        letter-spacing: 1px !important;
+    }
+
+    .nav-menu-badge {
+        margin-right: 12px !important;
+    }
+
+    .menu-icon-btn .v-icon {
+        font-size: 24px !important;
+    }
+
     .menu-glass .v-list-item {
         padding-left: 16px !important; 
         min-height: 40px !important;
