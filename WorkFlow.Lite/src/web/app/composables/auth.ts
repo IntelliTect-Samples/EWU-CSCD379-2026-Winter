@@ -1,7 +1,6 @@
 import { useApi } from './api'
 
 function base64UrlDecode(input: string): string {
-  // JWT uses base64url, not plain base64
   const base64 = input.replace(/-/g, '+').replace(/_/g, '/')
   const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4)
   return atob(padded)
@@ -14,18 +13,21 @@ function parseRolesFromJwt(jwt: string): string[] {
 
     const payload = JSON.parse(base64UrlDecode(payloadPart))
 
-    // ASP.NET emits roles as this claim type by default
-    const roleClaim = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+    const roleClaim =
+      payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ??
+      payload['role'] ??
+      payload['roles']
+
     if (!roleClaim) return []
 
-    return Array.isArray(roleClaim) ? roleClaim : [String(roleClaim)]
+    return Array.isArray(roleClaim) ? roleClaim.map(String) : [String(roleClaim)]
   } catch {
     return []
   }
 }
 
 export function useAuthService() {
-  const { apiFetch, token, roles } = useApi()
+  const { apiFetch, setAuth } = useApi()
 
   return {
     async register(email: string, password: string) {
@@ -41,13 +43,12 @@ export function useAuthService() {
         body: { email, password }
       })
 
-      token.value = res.token
-      roles.value = parseRolesFromJwt(res.token)
+      const roles = parseRolesFromJwt(res.token)
+      setAuth(res.token, roles)
     },
 
     logout() {
-      token.value = null
-      roles.value = []
+      setAuth(null, [])
     }
   }
 }
