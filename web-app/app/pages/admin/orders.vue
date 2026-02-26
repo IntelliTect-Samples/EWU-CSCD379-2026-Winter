@@ -11,7 +11,19 @@ const orders = ref([])
 const products = ref([])
 
 const load = async () => {
-  const res = await fetch(`${config.public.apiBase}/api/orders`)
+  const token = localStorage.getItem("accessToken")
+
+  const res = await fetch(`${config.public.apiBase}/api/orders`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  if (!res.ok) {
+    console.error("Failed to fetch orders:", res.status)
+    return
+  }
+
   orders.value = await res.json()
   products.value = await getProducts()
 }
@@ -27,11 +39,21 @@ const formatDate = (iso) => {
 const updateStatus = async (orderId, status) => {
   if (!confirm(`Change order #${orderId} status to '${status}'?`)) return
 
-  await fetch(`${config.public.apiBase}/api/orders/${orderId}/status`, {
+  const token = localStorage.getItem("accessToken")
+
+  const res = await fetch(`${config.public.apiBase}/api/orders/${orderId}/status`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
     body: JSON.stringify({ status })
   })
+
+  if (!res.ok) {
+    console.error("Failed to update status:", res.status)
+    return
+  }
 
   await load()
 }

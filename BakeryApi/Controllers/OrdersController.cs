@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using BakeryApi.Data;
 using BakeryApi.Models;
 using Microsoft.EntityFrameworkCore; 
+using Microsoft.AspNetCore.Authorization;
 
 namespace BakeryApi.Controllers
 {
@@ -35,6 +36,7 @@ public class StatusUpdateDto
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult GetOrders()
         {
             var orders = _context.Orders
@@ -45,6 +47,7 @@ public class StatusUpdateDto
         }
 
         [HttpPost("{id}/status")]
+        [Authorize]
         public IActionResult UpdateStatus(int id, [FromBody] StatusUpdateDto dto)
         {
             var order = _context.Orders.Find(id);

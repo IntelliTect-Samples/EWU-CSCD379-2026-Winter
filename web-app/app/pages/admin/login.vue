@@ -25,10 +25,6 @@
           Login
         </button>
 
-        <p class="register-link">
-          Don’t have an account?
-          <NuxtLink to="/register">Register here</NuxtLink>
-        </p>
       </form>
     </div>
   </div>

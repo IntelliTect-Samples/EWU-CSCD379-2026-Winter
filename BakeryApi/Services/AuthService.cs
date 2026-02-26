@@ -1,5 +1,5 @@
-using BakeryApi.Models.Auth;
 using BakeryApi.Models;
+using BakeryApi.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -18,23 +18,6 @@ namespace BakeryApi.Services
         {
             _userManager = userManager;
             _config = config;
-        }
-
-        public async Task<IdentityResult> RegisterAsync(RegisterDto dto)
-        {
-            var user = new User
-            {
-                UserName = dto.Email,
-                Email = dto.Email
-            };
-
-            var result = await _userManager.CreateAsync(user, dto.Password);
-
-            if (!result.Succeeded)
-                return result;
-
-            await _userManager.AddToRoleAsync(user, "Admin");
-            return result;
         }
 
         public async Task<(string? Token, IEnumerable<string>? Roles)> LoginAsync(LoginDto dto)
@@ -57,8 +40,12 @@ namespace BakeryApi.Services
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
+            var keyString = _config["Jwt:Key"];
+            if (string.IsNullOrEmpty(keyString))
+                throw new Exception("JWT Key not configured.");
+
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
+                Encoding.UTF8.GetBytes(keyString)
             );
 
             var token = new JwtSecurityToken(

@@ -58,7 +58,7 @@ builder.Services.AddAuthentication(options =>
         )
     };
 });
-
+builder.Services.AddAuthorization();
 // -----------------------------
 // CORS
 // -----------------------------
@@ -100,6 +100,31 @@ using (var scope = app.Services.CreateScope())
             if (!roleManager.RoleExistsAsync(role).Result)
             {
                 roleManager.CreateAsync(new IdentityRole(role)).Wait();
+            }
+        }
+        // -----------------------------
+        // Seed Default Admin User
+        // -----------------------------
+        var userManager = services.GetRequiredService<UserManager<User>>();
+
+        string adminEmail = "admin2@bakery.com";
+        string adminPassword = "Password123@";
+
+        var adminUser = userManager.FindByEmailAsync(adminEmail).Result;
+
+        if (adminUser == null)
+        {
+            var user = new User
+            {
+                UserName = adminEmail,
+                Email = adminEmail
+            };
+
+            var result = userManager.CreateAsync(user, adminPassword).Result;
+
+            if (result.Succeeded)
+            {
+                userManager.AddToRoleAsync(user, "Admin").Wait();
             }
         }
     }

@@ -1,7 +1,6 @@
 import { ref, computed, readonly } from 'vue'
 
 const accessToken = ref('')
-const refreshToken = ref('')
 const email = ref('')
 const roles = ref<string[]>([])
 
@@ -18,7 +17,6 @@ export const useAuth = () => {
   const restore = () => {
     if (process.server) return
     accessToken.value = localStorage.getItem('accessToken') || ''
-    refreshToken.value = localStorage.getItem('refreshToken') || ''
     email.value = localStorage.getItem('email') || ''
     const savedRoles = localStorage.getItem('roles')
     roles.value = savedRoles ? JSON.parse(savedRoles) : []
@@ -27,7 +25,6 @@ export const useAuth = () => {
   const persist = () => {
     if (process.server) return
     localStorage.setItem('accessToken', accessToken.value)
-    localStorage.setItem('refreshToken', refreshToken.value)
     localStorage.setItem('email', email.value)
     localStorage.setItem('roles', JSON.stringify(roles.value))
   }
@@ -43,14 +40,13 @@ export const useAuth = () => {
     })
 
     if (!res.ok) {
-      const err = await res.json().catch(() => null)
-      throw new Error(err?.message || 'Login failed')
+      const text = await res.text()
+      throw new Error(text || 'Login failed')
     }
 
     const data = await res.json()
 
     accessToken.value = data.accessToken
-    refreshToken.value = data.refreshToken
     email.value = emailInput
     roles.value = data.roles || []
 
@@ -58,36 +54,17 @@ export const useAuth = () => {
   }
 
   // -------------------------
-  // REGISTER
-  // -------------------------
-  const register = async (emailInput: string, password: string) => {
-    const res = await fetch(`${apiBase}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: emailInput, password }),
-    })
-
-    const data = await res.json()
-
-    if (!res.ok) {
-        console.log(data)
-        throw new Error(JSON.stringify(data))
-    }
-
-    return data
-    }
-
-  // -------------------------
   // LOGOUT
   // -------------------------
   const logout = () => {
     accessToken.value = ''
-    refreshToken.value = ''
     email.value = ''
     roles.value = []
 
     if (!process.server) {
-      localStorage.clear()
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('email')
+      localStorage.removeItem('roles')
     }
   }
 
@@ -107,13 +84,11 @@ export const useAuth = () => {
 
   return {
     accessToken: readonly(accessToken),
-    refreshToken: readonly(refreshToken),
     email: readonly(email),
     roles: readonly(roles),
     isAuthenticated,
     isAdmin,
     login,
-    register,
     logout,
     getAuthHeaders,
   }
