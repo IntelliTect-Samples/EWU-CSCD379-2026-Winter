@@ -15,6 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Debug paths
+        run: |
+          ls -la
+          find . -maxdepth 4 -name "WorkflowLite.Api.csproj" -print
+          find . -maxdepth 4 -name "*.csproj" -print
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
