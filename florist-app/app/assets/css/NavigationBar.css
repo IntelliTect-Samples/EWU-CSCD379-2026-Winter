@@ -53,3 +53,32 @@
     color: #2D5A27 !important;
     background: rgba(45, 90, 39, 0.05) !important;
 }
+
+/* Mobile layout */
+@media (max-width: 600px) {
+    .menu-glass .v-list-item {
+        padding-left: 16px !important; 
+        min-height: 40px !important;
+    }
+
+    .menu-glass .v-list-item__prepend {
+        min-width: 0 !important;
+        width: 24px !important;
+        margin-right: 8px !important;
+        display: flex !important;
+        justify-content: flex-start;
+    }
+
+    .menu-glass .v-icon {
+        margin-inline-end: 0 !important;
+        font-size: 18px !important;
+    }
+
+    .menu-glass .v-list-item__content {
+        padding: 0 !important;
+    }
+
+    .menu-glass .v-list-item-title {
+        font-size: 0.9rem !important;
+    }
+}

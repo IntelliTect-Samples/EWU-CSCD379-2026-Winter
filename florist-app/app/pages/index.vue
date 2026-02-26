@@ -17,6 +17,7 @@
             variant="flat" 
             rounded="xl" 
             class="shop-cta-btn px-10"
+            :ripple="false"
           >
             Shop the Collection
           </v-btn>
@@ -25,13 +26,24 @@
 
       <v-row class="editorial-row pb-16" align="center">
         <v-col cols="12" md="6" class="pr-md-10">
-          <v-img
-            src="/images/main-flower-page.jpg"
-            cover
-            height="600"
-            class="editorial-image"
-            rounded="lg"
-          ></v-img>
+          <div class="position-relative">
+            <v-skeleton-loader
+              v-if="isImageLoading"
+              type="image"
+              height="600"
+              class="editorial-image"
+              rounded="lg"
+            ></v-skeleton-loader>
+
+            <v-img
+              src="/images/main-flower-page.jpg"
+              cover
+              height="600"
+              class="editorial-image"
+              rounded="lg"
+              @load="isImageLoading = false"
+            ></v-img>
+          </div>
         </v-col>
         <v-col cols="12" md="5" class="offset-md-1 text-left">
           <h2 class="display-main mb-6" style="font-size: clamp(2rem, 5vw, 3.5rem);"
@@ -51,6 +63,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import '~/assets/css/index.css'
+
+const isImageLoading = ref(true)
 </script>
 

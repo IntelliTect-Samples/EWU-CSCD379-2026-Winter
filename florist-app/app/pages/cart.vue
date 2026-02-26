@@ -14,7 +14,7 @@
           <v-list bg-color="transparent">
             <v-list-item v-for="item in cart" :key="item.cartId" class="mb-6">
               <template v-slot:prepend>
-                <v-avatar size="100" rounded="lg" class="mr-4">
+                <v-avatar size="100" rounded="lg">
                   <v-img :src="item.imageUrl" cover></v-img>
                 </v-avatar>
               </template>
@@ -24,16 +24,36 @@
               </v-list-item-title>
               
               <v-list-item-subtitle class="cart-item-meta mt-1">
-                {{ item.season }} Collection — ${{ item.price }}
+                <span>{{ item.season }} Collection</span>
               </v-list-item-subtitle>
 
               <template v-slot:append>
-                <v-btn 
-                  icon="mdi-close" 
-                  variant="text" 
-                  color="grey-lighten-1" 
-                  @click="removeFromCart(item.cartId)"
-                ></v-btn>
+               <div class="d-flex flex-column align-end justify-center" style="min-width: 100px;">
+    
+                  <div class="d-flex align-center mb-1" style="line-height: 1;">
+                    <span class="cart-item-meta font-weight-bold" style="color: #2D5A27; font-size: 0.95rem;">
+                      {{ item.quantity }} × ${{ (item.price * item.quantity).toLocaleString() }}
+                    </span>
+                  </div>
+
+                  <div class="quantity-controls">
+                    <v-btn 
+                      icon="mdi-minus" 
+                      variant="tonal" 
+                      size="x-small" 
+                      class="qty-btn"
+                      @click="removeFromCart(item.id)"
+                    ></v-btn>
+
+                    <v-btn 
+                      icon="mdi-plus" 
+                      variant="tonal" 
+                      size="x-small" 
+                      class="qty-btn"
+                      @click="addToCart(item)"
+                    ></v-btn>
+                  </div>
+                </div>
               </template>
             </v-list-item>
           </v-list>
@@ -47,7 +67,8 @@
             </div>
             <v-btn 
               color="#2D5A27" 
-              size="x-large" 
+              size="large" 
+              variant="flat" 
               rounded="xl" 
               class="px-10 cart-checkout-btn"
               @click="checkout"
@@ -96,7 +117,7 @@
 <script setup>
 import { ref } from 'vue'
 import '~/assets/css/cart.css'
-const { cart, removeFromCart, cartTotal } = useCart()
+const { cart, addToCart, removeFromCart, cartTotal } = useCart()
 
 const checkoutComplete = ref(false)
 

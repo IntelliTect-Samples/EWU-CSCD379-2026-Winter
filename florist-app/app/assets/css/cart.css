@@ -41,11 +41,108 @@
 
 .cart-checkout-btn {
   letter-spacing: 2px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  background-color: #2D5A27 !important;
 }
 
-.cart-checkout-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(45, 90, 39, 0.15) !important;
-  background-color: #3a7532 !important;
+.v-list-item__append {
+  padding-inline-start: 24px !important;
+}
+
+/* Mobile Layout */
+@media (max-width: 600px) {
+  .cart-item-title {
+    font-size: 2.2rem !important; 
+    letter-spacing: -1px !important;
+  }
+
+  .glass-card {
+    padding: 12px !important; 
+  }
+
+  .v-avatar {
+    width: 65px !important;
+    height: 65px !important;
+  }
+
+  .v-list-item-title.cart-item-title {
+    font-size: 1.1rem !important;
+    margin-left: 0 !important;
+    white-space: normal !important; 
+    display: block !important;
+    overflow: visible !important;
+    line-height: 1.1 !important;
+    width: 80px !important;
+    word-break: break-word;
+  }
+
+  .v-list-item-subtitle.cart-item-meta {
+    font-size: 0.85rem !important;
+    white-space: normal !important;
+    display: block !important;
+    line-height: 1.2 !important;
+    width: 80px !important;
+  }
+
+  .cart-item-meta.mt-1 {
+    font-size: 0.85rem !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
+    max-width: 150px !important;
+  }
+
+  .v-list-item__prepend {
+    margin-left: -12px !important;
+    margin-right: 8px !important;
+  }
+
+  .v-list-item__append {
+    padding-inline-start: 4px !important;
+    margin-right: -4px !important;
+  }
+
+  .v-list-item {
+    min-height: 80px !important;
+    height: auto !important;
+    align-items: center !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .quantity-controls {
+    gap: 4px !important; 
+    display: flex;
+    margin-top: 4px;
+  }
+
+  .qty-btn {
+    min-width: 28px !important; 
+    width: 28px !important;
+    height: 28px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 20px !important;
+  }
+
+  .v-btn--variant-tonal {
+    background-color: rgba(45, 90, 39, 0.12) !important;
+    color: #2D5A27 !important;
+  }
+
+  .d-flex.justify-space-between.align-center {
+    flex-direction: row !important; 
+    text-align: left !important;
+    gap: 0.5rem !important;
+    padding: 0 8px !important;
+  }
+
+  h2.cart-item-title {
+    font-size: 1.5rem !important; 
+  }
+
+  .cart-checkout-btn {
+    width: auto !important; 
+    font-size: 0.75rem !important; 
+    height: 40px !important;
+    padding: 0 20px !important;
+  }
 }

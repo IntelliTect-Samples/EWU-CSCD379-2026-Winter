@@ -96,3 +96,57 @@
   color: white !important;
   transform: scale(1.05);
 }
+
+/* Mobile layout*/
+@media (max-width: 600px) {
+  .category-title {
+    font-size: 2.5rem !important;
+    letter-spacing: -1px !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .category-subtitle {
+    letter-spacing: 3px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .filter-bar {
+    gap: 8px !important; 
+    padding: 0 !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .filter-item {
+    font-size: 0.7rem !important;
+    letter-spacing: 0px !important;
+    padding-bottom: 2px;
+  }
+
+  .product-card {
+    margin-bottom: 1rem;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-radius: 12px;
+  }
+
+  .product-name {
+    font-size: 0.8rem !important;
+    letter-spacing: 1px !important;
+  }
+
+  .v-card-actions {
+    padding: 0 8px 12px 8px !important;
+  }
+
+  .add-cart-btn {
+    font-size: 0.75rem !important;
+    height: 32px !important;
+    padding: 0 12px !important;
+  }
+  
+  .py-16 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+}
