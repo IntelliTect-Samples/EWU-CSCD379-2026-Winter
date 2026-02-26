@@ -53,7 +53,7 @@ import { navigateTo } from 'nuxt/app'
 import { useApi } from './composables/api'
 import { useAuthService } from './composables/auth'
 
-const drawer = ref(true) // ✅ open by default so it doesn’t look empty
+const drawer = ref(false)
 
 const { token } = useApi()
 const auth = useAuthService()
