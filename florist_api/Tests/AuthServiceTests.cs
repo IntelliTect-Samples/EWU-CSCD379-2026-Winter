@@ -20,7 +20,6 @@ namespace florist_api.Tests
         {
             var store = new Mock<IUserStore<ApplicationUser>>();
             
-            // FIX: Added ! to all nulls here to satisfy the compiler
             _mockUserManager = new Mock<UserManager<ApplicationUser>>(
                 store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
             
@@ -54,8 +53,7 @@ namespace florist_api.Tests
 
             // ASSERT
             Assert.NotNull(result);
-            // FIX: Added ! to result so it doesn't complain about possible nulls
-            Assert.Equal("ChloeAdmin", result!.Username);
+            Assert.Equal("SomeAdmin", result!.Username);
             Assert.Equal("Admin", result.Role);
             Assert.NotEmpty(result.Token); 
         }

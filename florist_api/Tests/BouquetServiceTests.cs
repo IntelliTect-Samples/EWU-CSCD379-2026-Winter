@@ -13,7 +13,6 @@ namespace florist_api.Tests
     {
         private AppDbContext GetDbContext()
         {
-            // Creates a fresh, unique in-memory database for every test
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;

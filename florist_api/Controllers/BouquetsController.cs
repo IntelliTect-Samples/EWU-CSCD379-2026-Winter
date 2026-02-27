@@ -15,7 +15,7 @@ public class BouquetsController : ControllerBase
         _service = service;
     }
 
-    // PUBLIC: Anyone can see the catalog
+    // PUBLIC: Anyone can see the catalog from the database
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Bouquet>>> GetAll()
@@ -23,7 +23,7 @@ public class BouquetsController : ControllerBase
         return Ok(await _service.GetAllBouquetsAsync());
     }
 
-    // AUTHORIZED: Customers, Employees, and Admins
+    // AUTHORIZED: Customers, Employees, and Admins can view details
     [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<Bouquet>> GetById(int id)
@@ -33,7 +33,7 @@ public class BouquetsController : ControllerBase
         return Ok(bouquet);
     }
 
-    // ADMIN ONLY: Only the owner can add new bouquets
+    // ADMIN ONLY: Only the admin can add new items
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<Bouquet>> Create([FromBody] BouquetCreateRequest request)
@@ -42,7 +42,7 @@ public class BouquetsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    // ADMIN ONLY: Only the owner can alter prices
+    // ADMIN ONLY: Only the admin can alter prices
     [Authorize(Roles = "Admin")]
     [HttpPatch("{id}/price")]
     public async Task<IActionResult> UpdatePrice(int id, [FromBody] decimal newPrice)
@@ -52,7 +52,7 @@ public class BouquetsController : ControllerBase
         return NoContent();
     }
 
-    // ADMIN & EMPLOYEE: Both can adjust the inventory count
+    // ADMIN & EMPLOYEE: Both users can adjust the inventory count
     [Authorize(Roles = "Admin,Employee")]
     [HttpPatch("{id}/inventory")]
     public async Task<IActionResult> UpdateInventory(int id, [FromBody] int count)
@@ -62,7 +62,7 @@ public class BouquetsController : ControllerBase
         return NoContent();
     }
 
-    // ADMIN ONLY: Only owner can prune the collection
+    // ADMIN ONLY: Only admin can delete items from inventory
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)

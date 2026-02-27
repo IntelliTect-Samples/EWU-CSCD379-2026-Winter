@@ -28,13 +28,13 @@ namespace florist_api.Data
 
             var hasher = new PasswordHasher<ApplicationUser>();
 
-            // 2. Users (No Email)
+            // 2. Users
             var adminUser = new ApplicationUser
             {
                 Id = "101",
                 UserName = "head_gardener",
                 NormalizedUserName = "HEAD_GARDENER",
-                SecurityStamp = Guid.NewGuid().ToString() // Important for Identity
+                SecurityStamp = Guid.NewGuid().ToString()
             };
             adminUser.PasswordHash = hasher.HashPassword(adminUser, "PetalPass123!");
 

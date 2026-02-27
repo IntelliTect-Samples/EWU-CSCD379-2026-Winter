@@ -41,7 +41,7 @@ namespace florist_api.Services
             return bouquet;
         }
 
-        // Admin: Full update for typos, season changes, etc.
+        // Admin: Allow editing of details
         public async Task<bool> UpdateBouquetAsync(int id, Bouquet updatedData)
         {
             var bouquet = await _context.Bouquets.FindAsync(id);
@@ -51,7 +51,6 @@ namespace florist_api.Services
             bouquet.Season = updatedData.Season!;
             bouquet.ImageUrl = updatedData.ImageUrl!;
             bouquet.IsAvailable = updatedData.IsAvailable;
-            // We usually exclude Price here if we want Price updates to be a separate, audited action
             
             await _context.SaveChangesAsync();
             return true;
@@ -67,7 +66,7 @@ namespace florist_api.Services
             return true;
         }
 
-        // Admin & Employee: The key "Staff Action"
+        // Admin & Employee: Shared editing of inventory count
         public async Task<bool> UpdateInventoryAsync(int id, int count)
         {
             var bouquet = await _context.Bouquets.FindAsync(id);

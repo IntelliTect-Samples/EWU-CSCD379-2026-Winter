@@ -191,7 +191,7 @@
   }
 
   .inventory-table thead th {
-    font-size: 0.74rem !important; /* Shrunk down for small screens */
+    font-size: 0.74rem !important;
     letter-spacing: 1px !important;
     padding-left: 4px !important;
     padding-right: 4px !important;
