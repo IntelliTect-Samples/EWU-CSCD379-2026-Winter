@@ -7,17 +7,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: "/api",
-    },
-  },
-
-  // Proxy /api calls to the Azure backend during local dev (avoids CORS)
-  nitro: {
-    devProxy: {
-      "/api/": {
-        target: "https://kalesgardenapi.azurewebsites.net/api/",
-        changeOrigin: true,
-      },
+      apiBase: "https://kalesgardenapi.azurewebsites.net/api",
     },
   },
 });
