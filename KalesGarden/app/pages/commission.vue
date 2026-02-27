@@ -55,8 +55,8 @@
 
 <script setup lang="ts">
 import type { CommissionType } from "~/types";
-import { useAuth } from "../composables/useAuth";
-import { useApi } from "../composables/useApi";
+import { useAuth } from "~/composables/useAuth";
+import { useApi } from "~/composables/useApi";
 import { watchEffect } from "vue";
 import { useRouter } from "#imports";
 

@@ -68,6 +68,17 @@ export function useAuth() {
     return res;
   }
 
+  async function register(email: string, password: string) {
+    const config = useRuntimeConfig();
+    const apiBase = config.public.apiBase as string;
+    await $fetch(`${apiBase.replace("/api", "")}/register`, {
+      method: "POST",
+      body: { email, password },
+    });
+    // Auto-login after successful registration
+    return await login(email, password);
+  }
+
   function logout() {
     setToken(null);
     user.value = null;
@@ -82,6 +93,7 @@ export function useAuth() {
     token,
     user,
     login,
+    register,
     logout,
     setToken,
     restoreToken,

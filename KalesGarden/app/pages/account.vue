@@ -18,11 +18,10 @@
       </div>
     </article>
 
-    <!-- My Commissions -->
     <article v-if="user">
       <hgroup>
         <h3>My Commissions</h3>
-        <p>Click a commission to view its invoice</p>
+        <p>Click "Invoice" to view the invoice for a commission</p>
       </hgroup>
 
       <div v-if="commissionsLoading" aria-busy="true">
@@ -33,90 +32,27 @@
         <p>You have no commissions yet.</p>
       </div>
 
-      <table v-else role="grid">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Medium</th>
-            <th>Price</th>
-            <th>Status</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="c in commissions" :key="c.id">
-            <td>{{ c.name }}</td>
-            <td>{{ c.type?.medium ?? "—" }}</td>
-            <td>${{ c.price.toFixed(2) }}</td>
-            <td>
-              <span v-if="c.isCompleted">&#x2714; Completed</span>
-              <span v-else>&#x23F3; Active</span>
-            </td>
-            <td>
-              <button class="outline" @click="viewInvoice(c.id)">
-                View Invoice
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <CommissionTable
+        v-else
+        :commissions="commissions"
+        :show-invoice-button="true"
+        @view-invoice="viewInvoice"
+      />
     </article>
 
-    <!-- Invoice Detail Modal -->
-    <dialog :open="showInvoice" v-if="showInvoice">
-      <article>
-        <header>
-          <button
-            aria-label="Close"
-            rel="prev"
-            @click="showInvoice = false"
-          ></button>
-          <h3>Invoice Details</h3>
-        </header>
-        <div v-if="invoiceLoading" aria-busy="true">Loading invoice...</div>
-        <div v-else-if="!selectedInvoice">
-          <p>No invoice found for this commission.</p>
-        </div>
-        <div v-else>
-          <p><strong>Invoice #:</strong> {{ selectedInvoice.id }}</p>
-          <p>
-            <strong>Commission:</strong>
-            {{ selectedInvoice.commission?.name ?? "—" }}
-          </p>
-          <p>
-            <strong>Description:</strong>
-            {{ selectedInvoice.commission?.description ?? "—" }}
-          </p>
-          <p>
-            <strong>Medium:</strong>
-            {{ selectedInvoice.commission?.type?.medium ?? "—" }}
-          </p>
-          <p>
-            <strong>Total Price:</strong> ${{
-              selectedInvoice.totalPrice.toFixed(2)
-            }}
-          </p>
-          <p>
-            <strong>Status:</strong>
-            {{
-              selectedInvoice.commission?.isCompleted
-                ? "Completed"
-                : "In Progress"
-            }}
-          </p>
-        </div>
-        <footer>
-          <button @click="showInvoice = false">Close</button>
-        </footer>
-      </article>
-    </dialog>
+    <InvoiceModal
+      :open="showInvoice"
+      :loading="invoiceLoading"
+      :invoice="selectedInvoice"
+      @close="showInvoice = false"
+    />
   </main>
 </template>
 
 <script setup lang="ts">
 import type { Commission, Invoice } from "~/types";
-import { useAuth } from "../composables/useAuth";
-import { useApi } from "../composables/useApi";
+import { useAuth } from "~/composables/useAuth";
+import { useApi } from "~/composables/useApi";
 import { ref, watchEffect, onMounted } from "vue";
 import { useRouter } from "#imports";
 
@@ -124,18 +60,15 @@ const { user } = useAuth();
 const { apiFetch } = useApi();
 const router = useRouter();
 
-// Redirect to login if not authenticated
 watchEffect(() => {
   if (import.meta.client && !user.value) {
     router.push("/login");
   }
 });
 
-// Commissions
 const commissions = ref<Commission[]>([]);
 const commissionsLoading = ref(true);
 
-// Invoice modal
 const showInvoice = ref(false);
 const selectedInvoice = ref<Invoice | null>(null);
 const invoiceLoading = ref(false);
