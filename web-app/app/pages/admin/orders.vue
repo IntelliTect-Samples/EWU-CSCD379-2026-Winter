@@ -36,7 +36,7 @@ const findProduct = (id) => products.value.find(p => p.id === id)
 const formatDate = (iso) => new Date(iso + 'Z').toLocaleString()
 
 const updateStatus = async (orderId, status) => {
-  if (!confirm(`Change order #${orderId} status to '${status}'?`)) return
+  if (!confirm(`Change order's status to '${status}'?`)) return
 
   const token = localStorage.getItem("accessToken")
 
