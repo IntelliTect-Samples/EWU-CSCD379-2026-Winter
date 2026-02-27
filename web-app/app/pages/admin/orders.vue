@@ -74,7 +74,7 @@ const removeOrder = async (id) => {
     <div class="order" v-for="o in orders" :key="o.id">
       <div class="order-header">
         <div>
-          <h3>Order #{{ o.id }} <small>({{ formatDate(o.createdAt) }})</small></h3>
+          <h3>Order: <small>({{ formatDate(o.createdAt) }})</small></h3>
           <p><strong>{{ o.customerName }}</strong> — {{ o.customerEmail }} | {{ o.customerPhone }}</p>
         </div>
         <div class="status-block">
