@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getProducts } from '~/services/api'
+import { getProducts, deleteOrder } from '~/services/api'
 
 definePageMeta({
   middleware: 'admin'
@@ -32,9 +32,8 @@ onMounted(load)
 
 const findProduct = (id) => products.value.find(p => p.id === id)
 
-const formatDate = (iso) => {
-  try { return new Date(iso).toLocaleString() } catch { return iso }
-}
+
+const formatDate = (iso) => new Date(iso + 'Z').toLocaleString()
 
 const updateStatus = async (orderId, status) => {
   if (!confirm(`Change order #${orderId} status to '${status}'?`)) return
@@ -57,6 +56,13 @@ const updateStatus = async (orderId, status) => {
 
   await load()
 }
+
+const removeOrder = async (id) => {
+  if (!confirm("Are you sure you want to delete this order?")) return
+
+  await deleteOrder(id)
+  orders.value = orders.value.filter(o => o.id !== id)
+}
 </script>
 
 <template>
@@ -77,6 +83,9 @@ const updateStatus = async (orderId, status) => {
             <button v-if="o.status === 'Pending'" @click="updateStatus(o.id, 'Approved')">Approve</button>
             <button v-if="o.status !== 'Completed' && o.status !== 'Cancelled'" @click="updateStatus(o.id, 'Completed')">Complete</button>
             <button v-if="o.status !== 'Cancelled' && o.status !== 'Completed'" @click="updateStatus(o.id, 'Cancelled')">Cancel</button>
+            <button class="btn-danger" @click="removeOrder(o.id)">
+              Delete Order
+            </button>
           </div>
         </div>
       </div>

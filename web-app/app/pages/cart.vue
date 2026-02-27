@@ -1,3 +1,51 @@
+<template>
+  <div class="page">
+    <h1>Your Cart</h1>
+
+    <!-- Empty State -->
+    <div v-if="cart.length === 0" class="card">
+      Cart is empty
+    </div>
+
+    <!-- Cart Items -->
+    <div v-if="cart.length > 0" class="grid">
+      <div class="card" v-for="item in cart" :key="item.id">
+        <h3>{{ item.name }}</h3>
+        <p>Price: ${{ item.price }}</p>
+        <p>Quantity: {{ item.quantity }}</p>
+        <p>
+          Subtotal:
+          ${{ (Number(item.price) || 0) * (Number(item.quantity) || 0) }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Total Section -->
+    <div v-if="cart.length > 0" style="margin-top: 24px;">
+      <h2>Total: ${{ total }}</h2>
+
+      <button v-if="!showForm" @click="checkout">
+        Checkout
+      </button>
+    </div>
+
+    <!-- Checkout Form -->
+    <div v-if="showForm" class="card form-card" style="margin-top: 24px;">
+      <h2>Customer Information</h2>
+
+      <div class="form-grid">
+        <input v-model="customerName" placeholder="Full Name" />
+        <input v-model="customerEmail" placeholder="Email" />
+        <input v-model="customerPhone" placeholder="Phone Number" />
+      </div>
+
+      <button @click="submitOrder">
+        Confirm Order
+      </button>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
@@ -63,41 +111,3 @@ const submitOrder = async () => {
   }
 }
 </script>
-
-<template>
-  <div>
-    <h1>Your Cart</h1>
-
-    <div v-if="cart.length === 0">
-      Cart is empty
-    </div>
-
-    <div v-for="item in cart" :key="item.id">
-      <h3>{{ item.name }}</h3>
-      <p>Price: ${{ item.price }}</p>
-      <p>Quantity: {{ item.quantity }}</p>
-      <p>Subtotal: ${{ (Number(item.price) || 0) * (Number(item.quantity) || 0) }}</p>
-      <hr />
-    </div>
-
-    <h2 v-if="cart.length > 0">Total: ${{ total }}</h2>
-
-    <button v-if="cart.length > 0 && !showForm" @click="checkout">
-      Checkout
-    </button>
-
-    <div v-if="showForm">
-      <h2>Customer Information</h2>
-
-      <input v-model="customerName" placeholder="Full Name" />
-      <input v-model="customerEmail" placeholder="Email" />
-      <input v-model="customerPhone" placeholder="Phone Number" />
-
-      <br /><br />
-
-      <button @click="submitOrder">
-        Confirm Order
-      </button>
-    </div>
-  </div>
-</template>

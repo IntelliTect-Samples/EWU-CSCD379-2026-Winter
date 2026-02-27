@@ -42,3 +42,9 @@ export const deleteProduct = (id) => {
     method: "DELETE"
   })
 }
+
+export const deleteOrder = async (id) => {
+  return await $fetch(`/api/orders/${id}`, {
+    method: 'DELETE'
+  })
+}

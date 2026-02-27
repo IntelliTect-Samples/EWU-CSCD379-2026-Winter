@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  ssr: false,  
+  ssr: false, 
+  css: ['~/assets/main.css'],
   modules: ['@pinia/nuxt'],
   nitro: { preset: 'static' },
   runtimeConfig: {

@@ -1,0 +1,139 @@
+/* ===== Global Reset ===== */
+body {
+  margin: 0;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background: white;
+  color: #333;
+}
+
+/* ===== Page Wrapper ===== */
+.page {
+  padding: 28px;
+  min-height: 100vh;
+  background: white;
+}
+
+/* ===== Headings ===== */
+h1, h2, h3 {
+  color: #a33b6a;
+  margin-bottom: 16px;
+}
+
+/* ===== Grid Layout ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+/* ===== Cards ===== */
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(105,82,114,0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Images ===== */
+.img-wrap {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff7fb;
+}
+
+.img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===== Buttons ===== */
+button {
+  background: #ff7faa;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Danger Button (Logout/Delete) */
+.btn-danger {
+  background: #a33b6a;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(105,82,114,0.06);
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background: #fff7fb;
+  color: #a33b6a;
+}
+
+/* ===== Forms ===== */
+input, textarea, select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  width: 100%;
+  margin-bottom: 12px;
+  font-family: inherit;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #ff7faa;
+}
+
+/* ===== Compact Admin Form ===== */
+
+/* ===== Compact Admin Form ===== */
+
+.form-card {
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto 32px auto;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-card input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-card button {
+  width: fit-content;
+  margin-top: 12px;
+}

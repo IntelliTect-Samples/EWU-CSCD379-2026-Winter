@@ -1,3 +1,47 @@
+<template>
+  <div class="page">
+    <h1>Manage Products</h1>
+
+    <!-- Add Product Card -->
+    <div class="card form-card">
+      <h3>Add New Cake</h3>
+
+      <div class="form-grid">
+        <input v-model="name" placeholder="Cake Name" />
+        <input v-model="description" placeholder="Description" />
+        <input v-model="price" type="number" placeholder="Price" />
+        <input type="file" @change="handleFileChange" />
+      </div>
+
+      <button @click="submitProduct">
+        Add Cake
+      </button>
+    </div>
+
+    <!-- Product List -->
+    <h3>All Products</h3>
+
+    <div class="grid">
+      <div class="card" v-for="p in products" :key="p.id">
+        <div class="img-wrap">
+          <img v-if="p.imageUrl" :src="p.imageUrl" />
+          <div v-else>No Image</div>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <h3>{{ p.name }}</h3>
+          <p>${{ p.price }}</p>
+          <p>{{ p.description }}</p>
+        </div>
+
+        <button class="btn-danger" @click="removeProduct(p.id)">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getProducts, addProduct, uploadImage, deleteProduct } from '~/services/api'
@@ -56,37 +100,3 @@ const removeProduct = async (id) => {
   await loadProducts()
 }
 </script>
-
-<template>
-  <div>
-    <h1>Manage Products</h1>
-
-    <h3>Add New Cake</h3>
-
-    <input v-model="name" placeholder="Cake Name" />
-    <input v-model="description" placeholder="Description" />
-    <input v-model="price" type="number" placeholder="Price" />
-    <input type="file" @change="handleFileChange" />
-    
-
-    <button @click="submitProduct">Add Cake</button>
-
-    <hr />
-
-    <h3>All Products</h3>
-
-    <div v-for="p in products" :key="p.id">
-      <p>{{ p.name }} - ${{ p.price }}</p>
-      <p>{{ p.description }}</p>
-
-      <img v-if="p.imageUrl" :src="p.imageUrl" width="150" />
-
-      <br />
-      <button @click="removeProduct(p.id)">
-        Delete
-      </button>
-
-      <hr />
-    </div>
-  </div>
-</template>

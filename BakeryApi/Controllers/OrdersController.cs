@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using BakeryApi.Data;
-using BakeryApi.Models;
-using Microsoft.EntityFrameworkCore; 
 using Microsoft.AspNetCore.Authorization;
+using BakeryApi.Models;
+using BakeryApi.Services;
 
 namespace BakeryApi.Controllers
 {
@@ -10,55 +9,58 @@ namespace BakeryApi.Controllers
     [Route("api/[controller]")]
     public class OrdersController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IOrderService _orderService;
 
-        public OrdersController(AppDbContext context)
+        public OrdersController(IOrderService orderService)
         {
-            _context = context;
+            _orderService = orderService;
         }
 
-public class StatusUpdateDto
-{
-    public string? Status { get; set; }
-}
+        public class StatusUpdateDto
+        {
+            public string? Status { get; set; }
+        }
 
         [HttpPost]
-        public IActionResult CreateOrder(Order order)
+        public async Task<IActionResult> CreateOrder(Order order)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            _context.Orders.Add(order);
-            _context.SaveChanges();
-            return Ok(order);
+            var created = await _orderService.CreateOrderAsync(order);
+            return Ok(created);
         }
 
         [HttpGet]
-        [Authorize]
-        public IActionResult GetOrders()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetOrders()
         {
-            var orders = _context.Orders
-                .Include(o => o.OrderItems) 
-                .ToList();
-
+            var orders = await _orderService.GetAllOrdersAsync();
             return Ok(orders);
         }
 
         [HttpPost("{id}/status")]
-        [Authorize]
-        public IActionResult UpdateStatus(int id, [FromBody] StatusUpdateDto dto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusUpdateDto dto)
         {
-            var order = _context.Orders.Find(id);
+            var updated = await _orderService.UpdateStatusAsync(id, dto?.Status);
 
-            if (order == null)
+            if (updated == null)
                 return NotFound();
 
-            order.Status = dto?.Status ?? order.Status;
-            _context.SaveChanges();
+            return Ok(updated);
+        }
 
-            return Ok(order);
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteOrder(int id)
+        {
+            var success = await _orderService.DeleteOrderAsync(id);
+
+            if (!success)
+                return NotFound();
+
+            return NoContent();
         }
     }
 }

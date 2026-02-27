@@ -1,3 +1,29 @@
+<template>
+  <div class="page">
+    <h1>Admin Dashboard</h1>
+
+    <div class="grid">
+      <div class="card">
+        <NuxtLink to="/admin/products">
+          <button>Manage Products</button>
+        </NuxtLink>
+      </div>
+
+      <div class="card">
+        <NuxtLink to="/admin/orders">
+          <button>Manage Orders</button>
+        </NuxtLink>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <button class="btn-danger" @click="handleLogout">
+        Logout
+      </button>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -18,24 +44,7 @@ onMounted(() => {
 
 const handleLogout = () => {
   logout()
-  router.push('/')
+  router.push('/admin/login')
 }
 </script>
 
-<template>
-  <div class="dashboard">
-    <h1>Admin Dashboard</h1>
-
-    <NuxtLink to="/admin/products">
-      <button>Manage Products</button>
-    </NuxtLink>
-
-    <NuxtLink to="/admin/orders">
-      <button>Manage Orders</button>
-    </NuxtLink>
-
-    <br /><br />
-
-    <button @click="handleLogout">Logout</button>
-  </div>
-</template>

@@ -73,6 +73,8 @@ builder.Services.AddCors(options =>
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
