@@ -10,9 +10,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// -----------------------------
-// Controllers + JSON Settings
-// -----------------------------
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler =
@@ -21,25 +18,16 @@ builder.Services.AddControllers().AddJsonOptions(options =>
         System.Text.Json.JsonNamingPolicy.CamelCase;
 });
 
-// -----------------------------
-// Database (Azure SQL Ready)
-// -----------------------------
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
 
-// -----------------------------
-// Identity
-// -----------------------------
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// -----------------------------
-// JWT Authentication
-// -----------------------------
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -59,9 +47,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
-// -----------------------------
-// CORS
-// -----------------------------
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
@@ -78,9 +64,6 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
-// -----------------------------
-// Auto Apply Migrations
-// -----------------------------
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -90,9 +73,6 @@ using (var scope = app.Services.CreateScope())
         var db = services.GetRequiredService<AppDbContext>();
         db.Database.Migrate();
 
-        // -----------------------------
-        // Seed Roles
-        // -----------------------------
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
         string[] roles = { "Admin" };
@@ -104,9 +84,7 @@ using (var scope = app.Services.CreateScope())
                 roleManager.CreateAsync(new IdentityRole(role)).Wait();
             }
         }
-        // -----------------------------
-        // Seed Default Admin User
-        // -----------------------------
+        
         var userManager = services.GetRequiredService<UserManager<User>>();
 
         string adminEmail = "admin2@bakery.com";
@@ -137,9 +115,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// -----------------------------
-// Middleware Order (IMPORTANT)
-// -----------------------------
 app.UseCors("AllowFrontend");
 
 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
@@ -156,7 +131,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseStaticFiles();
 
-app.UseAuthentication();   // MUST come before Authorization
+app.UseAuthentication();   
 app.UseAuthorization();
 
 app.MapControllers();

@@ -11,9 +11,6 @@ export const useAuth = () => {
   const isAuthenticated = computed(() => !!accessToken.value)
   const isAdmin = computed(() => roles.value.includes('Admin'))
 
-  // -------------------------
-  // Restore from localStorage
-  // -------------------------
   const restore = () => {
     if (process.server) return
     accessToken.value = localStorage.getItem('accessToken') || ''
@@ -29,9 +26,6 @@ export const useAuth = () => {
     localStorage.setItem('roles', JSON.stringify(roles.value))
   }
 
-  // -------------------------
-  // LOGIN
-  // -------------------------
   const login = async (emailInput: string, password: string) => {
     const res = await fetch(`${apiBase}/api/auth/login`, {
       method: 'POST',
@@ -53,9 +47,6 @@ export const useAuth = () => {
     persist()
   }
 
-  // -------------------------
-  // LOGOUT
-  // -------------------------
   const logout = () => {
     accessToken.value = ''
     email.value = ''
@@ -68,9 +59,6 @@ export const useAuth = () => {
     }
   }
 
-  // -------------------------
-  // GET AUTH HEADER
-  // -------------------------
   const getAuthHeaders = () => {
     if (!accessToken.value) return {}
     return {

@@ -1,4 +1,3 @@
-/* ===== Global Reset ===== */
 body {
   margin: 0;
   font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -6,20 +5,17 @@ body {
   color: #333;
 }
 
-/* ===== Page Wrapper ===== */
 .page {
   padding: 28px;
   min-height: 100vh;
   background: white;
 }
 
-/* ===== Headings ===== */
 h1, h2, h3 {
   color: #a33b6a;
   margin-bottom: 16px;
 }
 
-/* ===== Grid Layout ===== */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -27,7 +23,6 @@ h1, h2, h3 {
   margin-top: 18px;
 }
 
-/* ===== Cards ===== */
 .card {
   background: white;
   border-radius: 10px;
@@ -37,7 +32,6 @@ h1, h2, h3 {
   flex-direction: column;
 }
 
-/* ===== Images ===== */
 .img-wrap {
   width: 100%;
   height: 150px;
@@ -55,7 +49,6 @@ h1, h2, h3 {
   object-fit: cover;
 }
 
-/* ===== Buttons ===== */
 button {
   background: #ff7faa;
   color: white;
@@ -71,12 +64,10 @@ button:hover {
   opacity: 0.9;
 }
 
-/* Danger Button (Logout/Delete) */
 .btn-danger {
   background: #a33b6a;
 }
 
-/* ===== Tables ===== */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -97,7 +88,6 @@ th {
   color: #a33b6a;
 }
 
-/* ===== Forms ===== */
 input, textarea, select {
   padding: 8px;
   border-radius: 8px;
@@ -111,10 +101,6 @@ input:focus, textarea:focus {
   outline: none;
   border-color: #ff7faa;
 }
-
-/* ===== Compact Admin Form ===== */
-
-/* ===== Compact Admin Form ===== */
 
 .form-card {
   max-width: 500px;

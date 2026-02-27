@@ -2,12 +2,10 @@
   <div class="page">
     <h1>Your Cart</h1>
 
-    <!-- Empty State -->
     <div v-if="cart.length === 0" class="card">
       Cart is empty
     </div>
 
-    <!-- Cart Items -->
     <div v-if="cart.length > 0" class="grid">
       <div class="card" v-for="item in cart" :key="item.id">
         <h3>{{ item.name }}</h3>
@@ -20,7 +18,6 @@
       </div>
     </div>
 
-    <!-- Total Section -->
     <div v-if="cart.length > 0" style="margin-top: 24px;">
       <h2>Total: ${{ total }}</h2>
 
@@ -29,7 +26,6 @@
       </button>
     </div>
 
-    <!-- Checkout Form -->
     <div v-if="showForm" class="card form-card" style="margin-top: 24px;">
       <h2>Customer Information</h2>
 
@@ -77,13 +73,11 @@ const checkout = () => {
 }
 
 const submitOrder = async () => {
-  // Validate inputs
   if (!customerName.value || !customerEmail.value || !customerPhone.value) {
     alert("Please fill all fields")
     return
   }
 
-  // Prepare payload matching backend models
   const orderPayload = {
     CustomerName: customerName.value,
     CustomerEmail: customerEmail.value,
@@ -101,8 +95,6 @@ const submitOrder = async () => {
     const res = await createOrder(orderPayload)
     console.log('Order response:', res)
     alert("Order placed successfully!")
-
-    // Clear cart and redirect
     localStorage.removeItem('cart')
     router.push('/')
   } catch (err) {

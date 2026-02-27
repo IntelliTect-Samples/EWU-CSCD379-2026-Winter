@@ -2,7 +2,6 @@
   <div class="page">
     <h1>Manage Products</h1>
 
-    <!-- Add Product Card -->
     <div class="card form-card">
       <h3>Add New Cake</h3>
 
@@ -18,7 +17,6 @@
       </button>
     </div>
 
-    <!-- Product List -->
     <h3>All Products</h3>
 
     <div class="grid">

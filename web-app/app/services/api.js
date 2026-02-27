@@ -10,29 +10,43 @@ export const getProducts = () => {
 
 export const createOrder = (order) => {
   const API = getApiBase()
+  const token = localStorage.getItem("accessToken")
+  
   return $fetch(`${API}/orders`, {
     method: "POST",
-    body: order
+    body: order,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   })
 }
 
 export const addProduct = (product) => {
   const API = getApiBase()
+  const token = localStorage.getItem("accessToken")
+  
   return $fetch(`${API}/products`, {
     method: "POST",
-    body: product
+    body: product,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   })
 }
 
 export const uploadImage = async (file) => {
   const API = getApiBase()
+  const token = localStorage.getItem("accessToken")
 
   const formData = new FormData()
   formData.append("file", file)
 
   return await $fetch(`${API}/products/upload`, {
     method: "POST",
-    body: formData
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   })
 }
 

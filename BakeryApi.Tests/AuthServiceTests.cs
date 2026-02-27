@@ -22,13 +22,12 @@ public class AuthServiceTests
         // Mock configuration with long JWT key
         var configMock = new Mock<IConfiguration>();
         configMock.Setup(c => c["Jwt:Key"])
-            .Returns("super-secret-test-key-for-unit-test-1234567890!!"); // 50+ chars
+            .Returns("super-secret-test-key-for-unit-test-1234567890!!"); 
         configMock.Setup(c => c["Jwt:Issuer"]).Returns("TestIssuer");
         configMock.Setup(c => c["Jwt:Audience"]).Returns("TestAudience");
 
         var dto = new LoginDto { Email = "a@b.com", Password = "P@ssw0rd" };
 
-        // Fully initialized user
         var testUser = new User
         {
             Id = Guid.NewGuid().ToString(),
@@ -80,17 +79,16 @@ public class AuthServiceTests
 
         var mgr = new Mock<UserManager<User>>(
             store.Object,
-            null, // IOptions<IdentityOptions>
-            null, // IPasswordHasher<User>
+            null, 
+            null, 
             new IUserValidator<User>[0],
             new IPasswordValidator<User>[0],
-            null, // ILookupNormalizer
-            null, // IdentityErrorDescriber
-            null, // IServiceProvider
-            null  // ILogger<UserManager<User>>
+            null, 
+            null,
+            null, 
+            null  
         );
 
-        // Default setups to avoid null refs
         mgr.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Success);
 
