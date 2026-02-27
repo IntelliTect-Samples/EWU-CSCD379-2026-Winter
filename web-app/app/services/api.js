@@ -38,13 +38,23 @@ export const uploadImage = async (file) => {
 
 export const deleteProduct = (id) => {
   const API = getApiBase()
+  const token = localStorage.getItem("accessToken")
   return $fetch(`${API}/products/${id}`, {
-    method: "DELETE"
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   })
 }
 
 export const deleteOrder = async (id) => {
-  return await $fetch(`/api/orders/${id}`, {
-    method: 'DELETE'
+  const API = getApiBase()
+  const token = localStorage.getItem("accessToken")
+
+  return await $fetch(`${API}/orders/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   })
 }
