@@ -7,6 +7,7 @@ using florist_api.Data;
 using florist_api.Services;
 using florist_api.Models;
 using System.Security.Authentication.ExtendedProtection;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +63,14 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+var uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "uploads");
+if (!Directory.Exists(uploadsPath)) Directory.CreateDirectory(uploadsPath);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
 app.UseRouting();
 app.UseCors("AllowNuxt");
 app.UseAuthentication();

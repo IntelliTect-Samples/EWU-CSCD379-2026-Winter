@@ -32,7 +32,7 @@
           <v-card flat class="product-card d-flex flex-column h-100">
             <div class="image-container mb-4">
               <v-img
-                :src="product.imageUrl?.startsWith('http') ? product.imageUrl : `${config.public.apiBase}${product.imageUrl}`"
+                :src="resolveImageUrl(product.imageUrl)"
                 cover
                 aspect-ratio="0.75"
                 class="product-image"
@@ -86,6 +86,14 @@ const { addToCart } = useCart()
 const activeFilter = ref('All')
 const products = ref([])
 const pending = ref(true)
+
+const resolveImageUrl = (path) => {
+  if (path.startsWith('http')) return path
+
+  const apiRoot = config.public.apiBase.replace(/\/api$/, '')
+  
+  return `${apiRoot}${path}`
+}
 
 const fetchProducts = async () => {
   pending.value = true
