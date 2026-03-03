@@ -89,10 +89,16 @@ const pending = ref(true)
 
 const resolveImageUrl = (path) => {
   if (path.startsWith('http')) return path
+  if (path.startsWith('/images/')) {
+    return path
+  }
 
-  const apiRoot = config.public.apiBase.replace(/\/api$/, '')
-  
-  return `${apiRoot}${path}`
+  if (path.startsWith('/uploads/')) {
+    const apiRoot = config.public.apiBase.replace(/\/api$/, '')
+    return `${apiRoot}${path}`
+  }
+
+  return path
 }
 
 const fetchProducts = async () => {
