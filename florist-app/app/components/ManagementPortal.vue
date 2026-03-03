@@ -282,15 +282,27 @@ const saveBouquet = async () => {
       ? `${config.public.apiBase}/bouquets/${currentEditId.value}` 
       : `${config.public.apiBase}/bouquets`
 
+    const payload = {
+      ...newBouquet.value,
+      price: Number(newBouquet.value.price),
+      inventoryCount: Number(newBouquet.value.inventoryCount),
+      isAvailable: true,
+      createdAt: new Date().toISOString()
+    }
+
     await $fetch(url, {
       method: method,
-      body: newBouquet.value,
+      body: payload,
       headers: { Authorization: `Bearer ${props.token}` }
     })
+
     showAddDialog.value = false
     await fetchManagementProducts()
   } catch (err) {
-    if (err.status === 401) emit('session-expired')
+    console.error("Server Error:", err.data)
+    if (err.status === 401) {
+      emit('session-expired')
+    }
   }
 }
 
