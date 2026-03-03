@@ -7,5 +7,6 @@ namespace florist_api.DTOs
         public string? ImageUrl { get; set; }
         public string? Season { get; set; }
         public int InventoryCount { get; set; }
+        public IFormFile? ImageFile { get; set; }
     }
 }

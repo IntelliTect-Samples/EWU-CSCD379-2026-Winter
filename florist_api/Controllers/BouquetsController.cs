@@ -36,7 +36,7 @@ public class BouquetsController : ControllerBase
     // ADMIN ONLY: Only the admin can add new items
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<ActionResult<Bouquet>> Create([FromBody] BouquetCreateRequest request)
+    public async Task<ActionResult<Bouquet>> Create([FromForm] BouquetCreateRequest request)
     {
         var created = await _service.CreateBouquetAsync(request);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
