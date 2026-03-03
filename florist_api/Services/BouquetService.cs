@@ -29,24 +29,24 @@ namespace florist_api.Services
         public async Task<Bouquet> CreateBouquetAsync(BouquetCreateRequest dto)
         {
             string finalImageUrl = dto.ImageUrl ?? "";
+
             if (dto.ImageFile != null && dto.ImageFile.Length > 0)
             {
-                // 1. Define the folder (wwwroot/uploads)
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+               var rootPath = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+        
+                var uploadsFolder = Path.Combine(rootPath, "uploads");
+
+                if (!Directory.Exists(rootPath)) Directory.CreateDirectory(rootPath);
                 if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
-                // 2. Create a unique filename to avoid overwriting (e.g., guid_rose.jpg)
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(dto.ImageFile.FileName);
                 var filePath = Path.Combine(uploadsFolder, fileName);
 
-                // 3. Save the file to the server's disk
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await dto.ImageFile.CopyToAsync(stream);
                 }
 
-                // 4. Set the URL that the frontend will use to display it
-                // This assumes your API is the root (e.g., https://yourapi.com/uploads/name.jpg)
                 finalImageUrl = $"/uploads/{fileName}";
             }
 
