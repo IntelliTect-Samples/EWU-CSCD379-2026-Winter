@@ -63,6 +63,33 @@
   transform: scale(1.1);
 }
 
+.drop-zone {
+  border: 2px dashed rgba(45, 90, 39, 0.2); /* Matches your #2D5A27 with low opacity */
+  border-radius: 16px;
+  background-color: #fcfdfc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 120px;
+}
+
+.drop-zone:hover, 
+.drop-zone-active {
+  background-color: rgba(45, 90, 39, 0.05);
+  border-color: #2D5A27;
+  transform: translateY(-1px);
+}
+
+.drop-zone .editorial-text {
+  font-family: 'Alice', serif;
+  color: #2D5A27;
+  letter-spacing: 0.5px;
+}
+
+.v-img.rounded-lg.border {
+  border: 1px solid rgba(45, 90, 39, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
 @media (min-width: 601px) {
   h2.display-main {
     font-size: 2.2rem !important; 
@@ -222,5 +249,18 @@
     font-size: 0.75rem !important;
     min-width: 110px !important;
     margin: 0 4px !important;
+  }
+
+  .drop-zone {
+    padding: 16px !important;
+    min-height: 100px;
+  }
+  
+  .drop-zone .v-icon {
+    font-size: 32px !important;
+  }
+  
+  .drop-zone .editorial-text {
+    font-size: 0.8rem !important;
   }
 }

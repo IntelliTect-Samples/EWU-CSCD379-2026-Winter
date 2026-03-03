@@ -164,17 +164,35 @@
       <v-card class="pa-8 text-center" style="background-color: white; border-radius: 24px;">
         <v-card-title class="display-main px-0 mb-6" style="font-size: 1.8rem; font-weight: 600; color: #2D5A27;">{{ isEditing ? 'Edit Item' : 'New Item' }}</v-card-title>
         <v-card-text>
-          <v-text-field v-model="newBouquet.name" label="Name" variant="outlined"></v-text-field>
-          <v-select v-model="newBouquet.season" :items="['Spring', 'Summer', 'Autumn', 'Winter']" label="Season" variant="outlined"></v-select>
-          <v-text-field v-model.number="newBouquet.price" label="Price" type="number" variant="outlined"></v-text-field>
-          <v-text-field v-model="newBouquet.imageUrl" label="Image URL" variant="outlined"></v-text-field>
-          <v-text-field 
-            v-model.number="newBouquet.inventoryCount" 
-            label="Initial Stock" 
-            type="number" 
-            variant="outlined" 
-            color="#2D5A27"
-          ></v-text-field>
+          <div 
+            class="drop-zone pa-6 mb-4 d-flex flex-column align-center justify-center"
+            :class="{ 'drop-zone-active': isDragging }"
+            @dragover.prevent="isDragging = true"
+            @dragleave.prevent="isDragging = false"
+            @drop.prevent="handleDrop"
+            @click="$refs.fileInput.click()"
+          >
+            <v-icon size="40" color="#2D5A27" class="mb-2">
+              {{ imageFile ? 'mdi-check-circle' : 'mdi-cloud-upload-outline' }}
+            </v-icon>
+            <p class="editorial-text mb-0" style="font-size: 0.9rem;">
+              {{ imageFile ? imageFile.name : 'Drag photo here or click to browse' }}
+            </p>
+            <input type="file" ref="fileInput" class="d-none" accept="image/*" @change="handleFileSelect">
+          </div>
+
+          <v-img v-if="imagePreview" :src="imagePreview" height="120" cover class="rounded-lg mb-4 border"></v-img>
+
+          <v-text-field v-model="newBouquet.name" label="Name" variant="outlined" color="#2D5A27"></v-text-field>
+          <v-select v-model="newBouquet.season" :items="['Spring', 'Summer', 'Autumn', 'Winter']" label="Season" variant="outlined" color="#2D5A27"></v-select>
+          <v-row>
+            <v-col cols="6">
+              <v-text-field v-model.number="newBouquet.price" label="Price" type="number" variant="outlined" color="#2D5A27"></v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field v-model.number="newBouquet.inventoryCount" label="Stock" type="number" variant="outlined" color="#2D5A27"></v-text-field>
+            </v-col>
+          </v-row>
         </v-card-text>
 
         <v-card-actions class="pb-8 justify-center px-4">
@@ -193,11 +211,13 @@
             rounded="xl" 
             class="px-6 dialog-btn" 
             @click="saveBouquet"
+            :loading="isSaving"
           >
-            Save Changes
+            {{ isEditing ? 'Save Changes' : 'Add to Collection' }}
           </v-btn>
         </v-card-actions>
       </v-card>
+
     </v-dialog>
     <v-dialog v-model="showDeleteDialog" max-width="400px">
       <v-card class="pa-8 text-center" style="background-color: white; border-radius: 24px;">
@@ -239,15 +259,19 @@ const itemToDelete = ref(null)
 const activeTab = ref('inventory')
 const isEditing = ref(false)
 const currentEditId = ref(null)
-
+const imageFile = ref(null)
+const imagePreview = ref(null)
+const isDragging = ref(false)
+const isSaving = ref(false)
 
 const newBouquet = ref({ name: '', price: 0, season: '', imageUrl: '', inventoryCount: 0 })
-const seasonRules = [v => !!v || 'The garden requires a season.']
 
 // Actions
 const openAddDialog = () => {
   isEditing.value = false
   currentEditId.value = null
+  imageFile.value = null
+  imagePreview.value = null
   newBouquet.value = { name: '', price: 0, season: '', imageUrl: '', inventoryCount: 0 }
   showAddDialog.value = true
 }
@@ -255,8 +279,26 @@ const openAddDialog = () => {
 const openEditDialog = (item) => {
   isEditing.value = true
   currentEditId.value = item.id
+  imageFile.value = null
+  imagePreview.value = item.imageUrl
   newBouquet.value = { ...item }
   showAddDialog.value = true
+}
+
+const handleDrop = (e) => {
+  isDragging.value = false
+  const files = e.dataTransfer.files
+  if (files[0]) processFile(files[0])
+}
+
+const handleFileSelect = (e) => {
+  const files = e.target.files
+  if (files[0]) processFile(files[0])
+}
+
+const processFile = (file) => {
+  imageFile.value = file
+  imagePreview.value = URL.createObjectURL(file)
 }
 
 const confirmDelete = (id) => {
@@ -276,33 +318,39 @@ const fetchManagementProducts = async () => {
 }
 
 const saveBouquet = async () => {
+  isSaving.value = true
   try {
+    const formData = new FormData()
+    
+    formData.append('Name', newBouquet.value.name)
+    formData.append('Price', Number(newBouquet.value.price))
+    formData.append('Season', newBouquet.value.season)
+    formData.append('InventoryCount', Number(newBouquet.value.inventoryCount))
+    formData.append('IsAvailable', true)
+    formData.append('CreatedAt', new Date().toISOString())
+    
+    if (imageFile.value) {
+      formData.append('ImageFile', imageFile.value)
+    }
+
     const method = isEditing.value ? 'PUT' : 'POST'
     const url = isEditing.value 
       ? `${config.public.apiBase}/bouquets/${currentEditId.value}` 
       : `${config.public.apiBase}/bouquets`
 
-    const payload = {
-      ...newBouquet.value,
-      price: Number(newBouquet.value.price),
-      inventoryCount: Number(newBouquet.value.inventoryCount),
-      isAvailable: true,
-      createdAt: new Date().toISOString()
-    }
-
     await $fetch(url, {
       method: method,
-      body: payload,
+      body: formData,
       headers: { Authorization: `Bearer ${props.token}` }
     })
 
     showAddDialog.value = false
     await fetchManagementProducts()
   } catch (err) {
-    console.error("Server Error:", err.data)
-    if (err.status === 401) {
-      emit('session-expired')
-    }
+    console.error("Upload failed:", err.data)
+    if (err.status === 401) emit('session-expired')
+  } finally {
+    isSaving.value = false
   }
 }
 
