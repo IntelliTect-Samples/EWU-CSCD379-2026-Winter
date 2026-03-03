@@ -32,7 +32,7 @@
           <v-card flat class="product-card d-flex flex-column h-100">
             <div class="image-container mb-4">
               <v-img
-                :src="product.imageUrl"
+                :src="product.imageUrl?.startsWith('http') ? product.imageUrl : `${config.public.apiBase}${product.imageUrl}`"
                 cover
                 aspect-ratio="0.75"
                 class="product-image"

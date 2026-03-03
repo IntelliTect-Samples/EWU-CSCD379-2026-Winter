@@ -68,7 +68,7 @@
                   <td class="text-left py-4">
                     <div class="d-flex align-center">
                       <v-avatar rounded="lg" size="48" class="mr-4">
-                        <v-img :src="item.imageUrl" cover />
+                        <v-img :src="item.imageUrl?.startsWith('http') ? item.imageUrl : `${config.public.apiBase}${item.imageUrl}`" cover />
                       </v-avatar>
                       <span class="editorial-text" style="font-size: 1.1rem">{{ item.name }}</span>
                     </div>
@@ -181,7 +181,7 @@
             <input type="file" ref="fileInput" class="d-none" accept="image/*" @change="handleFileSelect">
           </div>
 
-          <v-img v-if="imagePreview" :src="imagePreview" height="120" cover class="rounded-lg mb-4 border"></v-img>
+          <v-img v-if="imagePreview" :src="imagePreview.startsWith('blob:') ? imagePreview : (imagePreview.startsWith('http') ? imagePreview : `${config.public.apiBase}${imagePreview}`)" height="120" cover class="rounded-lg mb-4 border"></v-img>
 
           <v-text-field v-model="newBouquet.name" label="Name" variant="outlined" color="#2D5A27"></v-text-field>
           <v-select v-model="newBouquet.season" :items="['Spring', 'Summer', 'Autumn', 'Winter']" label="Season" variant="outlined" color="#2D5A27"></v-select>
@@ -327,7 +327,6 @@ const saveBouquet = async () => {
     formData.append('Season', newBouquet.value.season)
     formData.append('InventoryCount', Number(newBouquet.value.inventoryCount))
     formData.append('IsAvailable', true)
-    formData.append('CreatedAt', new Date().toISOString())
     
     if (imageFile.value) {
       formData.append('ImageFile', imageFile.value)
