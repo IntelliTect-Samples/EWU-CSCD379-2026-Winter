@@ -30,7 +30,6 @@ namespace florist_api.Models
         [Range(0, 10000)]
         public int InventoryCount { get; set; } = 0;
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
