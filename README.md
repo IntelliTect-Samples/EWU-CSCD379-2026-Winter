@@ -18,7 +18,7 @@ This class will build on CSCD-371. It won't be easy if you have not taken CSCD-3
 * Familiarity with development environments like Visual Studio and VS Code
 * Understanding of how Git source control works, with the ability to perform standard development workflows
 * Understanding of GitHub, especially doing pull requests
-* Good grasp of programming theory: OOP, data structures, etc.
+* Good grasp of programming theory: OOP, data structures, etc. 
 
 ## Tech Stack References
 
