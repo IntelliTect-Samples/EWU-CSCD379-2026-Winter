@@ -2,7 +2,7 @@
 
 ## Assignment 5 and Final
 
-## Build an AI-enabled web application that applies what you have learned in this class.  
+## Build an AI-enabled web application that applies what you have learned in this class  
 
 The application must use AI in the application as part of the core functionality. Additionally, you should use a vector search. You will be graded on good coding practices. All applications need to be deployed with a CI/CD pipeline to Azure. It needs to have a front end and a back end with a database. 
 
