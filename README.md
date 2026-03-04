@@ -4,7 +4,7 @@
 For general questions, we suggest asking in Teams so that others can help as well. We encourage people to work together and collaborate. Please feel free to help your fellow students out. Though it is possible to privately message people directly, as much as possible, we encourage open discussion on the main chat so that others can benefit as well.
 You can also send an email to: [EWU-Instructors@IntelliTect.com](EWU-Instructors@IntelliTect.com) for final grade or general questions.
 
-## GitHub Information
+## GitHub Informatio
 We will be using GitHub for all class lectures and assignments. All work will be submitted via GitHub pull requests.
 * Please sign up for GitHub if you do not already have one. 
 * You can get added benefits by signing up for a free [GitHub Student Developer Pack](https://education.github.com/pack).
