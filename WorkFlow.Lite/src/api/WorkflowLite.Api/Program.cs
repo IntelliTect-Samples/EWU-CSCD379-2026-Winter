@@ -91,6 +91,8 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<WorkOrdersHub>("/hubs/workorders");
 
+app.MapGet("/health", () => Results.Ok(new { ok = true, app = "WorkflowLite API" }));
+
 // Migrate DB first
 using (var scope = app.Services.CreateScope())
 {
